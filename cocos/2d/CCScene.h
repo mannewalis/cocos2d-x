@@ -30,11 +30,15 @@ THE SOFTWARE.
 
 #include <string>
 #include "2d/CCNode.h"
-#include "physics/CCPhysicsWorld.h"
 
 NS_CC_BEGIN
 
 class Camera;
+class EventListenerCustom;
+class EventCustom;
+#if CC_USE_PHYSICS
+class PhysicsWorld;
+#endif
 /**
  * @addtogroup scene
  * @{
@@ -74,6 +78,8 @@ CC_CONSTRUCTOR_ACCESS:
     
     bool init();
     bool initWithSize(const Size& size);
+    
+    void onProjectionChanged(EventCustom* event);
 
 protected:
     friend class Node;
@@ -81,8 +87,11 @@ protected:
     friend class SpriteBatchNode;
     friend class Camera;
     friend class Director;
+    friend class Renderer;
     
     std::vector<Camera*> _cameras; //weak ref to Camera
+    Camera*              _defaultCamera; //weak ref, default camera created by scene, _cameras[0], Caution that the default camera can not be added to _cameras before onEnter is called
+    EventListenerCustom*       _event;
     
 private:
     CC_DISALLOW_COPY_AND_ASSIGN(Scene);

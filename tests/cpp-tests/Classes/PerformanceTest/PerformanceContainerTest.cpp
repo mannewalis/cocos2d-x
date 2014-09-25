@@ -152,11 +152,11 @@ void PerformanceContainerScene::initWithQuantityOfNodes(unsigned int nNodes)
     infoLabel->setPosition(Vec2(s.width/2, s.height/2-15));
     addChild(infoLabel, 1, kTagInfoLayer);
 
-    auto menuLayer = new ContainerBasicLayer(true, MAX_LAYER, g_curCase);
+    auto menuLayer = new (std::nothrow) ContainerBasicLayer(true, MAX_LAYER, g_curCase);
     addChild(menuLayer);
     menuLayer->release();
 
-    log("Size of Node: %u\n", sizeof(Node));
+    log("Size of Node: %d\n", (int)sizeof(Node));
     
     int oldFontSize = MenuItemFont::getFontSize();
     MenuItemFont::setFontSize(24);

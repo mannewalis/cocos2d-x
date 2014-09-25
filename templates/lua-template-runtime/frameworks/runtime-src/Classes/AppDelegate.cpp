@@ -13,6 +13,10 @@ using namespace std;
 
 AppDelegate::AppDelegate()
 {
+#if (COCOS2D_DEBUG > 0)
+    // NOTE:Please don't remove this call if you want to debug with Cocos Code IDE
+    initRuntime();
+#endif
 }
 
 AppDelegate::~AppDelegate()
@@ -20,17 +24,19 @@ AppDelegate::~AppDelegate()
     SimpleAudioEngine::end();
 }
 
+//if you want a different context,just modify the value of glContextAttrs
+//it will takes effect on all platforms
+void AppDelegate::initGLContextAttrs()
+{
+    //set OpenGL context attributions,now can only set six attributions:
+    //red,green,blue,alpha,depth,stencil
+    GLContextAttrs glContextAttrs = {8, 8, 8, 8, 24, 8};
+
+    GLView::setGLContextAttrs(glContextAttrs);
+}
+
 bool AppDelegate::applicationDidFinishLaunching()
 {
-    
-#if (COCOS2D_DEBUG>0)
-    initRuntime();
-#endif
-    
-    if (!ConfigParser::getInstance()->isInit()) {
-            ConfigParser::getInstance()->readConfig();
-        }
-
     // initialize director
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();    
@@ -46,20 +52,11 @@ bool AppDelegate::applicationDidFinishLaunching()
         director->setOpenGLView(glview);
 #endif
     }
-
-   
-    // set FPS. the default value is 1.0/60 if you don't call this
-    director->setAnimationInterval(1.0 / 60);
    
     auto engine = LuaEngine::getInstance();
     ScriptEngineManager::getInstance()->setScriptEngine(engine);
     lua_State* L = engine->getLuaStack()->getLuaState();
-    lua_getglobal(L, "_G");
-    if (lua_istable(L,-1))//stack:...,_G,
-    {
-        lua_module_register(L);
-    }
-    lua_pop(L, 1);//statck:...
+    lua_module_register(L);
 
     LuaStack* stack = engine->getLuaStack();
     stack->setXXTEAKeyAndSign("2dxLua", strlen("2dxLua"), "XXTEA", strlen("XXTEA"));
@@ -68,12 +65,13 @@ bool AppDelegate::applicationDidFinishLaunching()
     //LuaStack* stack = engine->getLuaStack();
     //register_custom_function(stack->getLuaState());
     
-#if (COCOS2D_DEBUG>0)
-    if (startRuntime())
-        return true;
+#if (COCOS2D_DEBUG > 0)
+    // NOTE:Please don't remove this call if you want to debug with Cocos Code IDE
+    startRuntime();
+#else
+    engine->executeScriptFile(ConfigParser::getInstance()->getEntryFile().c_str());
 #endif
 
-    engine->executeScriptFile(ConfigParser::getInstance()->getEntryFile().c_str());
     return true;
 }
 
@@ -92,4 +90,3 @@ void AppDelegate::applicationWillEnterForeground()
 
     SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
 }
-

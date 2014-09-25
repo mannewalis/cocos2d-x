@@ -30,14 +30,11 @@
 #define __CCNODE_H__
 
 #include "base/ccMacros.h"
-#include "base/CCEventDispatcher.h"
 #include "base/CCVector.h"
-#include "base/CCScriptSupport.h"
 #include "base/CCProtocols.h"
+#include "base/CCScriptSupport.h"
 #include "math/CCAffineTransform.h"
 #include "math/CCMath.h"
-#include "renderer/ccGLStateCache.h"
-#include "CCGL.h"
 
 NS_CC_BEGIN
 
@@ -153,9 +150,11 @@ public:
     virtual void setLocalZOrder(int localZOrder);
 
     CC_DEPRECATED_ATTRIBUTE virtual void setZOrder(int localZOrder) { setLocalZOrder(localZOrder); }
+    
     /* Helper function used by `setLocalZOrder`. Don't use it unless you know what you are doing.
      */
-    virtual void _setLocalZOrder(int z);
+    CC_DEPRECATED_ATTRIBUTE virtual void _setLocalZOrder(int z);
+
     /**
      * Gets the local Z order of this node.
      *
@@ -293,7 +292,7 @@ public:
      * This code snippet sets the node in the center of screen.
      @code
      Size size = Director::getInstance()->getWinSize();
-     node->setPosition( Vec2(size.width/2, size.height/2) )
+     node->setPosition(size.width/2, size.height/2)
      @endcode
      *
      * @param position  The position (x,y) of the node in OpenGL coordinates
@@ -961,7 +960,7 @@ public:
     CC_DEPRECATED_ATTRIBUTE GLProgram* getShaderProgram() const { return getGLProgram(); }
 
     GLProgramState *getGLProgramState() const;
-    void setGLProgramState(GLProgramState *glProgramState);
+    virtual void setGLProgramState(GLProgramState *glProgramState);
 
     /**
      * Sets the shader program for this node
@@ -974,7 +973,7 @@ public:
      *
      * @param shaderProgram The shader program
      */
-    void setGLProgram(GLProgram *glprogram);
+    virtual void setGLProgram(GLProgram *glprogram);
     CC_DEPRECATED_ATTRIBUTE void setShaderProgram(GLProgram *glprogram) { setGLProgram(glprogram); }
     /// @} end of Shader Program
 
@@ -1130,6 +1129,13 @@ public:
      * @param tag   A tag that indicates the action to be removed.
      */
     void stopActionByTag(int tag);
+    
+    /**
+     * Removes all actions from the running action list by its tag.
+     *
+     * @param tag   A tag that indicates the action to be removed.
+     */
+    void stopAllActionsByTag(int tag);
 
     /**
      * Gets an action from the running action list by its tag.
@@ -1284,12 +1290,12 @@ public:
      * Resumes all scheduled selectors, actions and event listeners.
      * This method is called internally by onEnter
      */
-    void resume(void);
+    virtual void resume(void);
     /**
      * Pauses all scheduled selectors, actions and event listeners..
      * This method is called internally by onExit
      */
-    void pause(void);
+    virtual void pause(void);
 
     /**
      * Resumes all scheduled selectors, actions and event listeners.
@@ -1521,6 +1527,9 @@ protected:
     bool doEnumerate(std::string name, std::function<bool (Node *)> callback) const;
     bool doEnumerateRecursive(const Node* node, const std::string &name, std::function<bool (Node *)> callback) const;
     
+    //check whether this camera mask is visible by the current visiting camera
+    bool isVisitableByVisitingCamera() const;
+    
 #if CC_USE_PHYSICS
     void updatePhysicsBodyTransform(Scene* layer);
     virtual void updatePhysicsBodyPosition(Scene* layer);
@@ -1548,6 +1557,7 @@ protected:
     float _positionZ;               ///< OpenGL real Z position
     Vec2 _normalizedPosition;
     bool _usingNormalizedPosition;
+    bool _normalizedPositionDirty;
 
     float _skewX;                   ///< skew angle on x-axis
     float _skewY;                   ///< skew angle on y-axis
