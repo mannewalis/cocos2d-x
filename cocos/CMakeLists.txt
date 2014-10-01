@@ -87,6 +87,7 @@ set(COCOS2D_BASE_SRC
     base/CCEventMouse.cpp
     base/CCEventTouch.cpp
     base/CCIMEDispatcher.cpp
+    base/CCLight.cpp
     base/CCNS.cpp
     base/CCProfiling.cpp
     base/CCRef.cpp
@@ -109,6 +110,8 @@ set(COCOS2D_BASE_SRC
     base/etc1.cpp
     base/pvr.cpp
     base/s3tc.cpp
+
+    audio/AudioEngine.cpp
 
     2d/CCAction.cpp
     2d/CCActionCamera.cpp
@@ -427,6 +430,9 @@ elseif(MACOSX)
         ${COCOS2D_AUDIO_SRC_C}
         audio/mac/SimpleAudioEngine.mm
         audio/mac/CDXMacOSXSupport.mm
+        audio/apple/AudioCache.mm
+        audio/apple/AudioEngine-inl.mm
+        audio/apple/AudioPlayer.mm
        )
     SET_SOURCE_FILES_PROPERTIES(
         ${COCOS2D_AUDIO_SRC_C}

@@ -21,7 +21,10 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  ****************************************************************************/
+
+#include "platform/CCPlatformConfig.h"
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC
+
 #include "AudioEngine-inl.h"
 #include "audio/include/AudioEngine.h"
 
@@ -490,8 +493,7 @@ void AudioEngineImpl::update(float dt)
 
 void AudioEngineImpl::uncache(const std::string &filePath)
 {
-    auto fileFullPath = FileUtils::getInstance()->fullPathForFilename(filePath);
-    _audioCaches.erase(fileFullPath);
+    _audioCaches.erase(filePath);
 }
 
 void AudioEngineImpl::uncacheAll()
