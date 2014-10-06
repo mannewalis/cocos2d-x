@@ -60,6 +60,10 @@ static Layer* restartAllocatorTestAction()
     return layer;
 }
 
+//
+// AllocatorTest
+//
+
 AllocatorTest::AllocatorTest()
 {
 }
@@ -111,3 +115,19 @@ void AllocatorTest::onExit()
 {
     BaseTest::onExit();
 }
+
+//
+// AllocatorTestScene
+//
+
+AllocatorTestScene::AllocatorTestScene()
+{
+}
+
+void AllocatorTestScene::runThisTest()
+{
+    auto layer = nextAllocatorTestAction();
+    addChild(layer);
+    Director::getInstance()->replaceScene(this);
+}
+

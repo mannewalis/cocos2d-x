@@ -27,14 +27,14 @@
 
 #include "../testBasic.h"
 #include "../BaseTest.h"
-#include "base/AllocatorFixed.h"
+#include "base/CCAllocatorFixed.h"
 
 class AllocatorTest : public BaseTest
 {
 public:
     CREATE_FUNC(AllocatorTest);
     AllocatorTest();
-    virtual AllocatorTest();
+    virtual ~AllocatorTest();
     
     virtual std::string title() const;
     virtual std::string subtitle() const;
@@ -47,4 +47,11 @@ public:
     virtual void onExit() override;
     
     virtual void update(float delta);
+};
+
+class AllocatorTestScene : public TestScene
+{
+public:
+    AllocatorTestScene();
+    virtual void runThisTest();
 };
