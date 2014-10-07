@@ -3,7 +3,7 @@
 
 /****************************************************************************
  Copyright (c) 2014 Chukong Technologies Inc.
- Author: Justin Graham (mannewalis)
+ Author: Justin Graham (https://github.com/mannewalis)
  
  http://www.cocos2d-x.org
  
@@ -39,6 +39,10 @@ NS_CC_ALLOCATOR_BEGIN
     The default allocator stragey AllocatorStrategyDefault uses malloc and
     free directly. Different strategies will allow for allocating all memory
     up front, and allow for different diagnostic features.
+ 
+    Allocators can be globally enabled/disabled using the preprocessor define
+    CC_ENABLE_ALLOCATOR in ccConfig.h. Setting this define to 0 disables all
+    custom allocator functionality for Cocos2d-X
  */
 template <typename Strategy = AllocatorStrategyDefault>
 class Allocator

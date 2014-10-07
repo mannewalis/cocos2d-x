@@ -3,7 +3,7 @@
 
 /****************************************************************************
  Copyright (c) 2014 Chukong Technologies Inc.
- Author: Justin Graham (mannewalis)
+ Author: Justin Graham (https://github.com/mannewalis)
  
  http://www.cocos2d-x.org
  
@@ -33,13 +33,10 @@
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
 
-/** @brief ObjectTraits describes an allocatable object
- 
- Templated class that represents a default allocatable object.
- Provide custom implementations to change the constructor/destructor behavior,
- or to change the default alignment of the object in memory.
- 
- */
+// @brief ObjectTraits describes an allocatable object
+// Templated class that represents a default allocatable object.
+// Provide custom implementations to change the constructor/destructor behavior,
+// or to change the default alignment of the object in memory.
 template <typename T, size_t _alignment = sizeof(uint32_t)>
 class ObjectTraits
 {
@@ -50,11 +47,13 @@ public:
     virtual ~ObjectTraits()
     {}
     
+    // @brief constructor implementation for type T
     void construct(T* address)
     {
         ::new(address) T();
     }
     
+    // @brief destructor implementation for type T
     void destroy(T* address)
     {
         address->~T();
@@ -62,6 +61,12 @@ public:
 };
 
 
+// @brief
+// Fixed sized pool allocator strategy for objects of type T
+// Optionally takes a page size which determines how many objects
+// are added when the allocator needs more storage.
+// ObjectTraits allows you to control the alignment, construction
+// and destruction of an object in the pool.
 template <typename T, size_t _page_size = 100, typename Traits = ObjectTraits<T>>
 class AllocatorStrategyPool
     : public Traits
@@ -77,16 +82,26 @@ public:
     AllocatorStrategyPool()
         : _list(nullptr)
         , _pages()
+#if DEBUG
+        , _available(0)
+#endif
     {}
     
     virtual ~AllocatorStrategyPool()
     {
         size_t count = _pages.size();
+#if DEBUG
+        CC_ASSERT(0 == _available); // assert if we didn't free all the blocks before destroying the allocator.
+#endif
         for (int i = 0; i < count; ++i)
             free(_pages[i]);
         _pages.clear();
     }
     
+    // @brief
+    // allocate a block of memory sizeof(T) by returning the first item in the list or if empty
+    // then allocate a new page of objects, and return the first element and store the rest.
+    // if sizeof(T) does not match the requested size, then the standard allocation method malloc is used.
     CC_ALLOCATOR_INLINE pointer allocate(size_type size, typename std::allocator<void>::const_pointer = nullptr)
     {
         T* object;
@@ -101,6 +116,9 @@ public:
         return object;
     }
     
+    // @brief
+    // deallocate an object sizeof(T) by pushing it on the head of a linked list of free objects.
+    // if size is not sizeof(T) then the default deallocation method free is used instead.
     CC_ALLOCATOR_INLINE void deallocate(pointer address, size_type size)
     {
         if (sizeof(T) == size)
@@ -113,6 +131,8 @@ public:
         }
     }
     
+    // @brief
+    // allocate an object, call its constructor and return the object.
     CC_ALLOCATOR_INLINE T* allocateObject(size_t size)
     {
         auto object = allocate(size);
@@ -120,6 +140,8 @@ public:
         return object;
     }
     
+    // @brief
+    // call an objects destructor and deallocate the object
     CC_ALLOCATOR_INLINE void deleteObject(T* object, size_t size)
     {
         if (object)
@@ -144,6 +166,9 @@ protected:
             *p = (uintptr_t)_list;
             _list = object;
         }
+#if DEBUG
+        ++_available;
+#endif
     }
     
     CC_ALLOCATOR_INLINE T* pop_front()
@@ -155,12 +180,15 @@ protected:
         auto next = (T*)*(uintptr_t*)_list;
         auto object = _list;
         _list = next;
+#if DEBUG
+        --_available;
+#endif
         return object;
     }
     
 protected:
     
-    inline void allocatePage()
+    CC_ALLOCATOR_INLINE void allocatePage()
     {
         void* page = malloc(sizeof(T) * page_size);
         _pages.push_back(page);
@@ -174,7 +202,15 @@ protected:
 protected:
     
     T* _list; // linked list of free blocks.
+    
+    // This could be optimized by baking a next pointer into the page size
+    // and linking the active pages together, especially in release builds.
+    // This would avoid the vector container entirely.
     std::vector<void*> _pages; // array of allocated pages.
+
+#if DEBUG
+    size_t _available; // number of objects that are free in the list.
+#endif
 };
 
 NS_CC_ALLOCATOR_END

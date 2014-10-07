@@ -3,7 +3,7 @@
 
 /****************************************************************************
  Copyright (c) 2014 Chukong Technologies Inc.
- Author: Justin Graham (mannewalis)
+ Author: Justin Graham (https://github.com/mannewalis)
  
  http://www.cocos2d-x.org
  
@@ -33,6 +33,8 @@
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
 
+// @brief
+// The default allocation strategy that just falls through to malloc and free
 class AllocatorStrategyDefault
     : public AllocatorStrategyBase
 {

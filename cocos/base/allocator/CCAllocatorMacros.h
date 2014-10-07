@@ -3,7 +3,7 @@
 
 /****************************************************************************
  Copyright (c) 2014 Chukong Technologies Inc.
- Author: Justin Graham (mannewalis)
+ Author: Justin Graham (https://github.com/mannewalis)
  
  http://www.cocos2d-x.org
  
@@ -41,7 +41,9 @@
     #define NS_CC_ALLOCATOR
 #endif
 
-// inline
+// CC_ALLOCATOR_INLINE
+// Turn off inlining of methods when debugging to make stack traces readable and stepping through code sane.
+// By default inlined methods are hidden symbols since symbols are unique and inlines are not.
 #if DEBUG
     #define CC_ALLOCATOR_INLINE
 #else
@@ -51,10 +53,18 @@
 // allocator macros
 #if CC_ENABLE_ALLOCATOR
 
+    // macros for new/delete
+    // these will use a general thread safe allocator
     #define CC_NEW(klass, ...) new klass(__VAR_ARGS__)
     #define CC_DELETE(object) delete object
+
+    // macros for malloc/free
+    // these will use a general thread safe allocator
     #define CC_MALLOC(size) malloc(size)
     #define CC_FREE(address) free(address)
+
+    // alloc on the stack
+    #define CC_ALOCA(size) alloca(size)
 
     // helper macro for overriding new/delete operators for a class.
     #define CC_USE_ALLOCATOR_POOL(T, A) \
@@ -83,11 +93,20 @@
 
 #else
 
+    // macros for new/delete
+    // these will use a general thread safe allocator
     #define CC_NEW(klass, ...) new klass(__VAR_ARGS__)
     #define CC_DELETE(object) delete object
+
+    // macros for malloc/free
+    // these will use a general thread safe allocator
     #define CC_MALLOC(size) malloc(size)
     #define CC_FREE(address) free(address)
 
+    // alloc on the stack
+    #define CC_ALOCA(size) alloca(size)
+
+    // throw these away if not enabled
     #define CC_USE_ALLOCATOR_POOL(...)
     #define CC_OVERRIDE_GLOBAL_NEWDELETE_WITH_ALLOCATOR(...)
 

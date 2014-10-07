@@ -1,7 +1,7 @@
 
 /****************************************************************************
  Copyright (c) 2014 Chukong Technologies Inc.
- Author: Justin Graham (mannewalis)
+ Author: Justin Graham (https://github.com/mannewalis)
  
  http://www.cocos2d-x.org
  
@@ -40,13 +40,11 @@ void* operator new(std::size_t size) throw(std::bad_alloc)
     void* ptr = global.allocate(size);
     if (nullptr == ptr)
         throw std::bad_alloc();
-    printf("allocating %p %ld bytes\n", ptr, size);
     return ptr;
 }
 
 void operator delete(void* p) throw()
 {
-    printf("delete %p\n", p);
     global.deallocate(p);
 }
 

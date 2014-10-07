@@ -3,7 +3,7 @@
 
 /****************************************************************************
  Copyright (c) 2014 Chukong Technologies Inc.
- Author: Justin Graham (mannewalis)
+ Author: Justin Graham (https://github.com/mannewalis)
  
  http://www.cocos2d-x.org
  
@@ -32,6 +32,10 @@
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
 
+// @brief
+// AllocatorStrategyBase
+// Provides a strategy base that contains a few methods and definitions
+// that are helpful to all allocation strategies.
 class AllocatorStrategyBase
 {
 public:
@@ -46,17 +50,17 @@ public:
     // @brief
     // Given an address and alignment in bytes, returns an address aligned to the number of bytes
     // For example, if the alignment is 4 which is standard, then the address is divisible evenly by 4.
-    CC_ALLOCATOR_INLINE pointer aligned(pointer address, size_t alignment = kDefaultAlignment) const
+    CC_ALLOCATOR_INLINE pointer aligned(const pointer address, const size_t alignment = kDefaultAlignment) const
     {
-        const size_t align_remd = --alignment;
-        const size_t align_mask = ~align_remd;
-        return (pointer) (((intptr_t)address + align_remd) & align_mask);
+        return (pointer) (((intptr_t)address + (alignment - 1)) & ~(alignment - 1));
     }
     
-    CC_ALLOCATOR_INLINE size_t alignedAdjustment(pointer address, size_t alignment = kDefaultAlignment) const
+    // @brief
+    // Given an address and alignment in bytes, returns the number of additional bytes required
+    // in order that the allocation can be aligned and still contain enough room.
+    CC_ALLOCATOR_INLINE size_t alignedAdjustment(const pointer address, const size_t alignment = kDefaultAlignment) const
     {
-        const size_t align_remd = --alignment;
-        size_t adjustment = alignment - (intptr_t)address & align_remd;
+        size_t adjustment = alignment - ((intptr_t)address & (alignment - 1));
         return adjustment == alignment ? 0 : adjustment;
     }
 };
