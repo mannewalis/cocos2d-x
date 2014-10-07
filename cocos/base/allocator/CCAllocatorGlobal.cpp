@@ -1,6 +1,4 @@
 
-#pragma once
-
 /****************************************************************************
  Copyright (c) 2014 Chukong Technologies Inc.
  Author: Justin Graham (mannewalis)
@@ -26,29 +24,30 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "platform/CCPlatformMacros.h"
-#include "base/allocator/CCAllocatorMacros.h"
-#include "base/allocator/CCAllocatorStrategyDefault.h"
+#include "base/allocator/CCAllocator.h"
+#include <new>
+#include <exception>
 
-NS_CC_BEGIN
-NS_CC_ALLOCATOR_BEGIN
+#if CC_ENABLE_ALLOCATOR
 
-/** @brief Allocator takes an allocation strategy which provides the methods
-    allocate and deallocate.
- 
-    The default allocator stragey AllocatorStrategyDefault uses malloc and
-    free directly. Different strategies will allow for allocating all memory
-    up front, and allow for different diagnostic features.
- */
-template <typename Strategy = AllocatorStrategyDefault>
-class Allocator
-	: public Strategy
+namespace
 {
-public:
+     CC_OVERRIDE_GLOBAL_NEW_DELETE global;
+}
 
-	virtual ~Allocator()
-	{}
-};
+void* operator new(std::size_t size) throw(std::bad_alloc)
+{
+    void* ptr = global.allocate(size);
+    if (nullptr == ptr)
+        throw std::bad_alloc();
+    printf("allocating %p %ld bytes\n", ptr, size);
+    return ptr;
+}
 
-NS_CC_ALLOCATOR_END
-NS_CC_END
+void operator delete(void* p) throw()
+{
+    printf("delete %p\n", p);
+    global.deallocate(p);
+}
+
+#endif // CC_ENABLE_ALLOCATOR

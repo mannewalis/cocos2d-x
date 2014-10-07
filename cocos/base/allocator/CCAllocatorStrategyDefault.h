@@ -3,6 +3,7 @@
 
 /****************************************************************************
  Copyright (c) 2014 Chukong Technologies Inc.
+ Author: Justin Graham (mannewalis)
  
  http://www.cocos2d-x.org
  
@@ -26,7 +27,31 @@
  ****************************************************************************/
 
 #include "platform/CCPlatformMacros.h"
+#include "base/allocator/CCAllocatorMacros.h"
+#include "base/allocator/CCAllocatorStrategyBase.h"
 
 NS_CC_BEGIN
+NS_CC_ALLOCATOR_BEGIN
 
+class AllocatorStrategyDefault
+    : public AllocatorStrategyBase
+{
+public:
+    
+    virtual ~AllocatorStrategyDefault()
+    {}
+    
+    CC_ALLOCATOR_INLINE void* allocate(size_t size, typename std::allocator<void>::const_pointer = nullptr)
+    {
+        return malloc(size);
+    }
+    
+    CC_ALLOCATOR_INLINE void deallocate(void* address, size_t size = 0)
+    {
+        if (nullptr != address)
+            free(address);
+    }
+};
+
+NS_CC_ALLOCATOR_END
 NS_CC_END

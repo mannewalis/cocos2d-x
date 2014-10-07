@@ -28,26 +28,37 @@
 
 #include "platform/CCPlatformMacros.h"
 #include "base/allocator/CCAllocatorMacros.h"
-#include "base/allocator/CCAllocatorStrategyDefault.h"
 
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
 
-/** @brief Allocator takes an allocation strategy which provides the methods
-    allocate and deallocate.
- 
-    The default allocator stragey AllocatorStrategyDefault uses malloc and
-    free directly. Different strategies will allow for allocating all memory
-    up front, and allow for different diagnostic features.
- */
-template <typename Strategy = AllocatorStrategyDefault>
-class Allocator
-	: public Strategy
+class AllocatorStrategyBase
 {
 public:
-
-	virtual ~Allocator()
-	{}
+    
+    typedef void* pointer;
+    
+    enum { kDefaultAlignment = sizeof(uint32_t) };
+    
+    virtual ~AllocatorStrategyBase()
+    {}
+    
+    // @brief
+    // Given an address and alignment in bytes, returns an address aligned to the number of bytes
+    // For example, if the alignment is 4 which is standard, then the address is divisible evenly by 4.
+    CC_ALLOCATOR_INLINE pointer aligned(pointer address, size_t alignment = kDefaultAlignment) const
+    {
+        const size_t align_remd = --alignment;
+        const size_t align_mask = ~align_remd;
+        return (pointer) (((intptr_t)address + align_remd) & align_mask);
+    }
+    
+    CC_ALLOCATOR_INLINE size_t alignedAdjustment(pointer address, size_t alignment = kDefaultAlignment) const
+    {
+        const size_t align_remd = --alignment;
+        size_t adjustment = alignment - (intptr_t)address & align_remd;
+        return adjustment == alignment ? 0 : adjustment;
+    }
 };
 
 NS_CC_ALLOCATOR_END

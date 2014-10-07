@@ -3,6 +3,7 @@
 
 /****************************************************************************
  Copyright (c) 2014 Chukong Technologies Inc.
+ Author: Justin Graham (mannewalis)
  
  http://www.cocos2d-x.org
  
@@ -26,13 +27,44 @@
  ****************************************************************************/
 
 #include "platform/CCPlatformMacros.h"
-#include "base/CCAllocator.h"
+#include "base/allocator/CCAllocatorMacros.h"
 #include <vector>
 
 NS_CC_BEGIN
+NS_CC_ALLOCATOR_BEGIN
 
-template <typename T, size_t _page_size = 100>
-class AllocatorStrategyFixed
+/** @brief ObjectTraits describes an allocatable object
+ 
+ Templated class that represents a default allocatable object.
+ Provide custom implementations to change the constructor/destructor behavior,
+ or to change the default alignment of the object in memory.
+ 
+ */
+template <typename T, size_t _alignment = sizeof(uint32_t)>
+class ObjectTraits
+{
+public:
+    
+    static const size_t alignment = _alignment;
+    
+    virtual ~ObjectTraits()
+    {}
+    
+    void construct(T* address)
+    {
+        ::new(address) T();
+    }
+    
+    void destroy(T* address)
+    {
+        address->~T();
+    }
+};
+
+
+template <typename T, size_t _page_size = 100, typename Traits = ObjectTraits<T>>
+class AllocatorStrategyPool
+    : public Traits
 {
 public:
     
@@ -42,13 +74,12 @@ public:
     
     static const size_t page_size = _page_size;
     
-    AllocatorStrategyFixed()
+    AllocatorStrategyPool()
         : _list(nullptr)
         , _pages()
-        , _available(0)
     {}
     
-    virtual ~AllocatorStrategyFixed()
+    virtual ~AllocatorStrategyPool()
     {
         size_t count = _pages.size();
         for (int i = 0; i < count; ++i)
@@ -56,36 +87,12 @@ public:
         _pages.clear();
     }
     
-#define PUSH_FRONT(x) \
-    if (nullptr == _list) \
-    { \
-        _list = x; \
-        *(uintptr_t*)x = 0; \
-    } \
-    else \
-    { \
-        uintptr_t* p = (uintptr_t*)(x); \
-        *p = (uintptr_t)_list; \
-        _list = x; \
-    } \
-    ++_available
-    
-#define POP_FRONT(object) \
-    if (nullptr == _list) \
-    { \
-        allocatePage(); \
-    } \
-    auto next = (T*)*(uintptr_t*)_list; \
-    object = _list; \
-    _list = next; \
-    --_available
-
-    inline pointer allocate(size_type size, typename std::allocator<void>::const_pointer = nullptr)
+    CC_ALLOCATOR_INLINE pointer allocate(size_type size, typename std::allocator<void>::const_pointer = nullptr)
     {
         T* object;
         if (sizeof(T) == size)
         {
-            POP_FRONT(object);
+            object = pop_front();
         }
         else
         {
@@ -94,11 +101,11 @@ public:
         return object;
     }
     
-    inline void deallocate(pointer address, size_type size)
+    CC_ALLOCATOR_INLINE void deallocate(pointer address, size_type size)
     {
         if (sizeof(T) == size)
         {
-            PUSH_FRONT(address);
+            push_front(address);
         }
         else
         {
@@ -106,9 +113,49 @@ public:
         }
     }
     
-    inline size_t available() const
+    CC_ALLOCATOR_INLINE T* allocateObject(size_t size)
     {
-        return _available;
+        auto object = allocate(size);
+        Traits::construct(object);
+        return object;
+    }
+    
+    CC_ALLOCATOR_INLINE void deleteObject(T* object, size_t size)
+    {
+        if (object)
+        {
+            Traits::destroy(object);
+            deallocate(object, size);
+        }
+    }
+
+protected:
+    
+    CC_ALLOCATOR_INLINE void push_front(T* object)
+    {
+        if (nullptr == _list)
+        {
+            _list = object;
+            *(uintptr_t*)object = 0;
+        }
+        else
+        {
+            uintptr_t* p = (uintptr_t*)(object);
+            *p = (uintptr_t)_list;
+            _list = object;
+        }
+    }
+    
+    CC_ALLOCATOR_INLINE T* pop_front()
+    {
+        if (nullptr == _list)
+        {
+            allocatePage();
+        }
+        auto next = (T*)*(uintptr_t*)_list;
+        auto object = _list;
+        _list = next;
+        return object;
     }
     
 protected:
@@ -120,16 +167,15 @@ protected:
         auto object = reinterpret_cast<T*>(page) + page_size - 1;
         for (int i = 0; i < page_size; ++i, --object)
         {
-            PUSH_FRONT(object);
+            push_front(object);
         }
     }
     
 protected:
     
-    // linked list of free blocks
-    T* _list;
-    std::vector<void*> _pages;
-    size_t _available;
+    T* _list; // linked list of free blocks.
+    std::vector<void*> _pages; // array of allocated pages.
 };
-        
+
+NS_CC_ALLOCATOR_END
 NS_CC_END

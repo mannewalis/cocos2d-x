@@ -75,7 +75,9 @@
 #include "Camera3DTest/Camera3DTest.h"
 #include "BillBoardTest/BillBoardTest.h"
 #include "LightTest/LightTest.h"
+#include "AllocatorTest/AllocatorTest.h"
 
 #include "OpenURLTest/OpenURLTest.h"
+
 
 #endif
