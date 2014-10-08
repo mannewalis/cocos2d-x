@@ -74,7 +74,11 @@ static Layer* restartAllocatorTestAction()
 //
 
 AllocatorTest::AllocatorTest()
+//    : _intContainer(tIntAllocator())
 {
+    // test the allocator as an STL allocator
+    //_intContainer.push_back(0);
+
     typedef std::vector<Test1*> tTest1Container;
     typedef std::vector<Test2*> tTest2Container;
 
@@ -109,9 +113,6 @@ AllocatorTest::AllocatorTest()
     
     test1Container.clear();
     test2Container.clear();
-    
-    // test the allocator as an STL allocator
-    //testObjects.push_back(Test1());
     
     std::chrono::duration<double> elapsed_seconds_alloc1 = alloc1End - alloc1Start;
     std::chrono::duration<double> elapsed_seconds_alloc2 = alloc2End - alloc2Start;

@@ -93,8 +93,9 @@ namespace AllocatorTestNS
         
     protected:
         
-        typedef std::vector<Test1, tAllocator> tTestObjects;
-        tTestObjects testObjects;
+//        typedef cocos2d::allocator::Allocator<cocos2d::allocator::AllocatorStrategyPool<int, 100>> tIntAllocator;
+//        typedef std::vector<int, tIntAllocator> tIntContainer;
+//        tIntContainer _intContainer;
     };
 
     class AllocatorTestScene : public TestScene
