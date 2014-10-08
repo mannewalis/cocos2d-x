@@ -953,6 +953,8 @@
 		C08689C218D370C90093E810 /* background.caf in Resources */ = {isa = PBXBuildFile; fileRef = C08689C018D370C90093E810 /* background.caf */; };
 		C08689C318D370C90093E810 /* background.caf in Resources */ = {isa = PBXBuildFile; fileRef = C08689C018D370C90093E810 /* background.caf */; };
 		C08689C418D370C90093E810 /* background.caf in Resources */ = {isa = PBXBuildFile; fileRef = C08689C018D370C90093E810 /* background.caf */; };
+		D089894719DCCC6400786388 /* AllocatorTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D089894519DCCC6400786388 /* AllocatorTest.cpp */; };
+		D089894819DCCC6400786388 /* AllocatorTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D089894519DCCC6400786388 /* AllocatorTest.cpp */; };
 		D60AE43417F7FFE100757E4B /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D60AE43317F7FFE100757E4B /* CoreMotion.framework */; };
 		EDCC747F17C455FD007B692C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCC747E17C455FD007B692C /* IOKit.framework */; };
 /* End PBXBuildFile section */
@@ -1283,7 +1285,7 @@
 		15CBA110196EE66E005877BB /* Android.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Android.mk; sourceTree = "<group>"; };
 		15CBA111196EE66E005877BB /* Application.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Application.mk; sourceTree = "<group>"; };
 		15CBA112196EE66E005877BB /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		15CBA115196EE66E005877BB /* liblua_game_controller.so */ = {isa = PBXFileReference; lastKnownFileType = file; path = liblua_game_controller.so; sourceTree = "<group>"; };
+		15CBA115196EE66E005877BB /* liblua_game_controller.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = liblua_game_controller.so; sourceTree = "<group>"; };
 		15CBA116196EE66E005877BB /* local.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = local.properties; sourceTree = "<group>"; };
 		15CBA11A196EE66E005877BB /* libbox2d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libbox2d.a; sourceTree = "<group>"; };
 		15CBA11B196EE66E005877BB /* libchipmunk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libchipmunk.a; sourceTree = "<group>"; };
@@ -1295,7 +1297,7 @@
 		15CBA121196EE66E005877BB /* libcpufeatures.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcpufeatures.a; sourceTree = "<group>"; };
 		15CBA122196EE66E005877BB /* libextension.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libextension.a; sourceTree = "<group>"; };
 		15CBA123196EE66E005877BB /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = liblua.a; sourceTree = "<group>"; };
-		15CBA124196EE66E005877BB /* liblua_game_controller.so */ = {isa = PBXFileReference; lastKnownFileType = file; path = liblua_game_controller.so; sourceTree = "<group>"; };
+		15CBA124196EE66E005877BB /* liblua_game_controller.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = liblua_game_controller.so; sourceTree = "<group>"; };
 		15CBA125196EE66E005877BB /* libnetwork.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libnetwork.a; sourceTree = "<group>"; };
 		15CBA126196EE66E005877BB /* libspine.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libspine.a; sourceTree = "<group>"; };
 		15CBA127196EE66E005877BB /* libui.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libui.a; sourceTree = "<group>"; };
@@ -2977,6 +2979,8 @@
 		C04F93581941B05400E9FEAB /* TileMapTest2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TileMapTest2.cpp; sourceTree = "<group>"; };
 		C04F93591941B05400E9FEAB /* TileMapTest2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TileMapTest2.h; sourceTree = "<group>"; };
 		C08689C018D370C90093E810 /* background.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = background.caf; path = "../tests/cpp-tests/Resources/background.caf"; sourceTree = "<group>"; };
+		D089894519DCCC6400786388 /* AllocatorTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AllocatorTest.cpp; path = AllocatorTest/AllocatorTest.cpp; sourceTree = "<group>"; };
+		D089894619DCCC6400786388 /* AllocatorTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AllocatorTest.h; path = AllocatorTest/AllocatorTest.h; sourceTree = "<group>"; };
 		D60AE43317F7FFE100757E4B /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreMotion.framework; sourceTree = DEVELOPER_DIR; };
 		EDCC747E17C455FD007B692C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -5448,6 +5452,7 @@
 		1AC3592418CECF0A00F37B72 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				D089894119DCC27300786388 /* AllocatorTest */,
 				B6C039D619C95D28007207DC /* LightTest */,
 				B609E67019C18D90003D0074 /* BillBoardTest */,
 				3E2BDACD19BEA3410055CDCD /* NewAudioEngineTest */,
@@ -7193,6 +7198,15 @@
 			name = LightTest;
 			sourceTree = "<group>";
 		};
+		D089894119DCC27300786388 /* AllocatorTest */ = {
+			isa = PBXGroup;
+			children = (
+				D089894519DCCC6400786388 /* AllocatorTest.cpp */,
+				D089894619DCCC6400786388 /* AllocatorTest.h */,
+			);
+			name = AllocatorTest;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -8029,6 +8043,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AC35B3118CECF0C00F37B72 /* GLES-Render.cpp in Sources */,
+				D089894719DCCC6400786388 /* AllocatorTest.cpp in Sources */,
 				29080DE1191B595E0066F8DF /* UITextTest_Editor.cpp in Sources */,
 				1AC35C5318CECF0C00F37B72 /* TextInputTest.cpp in Sources */,
 				1AC35B4518CECF0C00F37B72 /* Bug-886.cpp in Sources */,
@@ -8385,6 +8400,7 @@
 				29080DE0191B595E0066F8DF /* UITextTest.cpp in Sources */,
 				29080DC0191B595E0066F8DF /* UIPageViewTest_Editor.cpp in Sources */,
 				1AC35C0218CECF0C00F37B72 /* TableViewTestScene.cpp in Sources */,
+				D089894819DCCC6400786388 /* AllocatorTest.cpp in Sources */,
 				1AC35C4C18CECF0C00F37B72 /* ShaderTest2.cpp in Sources */,
 				1AC35C6618CECF0C00F37B72 /* UnitTest.cpp in Sources */,
 				290E94B6196FC16900694919 /* CocostudioParserTest.cpp in Sources */,
