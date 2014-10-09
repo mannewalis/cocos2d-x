@@ -58,14 +58,14 @@
 #if CC_ENABLE_ALLOCATOR
 
     // macros for new/delete
-    // these will use a general thread safe allocator
+    // we let global new/delete handle these as they are overridden.
     #define CC_NEW(klass, ...) new klass(__VAR_ARGS__)
-    #define CC_DELETE(object) delete object
+    #define CC_DELETE(object) delete object;
 
     // macros for malloc/free
-    // these will use a general thread safe allocator
-    #define CC_MALLOC(size) malloc(size)
-    #define CC_FREE(address) free(address)
+    // these will use the global allocator
+    #define CC_MALLOC(size) ccAllocatorGlobal.allocate(size)
+    #define CC_FREE(address) ccAllocatorGlobal.deallocate(address)
 
     // alloc on the stack
     #define CC_ALOCA(size) alloca(size)
