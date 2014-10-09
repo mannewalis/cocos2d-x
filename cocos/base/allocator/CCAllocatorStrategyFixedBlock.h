@@ -28,7 +28,7 @@
 
 #include "platform/CCPlatformMacros.h"
 #include "base/allocator/CCAllocatorMacros.h"
-#include "base/allocator/CCAllocatorStrategyBase.h"
+#include "base/allocator/CCAllocator.h"
 #include <vector>
 
 NS_CC_BEGIN
@@ -41,7 +41,7 @@ NS_CC_ALLOCATOR_BEGIN
 // are added when the allocator needs more storage.
 template <size_t _block_size, size_t _page_size = 100, size_t _alignment = sizeof(uint32_t)>
 class AllocatorStrategyFixedBlock
-    : public AllocatorStrategyBase
+    : public Allocator<AllocatorStrategyFixedBlock<_block_size, _page_size, _alignment>>
 {
 public:
     
@@ -68,37 +68,33 @@ public:
         _pages.clear();
     }
     
-    // @brief
-    // allocate a block of memory sizeof(T) by returning the first item in the list or if empty
-    // then allocate a new page of objects, and return the first element and store the rest.
-    // if sizeof(T) does not match the requested size, then the standard allocation method malloc is used.
-    CC_ALLOCATOR_INLINE void* allocateBlock(size_t size, void* hint = nullptr)
+    CC_ALLOCATOR_INLINE void* allocate(size_t size)
     {
-        void* block;
-        if (block_size == size)
-        {
-            block = pop_front();
-        }
-        else
-        {
-            block = malloc(size);
-        }
-        return block;
+        CC_ASSERT(block_size == size);
+        return allocateBlock();
+    }
+    
+    CC_ALLOCATOR_INLINE void deallocate(void* address, size_t size = 0)
+    {
+        CC_ASSERT(0 == size || block_size == size);
+        deallocateBlock(address);
     }
     
     // @brief
-    // deallocate an object sizeof(T) by pushing it on the head of a linked list of free objects.
-    // if size is not sizeof(T) then the default deallocation method free is used instead.
-    CC_ALLOCATOR_INLINE void deallocateBlock(void* block, size_t size)
+    // allocate a block of memory sizeof(T) by returning the first item in the list or if empty
+    // then allocate a new page of blocks, and return the first element and store the rest.
+    // if sizeof(T) does not match the requested size, then the standard allocation method malloc is used.
+    CC_ALLOCATOR_INLINE void* allocateBlock()
     {
-        if (block_size == size)
-        {
-            push_front(block);
-        }
-        else
-        {
-            free(block);
-        }
+        return pop_front();
+    }
+    
+    // @brief
+    // deallocate a block sizeof(T) by pushing it on the head of a linked list of free blocks.
+    // if size is not sizeof(T) then the default deallocation method free is used instead.
+    CC_ALLOCATOR_INLINE void deallocateBlock(void* block)
+    {
+        push_front(block);
     }
     
 protected:
@@ -159,7 +155,7 @@ protected:
     std::vector<void*> _pages; // array of allocated pages.
     
 #if DEBUG
-    size_t _available; // number of objects that are free in the list.
+    size_t _available; // number of blocks that are free in the list.
 #endif
 };
 

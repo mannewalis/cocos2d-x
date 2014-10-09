@@ -26,9 +26,8 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "platform/CCPlatformMacros.h"
 #include "base/allocator/CCAllocatorMacros.h"
-#include "base/allocator/CCAllocatorStrategyDefault.h"
+#include "base/allocator/CCAllocatorBase.h"
 
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
@@ -42,16 +41,26 @@ NS_CC_ALLOCATOR_BEGIN
  
     Allocators can be globally enabled/disabled using the preprocessor define
     CC_ENABLE_ALLOCATOR in ccConfig.h. Setting this define to 0 disables all
-    custom allocator functionality for Cocos2d-X
+    custom allocator functionality for cocos2d-x
  */
-template <typename Strategy = AllocatorStrategyDefault>
+template <class T>
 class Allocator
-	: public Strategy
+    : public AllocatorBase
 {
 public:
 
-	virtual ~Allocator()
+    virtual ~Allocator()
 	{}
+    
+    CC_ALLOCATOR_INLINE void* allocate(size_t size)
+    {
+        return static_cast<T*>(this)->allocate(size);
+    }
+    
+    CC_ALLOCATOR_INLINE void deallocate(void* address, size_t size = 0)
+    {
+        static_cast<T*>(this)->deallocate(address, size);
+    }
 };
 
 NS_CC_ALLOCATOR_END

@@ -311,11 +311,18 @@ To enable set it to a value different than 0. Disabled by default.
 #define CC_ENABLE_ALLOCATOR 1
 #endif
 
-/** @def CC_OVERRIDE_GLOBAL_NEW_DELETE
- Turn on overriding of new and delete with the default allocator
+/** @def CC_ALLOCATOR_GLOBAL
+ Specify allocator to use for global allocator
  */
-#ifndef CC_OVERRIDE_GLOBAL_NEW_DELETE
-#define CC_OVERRIDE_GLOBAL_NEW_DELETE cocos2d::allocator::Allocator<>
+#ifndef CC_ALLOCATOR_GLOBAL
+#define CC_ALLOCATOR_GLOBAL cocos2d::allocator::Allocator<cocos2d::allocator::AllocatorStrategyDefault>
+#endif
+
+/** @def CC_ALLOCATOR_GLOBAL_NEW_DELETE
+ Specify allocator to use when overriding of new and delete
+ */
+#ifndef CC_ALLOCATOR_GLOBAL_NEW_DELETE
+#define CC_ALLOCATOR_GLOBAL_NEW_DELETE cocos2d::allocator::Allocator<cocos2d::allocator::AllocatorStrategyGlobalSmallBlock>
 #endif
 
 #endif // __CCCONFIG_H__

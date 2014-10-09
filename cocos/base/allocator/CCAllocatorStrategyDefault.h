@@ -26,9 +26,8 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "platform/CCPlatformMacros.h"
 #include "base/allocator/CCAllocatorMacros.h"
-#include "base/allocator/CCAllocatorStrategyBase.h"
+#include "base/allocator/CCAllocator.h"
 
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
@@ -36,11 +35,11 @@ NS_CC_ALLOCATOR_BEGIN
 // @brief
 // The default allocation strategy that just falls through to malloc and free
 class AllocatorStrategyDefault
-    : public AllocatorStrategyBase
+    : public Allocator<AllocatorStrategyDefault>
 {
 public:
     
-    CC_ALLOCATOR_INLINE void* allocate(size_t size, typename std::allocator<void>::const_pointer = nullptr)
+    CC_ALLOCATOR_INLINE void* allocate(size_t size)
     {
         return malloc(size);
     }

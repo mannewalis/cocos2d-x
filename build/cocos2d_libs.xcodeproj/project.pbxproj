@@ -1815,8 +1815,12 @@
 		B60C5BD519AC68B10056FBDE /* CCBillBoard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B60C5BD219AC68B10056FBDE /* CCBillBoard.cpp */; };
 		B60C5BD619AC68B10056FBDE /* CCBillBoard.h in Headers */ = {isa = PBXBuildFile; fileRef = B60C5BD319AC68B10056FBDE /* CCBillBoard.h */; };
 		B60C5BD719AC68B10056FBDE /* CCBillBoard.h in Headers */ = {isa = PBXBuildFile; fileRef = B60C5BD319AC68B10056FBDE /* CCBillBoard.h */; };
-		D0AE9CAA19E457FF001F816A /* CCAllocatorGlobal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0AE9CA919E457FF001F816A /* CCAllocatorGlobal.cpp */; };
-		D0AE9CAB19E457FF001F816A /* CCAllocatorGlobal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0AE9CA919E457FF001F816A /* CCAllocatorGlobal.cpp */; };
+		D0768FFF19E7288800D53A87 /* CCAllocatorGlobal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0768FFE19E7288800D53A87 /* CCAllocatorGlobal.cpp */; };
+		D076900019E7288800D53A87 /* CCAllocatorGlobal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0768FFE19E7288800D53A87 /* CCAllocatorGlobal.cpp */; };
+		D076900219E72A3D00D53A87 /* CCAllocatorGlobal.h in Headers */ = {isa = PBXBuildFile; fileRef = D076900119E72A3D00D53A87 /* CCAllocatorGlobal.h */; };
+		D076900319E72A3D00D53A87 /* CCAllocatorGlobal.h in Headers */ = {isa = PBXBuildFile; fileRef = D076900119E72A3D00D53A87 /* CCAllocatorGlobal.h */; };
+		D0AE9CAA19E457FF001F816A /* CCAllocatorGlobalNewDelete.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0AE9CA919E457FF001F816A /* CCAllocatorGlobalNewDelete.cpp */; };
+		D0AE9CAB19E457FF001F816A /* CCAllocatorGlobalNewDelete.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0AE9CA919E457FF001F816A /* CCAllocatorGlobalNewDelete.cpp */; };
 		D0AE9CAD19E5BFBA001F816A /* CCAllocatorStrategyGlobalSmallBlock.h in Headers */ = {isa = PBXBuildFile; fileRef = D0AE9CAC19E5BFBA001F816A /* CCAllocatorStrategyGlobalSmallBlock.h */; };
 		D0AE9CAE19E5BFBA001F816A /* CCAllocatorStrategyGlobalSmallBlock.h in Headers */ = {isa = PBXBuildFile; fileRef = D0AE9CAC19E5BFBA001F816A /* CCAllocatorStrategyGlobalSmallBlock.h */; };
 		D0AE9CB019E5CCC9001F816A /* CCAllocatorStrategyFixedBlock.h in Headers */ = {isa = PBXBuildFile; fileRef = D0AE9CAF19E5CCC9001F816A /* CCAllocatorStrategyFixedBlock.h */; };
@@ -1829,8 +1833,8 @@
 		D0D2E0E619E358D000F44E3B /* CCAllocatorStrategyDefault.h in Headers */ = {isa = PBXBuildFile; fileRef = D0D2E0E419E358D000F44E3B /* CCAllocatorStrategyDefault.h */; };
 		D0D2E0E819E35A7600F44E3B /* CCAllocatorMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = D0D2E0E719E35A7600F44E3B /* CCAllocatorMacros.h */; };
 		D0D2E0E919E35A7600F44E3B /* CCAllocatorMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = D0D2E0E719E35A7600F44E3B /* CCAllocatorMacros.h */; };
-		D0D2E0EB19E35E7E00F44E3B /* CCAllocatorStrategyBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D0D2E0EA19E35E7E00F44E3B /* CCAllocatorStrategyBase.h */; };
-		D0D2E0EC19E35E7E00F44E3B /* CCAllocatorStrategyBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D0D2E0EA19E35E7E00F44E3B /* CCAllocatorStrategyBase.h */; };
+		D0D2E0EB19E35E7E00F44E3B /* CCAllocatorBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D0D2E0EA19E35E7E00F44E3B /* CCAllocatorBase.h */; };
+		D0D2E0EC19E35E7E00F44E3B /* CCAllocatorBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D0D2E0EA19E35E7E00F44E3B /* CCAllocatorBase.h */; };
 		ED9C6A9418599AD8000A5232 /* CCNodeGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED9C6A9218599AD8000A5232 /* CCNodeGrid.cpp */; };
 		ED9C6A9518599AD8000A5232 /* CCNodeGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED9C6A9218599AD8000A5232 /* CCNodeGrid.cpp */; };
 		ED9C6A9618599AD8000A5232 /* CCNodeGrid.h in Headers */ = {isa = PBXBuildFile; fileRef = ED9C6A9318599AD8000A5232 /* CCNodeGrid.h */; };
@@ -2821,14 +2825,16 @@
 		B67C624319D4186F00F11FC6 /* ccShader_3D_ColorNormal.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ccShader_3D_ColorNormal.frag; sourceTree = "<group>"; };
 		B67C624419D4186F00F11FC6 /* ccShader_3D_ColorNormalTex.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ccShader_3D_ColorNormalTex.frag; sourceTree = "<group>"; };
 		B67C624519D4186F00F11FC6 /* ccShader_3D_PositionNormalTex.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ccShader_3D_PositionNormalTex.vert; sourceTree = "<group>"; };
-		D0AE9CA919E457FF001F816A /* CCAllocatorGlobal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCAllocatorGlobal.cpp; sourceTree = "<group>"; };
+		D0768FFE19E7288800D53A87 /* CCAllocatorGlobal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCAllocatorGlobal.cpp; sourceTree = "<group>"; };
+		D076900119E72A3D00D53A87 /* CCAllocatorGlobal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAllocatorGlobal.h; sourceTree = "<group>"; };
+		D0AE9CA919E457FF001F816A /* CCAllocatorGlobalNewDelete.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCAllocatorGlobalNewDelete.cpp; sourceTree = "<group>"; };
 		D0AE9CAC19E5BFBA001F816A /* CCAllocatorStrategyGlobalSmallBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAllocatorStrategyGlobalSmallBlock.h; sourceTree = "<group>"; };
 		D0AE9CAF19E5CCC9001F816A /* CCAllocatorStrategyFixedBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAllocatorStrategyFixedBlock.h; sourceTree = "<group>"; };
 		D0D2E0DE19E3547100F44E3B /* CCAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAllocator.h; sourceTree = "<group>"; };
 		D0D2E0DF19E3547100F44E3B /* CCAllocatorStrategyPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAllocatorStrategyPool.h; sourceTree = "<group>"; };
 		D0D2E0E419E358D000F44E3B /* CCAllocatorStrategyDefault.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAllocatorStrategyDefault.h; sourceTree = "<group>"; };
 		D0D2E0E719E35A7600F44E3B /* CCAllocatorMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAllocatorMacros.h; sourceTree = "<group>"; };
-		D0D2E0EA19E35E7E00F44E3B /* CCAllocatorStrategyBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAllocatorStrategyBase.h; sourceTree = "<group>"; };
+		D0D2E0EA19E35E7E00F44E3B /* CCAllocatorBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAllocatorBase.h; sourceTree = "<group>"; };
 		ED9C6A9218599AD8000A5232 /* CCNodeGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = CCNodeGrid.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED9C6A9318599AD8000A5232 /* CCNodeGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCNodeGrid.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -4834,9 +4840,11 @@
 			isa = PBXGroup;
 			children = (
 				D0D2E0DE19E3547100F44E3B /* CCAllocator.h */,
-				D0AE9CA919E457FF001F816A /* CCAllocatorGlobal.cpp */,
+				D0D2E0EA19E35E7E00F44E3B /* CCAllocatorBase.h */,
+				D0768FFE19E7288800D53A87 /* CCAllocatorGlobal.cpp */,
+				D076900119E72A3D00D53A87 /* CCAllocatorGlobal.h */,
+				D0AE9CA919E457FF001F816A /* CCAllocatorGlobalNewDelete.cpp */,
 				D0D2E0E719E35A7600F44E3B /* CCAllocatorMacros.h */,
-				D0D2E0EA19E35E7E00F44E3B /* CCAllocatorStrategyBase.h */,
 				D0D2E0E419E358D000F44E3B /* CCAllocatorStrategyDefault.h */,
 				D0AE9CAF19E5CCC9001F816A /* CCAllocatorStrategyFixedBlock.h */,
 				D0AE9CAC19E5BFBA001F816A /* CCAllocatorStrategyGlobalSmallBlock.h */,
@@ -5202,6 +5210,7 @@
 				1A57035A180BD0B00088DEC7 /* unzip.h in Headers */,
 				15AE188B19AAD33D00C27E9E /* CCControlLoader.h in Headers */,
 				15AE1BCA19AAE01E00C27E9E /* CCControl.h in Headers */,
+				D076900219E72A3D00D53A87 /* CCAllocatorGlobal.h in Headers */,
 				50ABBDBF1925AB4100A911A9 /* CCTextureCache.h in Headers */,
 				15AE186719AAD31D00C27E9E /* CDXMacOSXSupport.h in Headers */,
 				B37510741823AC9F00B3BA6A /* CCPhysicsContactInfo_chipmunk.h in Headers */,
@@ -5325,7 +5334,7 @@
 				15AE18DE19AAD35000C27E9E /* TriggerObj.h in Headers */,
 				15AE183E19AAD2F700C27E9E /* CCSkeleton3D.h in Headers */,
 				50ABBECD1925AB6F00A911A9 /* s3tc.h in Headers */,
-				D0D2E0EB19E35E7E00F44E3B /* CCAllocatorStrategyBase.h in Headers */,
+				D0D2E0EB19E35E7E00F44E3B /* CCAllocatorBase.h in Headers */,
 				15AE1BD119AAE01E00C27E9E /* CCControlHuePicker.h in Headers */,
 				50ABBE771925AB6F00A911A9 /* CCEventListenerTouch.h in Headers */,
 				5034CA33191D591100CE6051 /* ccShader_PositionTexture_uColor.frag in Headers */,
@@ -5418,6 +5427,7 @@
 				5034CA3A191D591100CE6051 /* ccShader_PositionColorLengthTexture.frag in Headers */,
 				50ABBEC41925AB6F00A911A9 /* CCVector.h in Headers */,
 				50ABBE501925AB6F00A911A9 /* CCEventCustom.h in Headers */,
+				D076900319E72A3D00D53A87 /* CCAllocatorGlobal.h in Headers */,
 				15AE1AD719AAD40300C27E9E /* b2WheelJoint.h in Headers */,
 				1A570070180BC5A10088DEC7 /* CCActionEase.h in Headers */,
 				1A570074180BC5A10088DEC7 /* CCActionGrid.h in Headers */,
@@ -5674,7 +5684,7 @@
 				15AE1BC419AADFFB00C27E9E /* ExtensionMacros.h in Headers */,
 				15AE185A19AAD31200C27E9E /* CDConfig.h in Headers */,
 				1A57034E180BD09B0088DEC7 /* tinyxml2.h in Headers */,
-				D0D2E0EC19E35E7E00F44E3B /* CCAllocatorStrategyBase.h in Headers */,
+				D0D2E0EC19E35E7E00F44E3B /* CCAllocatorBase.h in Headers */,
 				15AE1BFE19AAE01E00C27E9E /* CCInvocation.h in Headers */,
 				D0AE9CB119E5CCC9001F816A /* CCAllocatorStrategyFixedBlock.h in Headers */,
 				15AE1A9E19AAD40300C27E9E /* b2StackAllocator.h in Headers */,
@@ -5996,6 +6006,7 @@
 				50ABBE591925AB6F00A911A9 /* CCEventKeyboard.cpp in Sources */,
 				1A57007D180BC5A10088DEC7 /* CCActionInterval.cpp in Sources */,
 				15AE189F19AAD33D00C27E9E /* CCNodeLoaderLibrary.cpp in Sources */,
+				D0768FFF19E7288800D53A87 /* CCAllocatorGlobal.cpp in Sources */,
 				1A570081180BC5A10088DEC7 /* CCActionManager.cpp in Sources */,
 				15AE1A6119AAD40300C27E9E /* b2Fixture.cpp in Sources */,
 				1A570085180BC5A10088DEC7 /* CCActionPageTurn3D.cpp in Sources */,
@@ -6264,7 +6275,7 @@
 				15AE197019AAD35700C27E9E /* CCFrame.cpp in Sources */,
 				15AE1B9F19AADFDF00C27E9E /* UILayout.cpp in Sources */,
 				50ABBECF1925AB6F00A911A9 /* TGAlib.cpp in Sources */,
-				D0AE9CAA19E457FF001F816A /* CCAllocatorGlobal.cpp in Sources */,
+				D0AE9CAA19E457FF001F816A /* CCAllocatorGlobalNewDelete.cpp in Sources */,
 				15AE199E19AAD39600C27E9E /* SliderReader.cpp in Sources */,
 				50ABBE451925AB6F00A911A9 /* CCEvent.cpp in Sources */,
 				50ABBE611925AB6F00A911A9 /* CCEventListenerAcceleration.cpp in Sources */,
@@ -6619,7 +6630,7 @@
 				1A5702F7180BCE750088DEC7 /* CCTMXTiledMap.cpp in Sources */,
 				50ABBEC61925AB6F00A911A9 /* etc1.cpp in Sources */,
 				50ABBE8C1925AB6F00A911A9 /* CCNS.cpp in Sources */,
-				D0AE9CAB19E457FF001F816A /* CCAllocatorGlobal.cpp in Sources */,
+				D0AE9CAB19E457FF001F816A /* CCAllocatorGlobalNewDelete.cpp in Sources */,
 				15AE1BA919AADFDF00C27E9E /* UIVBox.cpp in Sources */,
 				50ABBDAE1925AB4100A911A9 /* CCRenderer.cpp in Sources */,
 				50ABBDBA1925AB4100A911A9 /* CCTextureAtlas.cpp in Sources */,
@@ -6686,6 +6697,7 @@
 				15AE1AC219AAD40300C27E9E /* b2DistanceJoint.cpp in Sources */,
 				503DD8E71926736A00CD74DD /* CCEAGLView-ios.mm in Sources */,
 				3E2BDAEC19C0436F0055CDCD /* AudioEngine.cpp in Sources */,
+				D076900019E7288800D53A87 /* CCAllocatorGlobal.cpp in Sources */,
 				50ABBDA41925AB4100A911A9 /* CCQuadCommand.cpp in Sources */,
 				15AE18C319AAD33D00C27E9E /* CCLayerGradientLoader.cpp in Sources */,
 				15AE197919AAD35700C27E9E /* CCActionTimelineCache.cpp in Sources */,

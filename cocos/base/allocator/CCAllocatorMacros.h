@@ -27,13 +27,17 @@
  ****************************************************************************/
 
 #include "base/ccConfig.h"
+#include "platform/CCPlatformMacros.h"
+
+// make things a little shorter
+#define CONF Configuration::getInstance()->getValue
 
 // namespace allocator {}
 #ifdef __cplusplus
     #define NS_CC_ALLOCATOR_BEGIN   namespace allocator {
     #define NS_CC_ALLOCATOR_END     }
-    #define USING_NS_CC_ALLOCATOR   using namespace allocator
-    #define NS_CC_ALLOCATOR         ::allocator
+    #define USING_NS_CC_ALLOCATOR   using namespace cocos2d::allocator
+    #define NS_CC_ALLOCATOR         ::cocos2d::allocator
 #else
     #define NS_CC_ALLOCATOR_BEGIN
     #define NS_CC_ALLOCATOR_END
@@ -70,25 +74,11 @@
     #define CC_USE_ALLOCATOR_POOL(T, A) \
         CC_ALLOCATOR_INLINE void* operator new (size_t size) \
         { \
-            return (void*)A.allocateObject(size); \
+            return (void*)A.allocate(size); \
         } \
         CC_ALLOCATOR_INLINE void operator delete (void* object, size_t size) \
         { \
-            A.deleteObject((T*)object, size); \
-        }
-
-    // Macro to override global new and delete with a general allocator
-    #define CC_OVERRIDE_GLOBAL_NEWDELETE_WITH_ALLOCATOR(A) \
-        void* operator new (size_t size) \
-        { \
-            void* ptr = A.allocate(size); \
-            if (nullptr == ptr) \
-                throw std::bad_alloc(); \
-            return ptr; \
-        } \
-        void operator delete (void *p) \
-        { \
-            A.deallocate(p); \
+            A.deallocate((T*)object, size); \
         }
 
 #else

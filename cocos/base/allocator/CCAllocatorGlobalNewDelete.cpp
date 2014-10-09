@@ -25,14 +25,17 @@
  ****************************************************************************/
 
 #include "base/allocator/CCAllocator.h"
+#include "base/allocator/CCAllocatorStrategyGlobalSmallBlock.h"
 #include <new>
 #include <exception>
+
+USING_NS_CC_ALLOCATOR;
 
 #if CC_ENABLE_ALLOCATOR
 
 namespace
 {
-     CC_OVERRIDE_GLOBAL_NEW_DELETE global;
+    static CC_ALLOCATOR_GLOBAL_NEW_DELETE global;
 }
 
 void* operator new(std::size_t size) throw(std::bad_alloc)

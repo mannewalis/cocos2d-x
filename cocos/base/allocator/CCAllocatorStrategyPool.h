@@ -72,21 +72,30 @@ public:
 // and destruction of an object in the pool.
 template <typename T, size_t _page_size = 100, typename O = ObjectTraits<T>>
 class AllocatorStrategyPool
-    : public O
-    , public AllocatorStrategyFixedBlock<sizeof(T), _page_size, O::alignment>
+    : public Allocator<AllocatorStrategyPool<T, _page_size, O>>
+    , public O
 {
 public:
     
     typedef T value_type;
     typedef value_type* pointer;
     
+    // ugh wish I knew a way that I could declare this just once
     typedef AllocatorStrategyFixedBlock<sizeof(T), _page_size, O::alignment> tParentStrategy;
     
     // @brief
     // allocate an object, call its constructor and return the object.
     CC_ALLOCATOR_INLINE T* allocateObject(size_t size)
     {
-        auto object = (pointer)tParentStrategy::allocateBlock(size);
+        T* object;
+        if (sizeof(T) == size)
+        {
+            object = (pointer)tParentStrategy::allocateBlock();
+        }
+        else
+        {
+            object = (T*)malloc(size);
+        }
         O::construct(object);
         return object;
     }
@@ -98,7 +107,14 @@ public:
         if (object)
         {
             O::destroy(object);
-            tParentStrategy::deallocateBlock(object, size);
+            if (sizeof(T) == size)
+            {
+                tParentStrategy::deallocateBlock(object);
+            }
+            else
+            {
+                free(object);
+            }
         }
     }
 };

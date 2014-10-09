@@ -33,10 +33,10 @@ NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
 
 // @brief
-// AllocatorStrategyBase
-// Provides a strategy base that contains a few methods and definitions
+// AllocatorBase
+// Provides a base that contains a few methods and definitions
 // that are helpful to all allocation strategies.
-class AllocatorStrategyBase
+class AllocatorBase
 {
 public:
     
@@ -44,7 +44,7 @@ public:
     
     enum { kDefaultAlignment = sizeof(uint32_t) };
     
-    virtual ~AllocatorStrategyBase()
+    virtual ~AllocatorBase()
     {}
     
     // @brief
