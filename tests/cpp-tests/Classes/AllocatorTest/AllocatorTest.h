@@ -42,9 +42,6 @@ namespace AllocatorTestNS
     
     class Test1;
     
-    // define the custom allocator for class Test1
-    typedef cocos2d::allocator::Allocator<cocos2d::allocator::AllocatorStrategyPool<Test1, kNumberOfInstances>> tAllocator;
-
     class Test1
     {
     public:
@@ -56,6 +53,7 @@ namespace AllocatorTestNS
         uint8_t bytes[kObjectSize];
         
 #if CC_ENABLE_ALLOCATOR
+        typedef cocos2d::allocator::AllocatorStrategyPool<Test1, kNumberOfInstances> tAllocator;
         static tAllocator _allocator;
 #endif // CC_ENABLE_ALLOCATOR
         CC_USE_ALLOCATOR_POOL(Test1, _allocator);
@@ -90,12 +88,6 @@ namespace AllocatorTestNS
         virtual void onExit() override;
         
         virtual void update(float delta);
-        
-    protected:
-        
-//        typedef cocos2d::allocator::Allocator<cocos2d::allocator::AllocatorStrategyPool<int, 100>> tIntAllocator;
-//        typedef std::vector<int, tIntAllocator> tIntContainer;
-//        tIntContainer _intContainer;
     };
 
     class AllocatorTestScene : public TestScene

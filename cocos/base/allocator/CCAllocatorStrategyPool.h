@@ -26,8 +26,8 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "platform/CCPlatformMacros.h"
 #include "base/allocator/CCAllocatorMacros.h"
+#include "base/allocator/CCAllocatorGlobal.h"
 #include "base/allocator/CCAllocatorStrategyFixedBlock.h"
 #include <vector>
 
@@ -72,7 +72,7 @@ public:
 // and destruction of an object in the pool.
 template <typename T, size_t _page_size = 100, typename O = ObjectTraits<T>>
 class AllocatorStrategyPool
-    : public Allocator<AllocatorStrategyPool<T, _page_size, O>>
+    : public Allocator<AllocatorStrategyFixedBlock<_page_size>>
     , public O
 {
 public:
@@ -81,39 +81,35 @@ public:
     typedef value_type* pointer;
     
     // ugh wish I knew a way that I could declare this just once
-    typedef AllocatorStrategyFixedBlock<sizeof(T), _page_size, O::alignment> tParentStrategy;
+    typedef Allocator<AllocatorStrategyFixedBlock<_page_size>> tParentStrategy;
     
-    // @brief
-    // allocate an object, call its constructor and return the object.
-    CC_ALLOCATOR_INLINE T* allocateObject(size_t size)
+    CC_ALLOCATOR_INLINE void* allocate(size_t size)
     {
         T* object;
         if (sizeof(T) == size)
         {
-            object = (pointer)tParentStrategy::allocateBlock();
+            object = (pointer)tParentStrategy::allocate(sizeof(T));
         }
         else
         {
-            object = (T*)malloc(size);
+            object = (T*)ccAllocatorGlobal.allocate(size);
         }
         O::construct(object);
         return object;
     }
     
-    // @brief
-    // call an objects destructor and deallocate the object
-    CC_ALLOCATOR_INLINE void deleteObject(T* object, size_t size)
+    CC_ALLOCATOR_INLINE void deallocate(void* address, size_t size = 0)
     {
-        if (object)
+        if (address)
         {
-            O::destroy(object);
+            O::destroy((T*)address);
             if (sizeof(T) == size)
             {
-                tParentStrategy::deallocateBlock(object);
+                tParentStrategy::deallocate(address, sizeof(T));
             }
             else
             {
-                free(object);
+                ccAllocatorGlobal.deallocate(address, size);
             }
         }
     }

@@ -31,7 +31,7 @@ namespace AllocatorTestNS
 {
 
 #if CC_ENABLE_ALLOCATOR
-tAllocator Test1::_allocator;
+Test1::tAllocator Test1::_allocator;
 #endif // CC_ENABLE_ALLOCATOR
     
 static int sceneIdx = -1;
@@ -74,11 +74,7 @@ static Layer* restartAllocatorTestAction()
 //
 
 AllocatorTest::AllocatorTest()
-//    : _intContainer(tIntAllocator())
 {
-    // test the allocator as an STL allocator
-    //_intContainer.push_back(0);
-
     typedef std::vector<Test1*> tTest1Container;
     typedef std::vector<Test2*> tTest2Container;
 
