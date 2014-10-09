@@ -30,6 +30,7 @@
 #include "base/allocator/CCAllocator.h"
 #include "base/allocator/CCAllocatorGlobal.h"
 #include "base/allocator/CCAllocatorStrategyFixedBlock.h"
+#include "CCConsole.h"
 
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
@@ -57,8 +58,7 @@ public:
                     auto v = ccAllocatorGlobal.allocate(2 << n); \
                     _smallBlockAllocators[n] = (void*)(new (v) AType(size)); \
                 }
-            
-            
+
             SBA(2,  4);
             SBA(3,  8);
             SBA(4,  16);
@@ -71,6 +71,7 @@ public:
             SBA(11, 2048);
             SBA(12, 4096);
             SBA(13, 8192);
+
             #undef SBA
         }
     }
@@ -125,7 +126,7 @@ public:
             break;
         }
 
-        printf("allocate small block size(%zu) adjusted(%zu)\n", size, adjusted_size);
+        log("allocate small block size(%zu) adjusted(%zu)\n", size, adjusted_size);
 
         #undef ALLOCATE
         
@@ -150,7 +151,6 @@ public:
         #define DEALLOCATE(slot, size, address) \
             case size: \
             { \
-                printf("free small block size %d\n", size); \
                 void* v = _smallBlockAllocators[slot]; \
                 auto a = (AType(size)*)v; \
                 return a->deallocate(address, size); \
