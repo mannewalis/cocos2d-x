@@ -92,17 +92,20 @@ public:
         
         // make sure the size fits into one of the
         // fixed sized block allocators we have above.
-        size = nextPow2BlockSize(size);
+        size_t adjusted_size = nextPow2BlockSize(size);
        
         #define ALLOCATE(slot, size) \
             case size: \
             { \
                 void* v = _smallBlockAllocators[slot]; \
                 auto a = (AType(size)*)v; \
-                return a->allocate(size); \
-            }
-
-        switch (size)
+                address = a->allocate(size); \
+            } \
+            break;
+        
+        void* address;
+        
+        switch (adjusted_size)
         {
         ALLOCATE(2,  4);
         ALLOCATE(3,  8);
@@ -118,9 +121,16 @@ public:
         ALLOCATE(13, 8192);
         default:
             CC_ASSERT(false);
+            throw std::bad_alloc();
+            break;
         }
-        
+
+        printf("allocate small block size(%zu) adjusted(%zu)\n", size, adjusted_size);
+
         #undef ALLOCATE
+        
+        CC_ASSERT(nullptr != address);
+        return address;
     }
     
     CC_ALLOCATOR_INLINE void deallocate(void* address, size_t size = 0)
@@ -135,17 +145,18 @@ public:
         
         // make sure the size fits into one of the
         // fixed sized block allocators we have above.
-        size = nextPow2BlockSize(size);
+        size_t adjusted_size = nextPow2BlockSize(size);
         
         #define DEALLOCATE(slot, size, address) \
             case size: \
             { \
+                printf("free small block size %d\n", size); \
                 void* v = _smallBlockAllocators[slot]; \
                 auto a = (AType(size)*)v; \
                 return a->deallocate(address, size); \
             }
         
-        switch (size)
+        switch (adjusted_size)
         {
         DEALLOCATE(2,  4,    address);
         DEALLOCATE(3,  8,    address);
@@ -161,9 +172,13 @@ public:
         DEALLOCATE(13, 8192, address);
         default:
             CC_ASSERT(false);
+            throw std::bad_alloc();
         }
         
         #undef DEALLOCATE
+        
+        // should not reach here
+        CC_ASSERT(false);
     }
     
 protected:

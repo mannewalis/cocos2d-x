@@ -68,33 +68,23 @@ public:
         _pages.clear();
     }
     
-    CC_ALLOCATOR_INLINE void* allocate(size_t size)
-    {
-        CC_ASSERT(block_size == size);
-        return allocateBlock();
-    }
-    
-    CC_ALLOCATOR_INLINE void deallocate(void* address, size_t size = 0)
-    {
-        CC_ASSERT(0 == size || block_size == size);
-        deallocateBlock(address);
-    }
-    
     // @brief
     // allocate a block of memory sizeof(T) by returning the first item in the list or if empty
     // then allocate a new page of blocks, and return the first element and store the rest.
     // if sizeof(T) does not match the requested size, then the global allocator is used.
-    CC_ALLOCATOR_INLINE void* allocateBlock()
+    CC_ALLOCATOR_INLINE void* allocate(size_t size)
     {
+        CC_ASSERT(block_size == size);
         return pop_front();
     }
     
     // @brief
     // deallocate a block sizeof(T) by pushing it on the head of a linked list of free blocks.
     // if size is not sizeof(T) then the global allocator is used instead.
-    CC_ALLOCATOR_INLINE void deallocateBlock(void* block)
+    CC_ALLOCATOR_INLINE void deallocate(void* address, size_t size = 0)
     {
-        push_front(block);
+        CC_ASSERT(0 == size || block_size == size);
+        push_front(address);
     }
     
 protected:
