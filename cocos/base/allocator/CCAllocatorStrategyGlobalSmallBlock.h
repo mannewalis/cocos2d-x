@@ -87,8 +87,7 @@ public:
         
         // if the size is greater than what we determine to be a small block size
         // then default to calling the
-        const size_t upper = 2 << kMaxSmallBlockPower;
-        if (size > upper)
+        if (size > kMaxSize)
             return ccAllocatorGlobal.allocate(size);
         
         // make sure the size fits into one of the
@@ -131,8 +130,7 @@ public:
         
         // if the size is greater than what we determine to be a small block size
         // then default to calling the
-        const size_t upper = 2 << kMaxSmallBlockPower;
-        if (size > upper)
+        if (size > kMaxSize)
             return ccAllocatorGlobal.deallocate(address, size);
         
         // make sure the size fits into one of the
@@ -170,7 +168,8 @@ public:
     
 protected:
     
-    static constexpr int kMaxSmallBlockPower = 13; // 2^13 8192
+    static constexpr size_t kMaxSmallBlockPower = 13; // 2^13 8192
+    static constexpr size_t kMaxSize = 2 << (kMaxSmallBlockPower - 1); // 8192
     
     int nextPow2BlockSize(size_t size) const
     {

@@ -32,16 +32,7 @@
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
 
-/** @brief Allocator takes an allocation strategy which provides the methods
-    allocate and deallocate.
- 
-    The default allocator stragey AllocatorStrategyDefault uses malloc and
-    free directly. Different strategies will allow for allocating all memory
-    up front, and allow for different diagnostic features.
- 
-    Allocators can be globally enabled/disabled using the preprocessor define
-    CC_ENABLE_ALLOCATOR in ccConfig.h. Setting this define to 0 disables all
-    custom allocator functionality for cocos2d-x
+/** @brief
  */
 template <class T>
 class Allocator
