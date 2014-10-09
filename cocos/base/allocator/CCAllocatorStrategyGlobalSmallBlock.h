@@ -26,11 +26,16 @@
  THE SOFTWARE.
  ****************************************************************************/
 
+/****************************************************************************
+                                   WARNING!
+     Do not use Console::log or any other methods that use NEW inside of this
+     allocator. Failure to do so will result in recursive memory allocation.
+ ****************************************************************************/
+
 #include "base/allocator/CCAllocatorMacros.h"
 #include "base/allocator/CCAllocator.h"
 #include "base/allocator/CCAllocatorGlobal.h"
 #include "base/allocator/CCAllocatorStrategyFixedBlock.h"
-#include "CCConsole.h"
 
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
@@ -125,8 +130,6 @@ public:
             throw std::bad_alloc();
             break;
         }
-
-        log("allocate small block size(%zu) adjusted(%zu)\n", size, adjusted_size);
 
         #undef ALLOCATE
         

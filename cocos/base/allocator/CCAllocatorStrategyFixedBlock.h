@@ -26,6 +26,12 @@
  THE SOFTWARE.
  ****************************************************************************/
 
+/****************************************************************************
+                                    WARNING!
+     Do not use Console::log or any other methods that use NEW inside of this
+     allocator. Failure to do so will result in recursive memory allocation.
+ ****************************************************************************/
+
 #include "base/allocator/CCAllocatorMacros.h"
 #include "base/allocator/CCAllocator.h"
 #include "base/allocator/CCAllocatorGlobal.h"
@@ -51,7 +57,7 @@ public:
     
     AllocatorStrategyFixedBlock()
     : _list(nullptr)
-    , _pages()
+    , _pages(nullptr)
 #if DEBUG
     , _available(0)
 #endif
@@ -59,13 +65,17 @@ public:
     
     virtual ~AllocatorStrategyFixedBlock()
     {
-        size_t count = _pages.size();
 #if DEBUG
         CC_ASSERT(0 == _available); // assert if we didn't free all the blocks before destroying the allocator.
 #endif
-        for (int i = 0; i < count; ++i)
-            ccAllocatorGlobal.deallocate(_pages[i], page_size);
-        _pages.clear();
+        do
+        {
+            intptr_t* page = (intptr_t*)_pages;
+            intptr_t* next = (intptr_t*)*page;
+            ccAllocatorGlobal.deallocate(page);
+            _pages = (void*)next;
+        }
+        while (_pages);
     }
     
     // @brief
@@ -126,8 +136,20 @@ protected:
     
     CC_ALLOCATOR_INLINE void allocatePage()
     {
-        void* page = ccAllocatorGlobal.allocate(block_size * page_size);
-        _pages.push_back(page);
+        intptr_t* page = (intptr_t*)ccAllocatorGlobal.allocate(sizeof(intptr_t) + block_size * page_size);
+        if (nullptr == _pages)
+        {
+            _pages = page;
+            *page = 0;
+        }
+        else
+        {
+            *page = (intptr_t)_pages;
+            _pages = page;
+        }
+        
+        ++page; // step past the linked list node
+        
         uint8_t* block = (uint8_t*)page;
         for (int i = 0; i < page_size; ++i, block += block_size)
         {
@@ -142,7 +164,7 @@ protected:
     // This could be optimized by baking a next pointer into the page size
     // and linking the active pages together, especially in release builds.
     // This would avoid the vector container entirely.
-    std::vector<void*> _pages; // array of allocated pages.
+    void* _pages; // list of allocated pages.
     
 #if DEBUG
     size_t _available; // number of blocks that are free in the list.
