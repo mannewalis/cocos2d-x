@@ -60,10 +60,10 @@ public:
     static constexpr size_t alignment  = _alignment;
     
     AllocatorStrategyFixedBlock()
-    : _list(nullptr)
-    , _pages(nullptr)
+        : _list(nullptr)
+        , _pages(nullptr)
 #if DEBUG
-    , _available(0)
+        , _available(0)
 #endif
     {}
     
@@ -116,7 +116,7 @@ public:
     CC_ALLOCATOR_INLINE bool owns(const void* const address) const
     {
 #ifdef FALLBACK_TO_GLOBAL
-        return true; // since we use the global allocator, we can just lie and say we own this address.
+        return true; // since everything uses the global allocator, we can just lie and say we own this address.
 #else
         const uint8_t* const a = (const uint8_t* const)address;
         const uint8_t* p = (uint8_t*)_pages;
@@ -132,8 +132,17 @@ public:
     
 protected:
     
+    #define VALIDATE \
+        if (nullptr != _list) \
+        { \
+            CC_ASSERT(nullptr != _pages); \
+        }
+    
     CC_ALLOCATOR_INLINE void push_front(void* block)
     {
+        CC_ASSERT(block);
+        VALIDATE
+        
         if (nullptr == _list)
         {
             _list = block;
@@ -152,6 +161,8 @@ protected:
     
     CC_ALLOCATOR_INLINE void* pop_front()
     {
+        VALIDATE
+        
         if (nullptr == _list)
         {
             allocatePage();
@@ -174,8 +185,6 @@ protected:
     
     CC_ALLOCATOR_INLINE void allocatePage()
     {
-        LOG("allocate page size %zu count %zu\n", block_size, page_size);
-        
         intptr_t* page = (intptr_t*)ccAllocatorGlobal.allocate(pageSize());
         if (nullptr == _pages)
         {

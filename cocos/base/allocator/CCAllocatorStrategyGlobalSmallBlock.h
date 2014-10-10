@@ -65,6 +65,13 @@ public:
         if (first)
         {
             first = false;
+            
+            memset(&foo, 0x55, sizeof(foo));
+            
+            // call our own constructor. Not strictly needed in this case,
+            // but if anything gets added to this class or derived classes
+            // that requires construction, it would be better to have this.
+            AllocatorStrategyGlobalSmallBlock();
 
             _opaque_mutex = ccAllocatorGlobal.allocate(sizeof(pthread_mutex_t));
             pthread_mutexattr_t mta;
@@ -72,11 +79,13 @@ public:
             pthread_mutexattr_settype(&mta, PTHREAD_MUTEX_RECURSIVE);
             pthread_mutex_init((pthread_mutex_t*)_opaque_mutex, &mta);
 
+            memset(_smallBlockAllocators, 0, sizeof(_smallBlockAllocators));
+            
+            // cannot call new on the allocator here because it will recurse
+            // so instead we allocate from the global allocator and construct in place.
             #define SBA(n, size) \
-                _smallBlockAllocators[n] = nullptr; \
-                if (size) \
                 { \
-                    auto v = ccAllocatorGlobal.allocate(2 << n); \
+                    auto v = ccAllocatorGlobal.allocate(sizeof(AType(size))); \
                     _smallBlockAllocators[n] = (void*)(new (v) AType(size)); \
                 }
 
@@ -96,6 +105,9 @@ public:
             #undef SBA
         }
     }
+    
+    AllocatorStrategyGlobalSmallBlock()
+    {}
     
     virtual ~AllocatorStrategyGlobalSmallBlock()
     {}
@@ -156,8 +168,6 @@ public:
         #undef ALLOCATE
         
         UNLOCK
-        
-        LOG("allocate %p %zu size %zu\n", address, adjusted_size, size);
         
         CC_ASSERT(nullptr != address);
         return address;
@@ -244,8 +254,6 @@ public:
         
         UNLOCK
         
-        LOG("deallocate %p %zu size %zu\n", address, adjusted_size, size);
-
         #undef DEALLOCATE
     }
     
@@ -267,9 +275,9 @@ protected:
     
 protected:
     
-    void* _smallBlockAllocators[kMaxSmallBlockPower + 1];
-    
+    char foo[100];
     void* _opaque_mutex;
+    void* _smallBlockAllocators[kMaxSmallBlockPower + 1];    
 };
 
 NS_CC_ALLOCATOR_END

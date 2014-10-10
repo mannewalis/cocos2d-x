@@ -105,3 +105,19 @@
 
 #endif
 
+#define DUMP(a, l, C) \
+{ \
+    LOG("> %p len %zu\n", a, l); \
+    uint8_t* p = (uint8_t*)a; \
+    uint8_t* e = p + l; \
+    while (p < e) \
+    { \
+        LOG("%p ", p); \
+        for (int i = 0; i < C && &p[i] < e; ++i) \
+            LOG("%02x ", p[i]); \
+        for (int i = 0; i < C && &p[i] < e; ++i) \
+            LOG("%c ", isalnum(p[i]) ? p[i] : '.'); \
+        LOG("\n"); \
+        p = p + C > e ? e : p + C; \
+    } \
+}

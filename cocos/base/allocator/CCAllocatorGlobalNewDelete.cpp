@@ -38,7 +38,15 @@ namespace
     static CC_ALLOCATOR_GLOBAL_NEW_DELETE global;
 }
 
-void* operator new(std::size_t size) throw(std::bad_alloc)
+void* operator new[] (std::size_t size)
+{
+    void* ptr = global.allocate(size);
+    if (nullptr == ptr)
+        throw std::bad_alloc();
+    return ptr;    
+}
+
+void* operator new(std::size_t size)
 {
     void* ptr = global.allocate(size);
     if (nullptr == ptr)
