@@ -47,8 +47,17 @@ class AllocatorStrategyGlobalSmallBlock
 public:
     
     static constexpr int kDefaultSmallBlockCount = 100;
+    
+//    #define LOCK \
+//        pthread_mutex_lock((pthread_mutex_t*)_opaque_mutex);
+//
+//    #define UNLOCK \
+//        pthread_mutex_unlock((pthread_mutex_t*)_opaque_mutex);
+#define LOCK
+#define UNLOCK
 
     #define AType(size) Allocator<AllocatorStrategyFixedBlock<size, kDefaultSmallBlockCount>>
+    #define SType(size) AllocatorStrategyFixedBlock<size, kDefaultSmallBlockCount>
     
     void _lazy_init()
     {
@@ -56,6 +65,13 @@ public:
         if (first)
         {
             first = false;
+
+            _opaque_mutex = ccAllocatorGlobal.allocate(sizeof(pthread_mutex_t));
+            pthread_mutexattr_t mta;
+            pthread_mutexattr_init(&mta);
+            pthread_mutexattr_settype(&mta, PTHREAD_MUTEX_RECURSIVE);
+            pthread_mutex_init((pthread_mutex_t*)_opaque_mutex, &mta);
+
             #define SBA(n, size) \
                 _smallBlockAllocators[n] = nullptr; \
                 if (size) \
@@ -88,13 +104,18 @@ public:
     {
         _lazy_init();
         
+        LOCK
+        
         if (size < sizeof(intptr_t)) // always allocate at least enough space to store a pointer. this is
             size = sizeof(intptr_t); // so we can link the empty blocks together in the block allocator.
         
         // if the size is greater than what we determine to be a small block size
         // then default to calling the
         if (size > kMaxSize)
+        {
+            UNLOCK
             return ccAllocatorGlobal.allocate(size);
+        }
         
         // make sure the size fits into one of the
         // fixed sized block allocators we have above.
@@ -104,8 +125,9 @@ public:
             case size: \
             { \
                 void* v = _smallBlockAllocators[slot]; \
+                CC_ASSERT(v); \
                 auto a = (AType(size)*)v; \
-                address = a->allocate(size); \
+                address = a->allocate(adjusted_size); \
             } \
             break;
         
@@ -133,12 +155,51 @@ public:
 
         #undef ALLOCATE
         
+        UNLOCK
+        
+        LOG("allocate %p %zu size %zu\n", address, adjusted_size, size);
+        
         CC_ASSERT(nullptr != address);
         return address;
     }
     
     CC_ALLOCATOR_INLINE void deallocate(void* address, size_t size = 0)
     {
+        // if we didn't get a size, then we need to find the allocator
+        // by asking each if they own the block. For allocators that
+        // have few large pages, this is extremely fast.
+        if (0 == size)
+        {
+            #define OWNS(slot, S, address) \
+            case S: \
+            { \
+                void* v = _smallBlockAllocators[slot]; \
+                auto a = (AType(S)*)v; \
+                if (a->owns(address)) \
+                { \
+                    size = SType(S)::block_size; \
+                    break; \
+                } \
+            }
+            switch (sizeof(uint32_t))
+            {
+            OWNS(2,  4,    address);
+            OWNS(3,  8,    address);
+            OWNS(4,  16,   address);
+            OWNS(5,  32,   address);
+            OWNS(6,  64,   address);
+            OWNS(7,  128,  address);
+            OWNS(8,  256,  address);
+            OWNS(9,  512,  address);
+            OWNS(10, 1024, address);
+            OWNS(11, 2048, address);
+            OWNS(12, 4096, address);
+            OWNS(13, 8192, address);
+            }
+            
+            CC_ASSERT(0 != size);
+        }
+        
         if (size < sizeof(intptr_t)) // always allocate at least enough space to store a pointer. this is
             size = sizeof(intptr_t); // so we can link the empty blocks together in the block allocator.
         
@@ -146,6 +207,8 @@ public:
         // then default to calling the
         if (size > kMaxSize)
             return ccAllocatorGlobal.deallocate(address, size);
+        
+        LOCK
         
         // make sure the size fits into one of the
         // fixed sized block allocators we have above.
@@ -156,8 +219,9 @@ public:
             { \
                 void* v = _smallBlockAllocators[slot]; \
                 auto a = (AType(size)*)v; \
-                return a->deallocate(address, size); \
-            }
+                a->deallocate(address, size); \
+            } \
+            break;
         
         switch (adjusted_size)
         {
@@ -178,10 +242,11 @@ public:
             throw std::bad_alloc();
         }
         
-        #undef DEALLOCATE
+        UNLOCK
         
-        // should not reach here
-        CC_ASSERT(false);
+        LOG("deallocate %p %zu size %zu\n", address, adjusted_size, size);
+
+        #undef DEALLOCATE
     }
     
 protected:
@@ -203,6 +268,8 @@ protected:
 protected:
     
     void* _smallBlockAllocators[kMaxSmallBlockPower + 1];
+    
+    void* _opaque_mutex;
 };
 
 NS_CC_ALLOCATOR_END

@@ -29,6 +29,9 @@
 #include "base/ccConfig.h"
 #include "platform/CCPlatformMacros.h"
 
+// printf is safe to use
+#define LOG printf
+
 // make things a little shorter
 #define CONF Configuration::getInstance()->getValue
 

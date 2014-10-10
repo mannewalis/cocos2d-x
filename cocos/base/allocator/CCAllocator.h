@@ -52,6 +52,11 @@ public:
     {
         static_cast<T*>(this)->deallocate(address, size);
     }
+    
+    CC_ALLOCATOR_INLINE bool owns(const void* const address) const
+    {
+        return static_cast<const T* const>(this)->owns(address);
+    }
 };
 
 NS_CC_ALLOCATOR_END

@@ -72,7 +72,7 @@ public:
 // and destruction of an object in the pool.
 template <typename T, size_t _page_size = 100, typename O = ObjectTraits<T>>
 class AllocatorStrategyPool
-    : public Allocator<AllocatorStrategyFixedBlock<_page_size>>
+    : public Allocator<AllocatorStrategyFixedBlock<sizeof(T), _page_size>>
     , public O
 {
 public:
@@ -81,7 +81,7 @@ public:
     typedef value_type* pointer;
     
     // ugh wish I knew a way that I could declare this just once
-    typedef Allocator<AllocatorStrategyFixedBlock<_page_size>> tParentStrategy;
+    typedef Allocator<AllocatorStrategyFixedBlock<sizeof(T),    _page_size>> tParentStrategy;
     
     CC_ALLOCATOR_INLINE void* allocate(size_t size)
     {

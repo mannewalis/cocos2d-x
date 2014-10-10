@@ -40,6 +40,10 @@
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
 
+// define this to cause this allocator to fallback to the global allocator
+// this is just for testing purposes to see if this allocator is broken.
+#define FALLBACK_TO_GLOBAL
+
 // @brief
 // Fixed sized block allocator strategy for allocating blocks
 // of memory that are the same size.
@@ -85,7 +89,11 @@ public:
     CC_ALLOCATOR_INLINE void* allocate(size_t size)
     {
         CC_ASSERT(block_size == size);
+#ifdef FALLBACK_TO_GLOBAL
+        return ccAllocatorGlobal.allocate(size);
+#else
         return pop_front();
+#endif
     }
     
     // @brief
@@ -94,7 +102,32 @@ public:
     CC_ALLOCATOR_INLINE void deallocate(void* address, size_t size = 0)
     {
         CC_ASSERT(0 == size || block_size == size);
+#ifdef FALLBACK_TO_GLOBAL
+        ccAllocatorGlobal.deallocate(address);
+#else
         push_front(address);
+#endif
+    }
+    
+    // @brief
+    // checks allocated pages to determine whether or not a block
+    // is owned by this allocator. This should be reasonably fast
+    // for properly configured allocators with few large pages.
+    CC_ALLOCATOR_INLINE bool owns(const void* const address) const
+    {
+#ifdef FALLBACK_TO_GLOBAL
+        return true; // since we use the global allocator, we can just lie and say we own this address.
+#else
+        const uint8_t* const a = (const uint8_t* const)address;
+        const uint8_t* p = (uint8_t*)_pages;
+        while (p)
+        {
+            if (a >= p && a <= (p + pageSize()))
+                return true;
+            p = (uint8_t*)(*(uintptr_t*)p);
+        }
+        return false;
+#endif
     }
     
 protected:
@@ -134,9 +167,16 @@ protected:
     
 protected:
     
+    constexpr size_t pageSize() const
+    {
+        return sizeof(intptr_t) + block_size * page_size;
+    }
+    
     CC_ALLOCATOR_INLINE void allocatePage()
     {
-        intptr_t* page = (intptr_t*)ccAllocatorGlobal.allocate(sizeof(intptr_t) + block_size * page_size);
+        LOG("allocate page size %zu count %zu\n", block_size, page_size);
+        
+        intptr_t* page = (intptr_t*)ccAllocatorGlobal.allocate(pageSize());
         if (nullptr == _pages)
         {
             _pages = page;
