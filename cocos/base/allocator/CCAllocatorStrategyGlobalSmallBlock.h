@@ -50,7 +50,6 @@ public:
     
     // so we cannot use std::mutex because it allocates memory
     // which causes an infinite loop of death and exceptions.
-    // 
     #define LOCK \
         pthread_mutex_lock((pthread_mutex_t*)_opaque_mutex);
 
@@ -120,8 +119,8 @@ public:
         if (size < sizeof(intptr_t)) // always allocate at least enough space to store a pointer. this is
             size = sizeof(intptr_t); // so we can link the empty blocks together in the block allocator.
         
-        // if the size is greater than what we determine to be a small block size
-        // then default to calling the
+        // if the size is greater than what we determine to be a small block
+        // size then fall through to calling the global allocator instead.
         if (size > kMaxSize)
         {
             UNLOCK
