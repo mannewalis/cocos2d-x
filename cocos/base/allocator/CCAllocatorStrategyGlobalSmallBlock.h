@@ -48,13 +48,14 @@ public:
     
     static constexpr int kDefaultSmallBlockCount = 100;
     
-//    #define LOCK \
-//        pthread_mutex_lock((pthread_mutex_t*)_opaque_mutex);
-//
-//    #define UNLOCK \
-//        pthread_mutex_unlock((pthread_mutex_t*)_opaque_mutex);
-#define LOCK
-#define UNLOCK
+    // so we cannot use std::mutex because it allocates memory
+    // which causes an infinite loop of death and exceptions.
+    // 
+    #define LOCK \
+        pthread_mutex_lock((pthread_mutex_t*)_opaque_mutex);
+
+    #define UNLOCK \
+        pthread_mutex_unlock((pthread_mutex_t*)_opaque_mutex);
 
     #define AType(size) Allocator<AllocatorStrategyFixedBlock<size, kDefaultSmallBlockCount>>
     #define SType(size) AllocatorStrategyFixedBlock<size, kDefaultSmallBlockCount>
@@ -65,8 +66,6 @@ public:
         if (first)
         {
             first = false;
-            
-            memset(&foo, 0x55, sizeof(foo));
             
             // call our own constructor. Not strictly needed in this case,
             // but if anything gets added to this class or derived classes
@@ -213,8 +212,8 @@ public:
         if (size < sizeof(intptr_t)) // always allocate at least enough space to store a pointer. this is
             size = sizeof(intptr_t); // so we can link the empty blocks together in the block allocator.
         
-        // if the size is greater than what we determine to be a small block size
-        // then default to calling the
+        // if the size is greater than what we determine to be a small block
+        // size then default to calling the global allocator instead.
         if (size > kMaxSize)
             return ccAllocatorGlobal.deallocate(address, size);
         
@@ -275,7 +274,6 @@ protected:
     
 protected:
     
-    char foo[100];
     void* _opaque_mutex;
     void* _smallBlockAllocators[kMaxSmallBlockPower + 1];    
 };
