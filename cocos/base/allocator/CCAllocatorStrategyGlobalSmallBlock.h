@@ -260,7 +260,7 @@ protected:
     static constexpr size_t kMaxSmallBlockPower = 13; // 2^13 8192
     static constexpr size_t kMaxSize = 2 << (kMaxSmallBlockPower - 1); // 8192
     
-    int nextPow2BlockSize(size_t size) const
+    size_t nextPow2BlockSize(size_t size) const
     {
         --size;
         size |= size >> 1;
