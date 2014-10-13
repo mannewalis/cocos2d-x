@@ -40,7 +40,7 @@
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
 
-// define this to cause this allocator to fallback to the global allocator
+// @brief define this to cause this allocator to fallback to the global allocator
 // this is just for testing purposes to see if this allocator is broken.
 #define FALLBACK_TO_GLOBAL
 
@@ -49,6 +49,9 @@ NS_CC_ALLOCATOR_BEGIN
 // of memory that are the same size.
 // Optionally takes a page size which determines how many blocks
 // are added when the allocator needs more storage.
+// @param _block_size the size of the fixed block allocated by this allocator.
+// @param _page_size the number of blocks to allocate when growing the free list.
+// @param _alignment the alignment size in bytes of each block.
 template <size_t _block_size, size_t _page_size = 100, size_t _alignment = sizeof(uint32_t)>
 class AllocatorStrategyFixedBlock
     : public Allocator<AllocatorStrategyFixedBlock<_block_size, _page_size, _alignment>>
@@ -83,9 +86,9 @@ public:
     }
     
     // @brief
-    // allocate a block of memory sizeof(T) by returning the first item in the list or if empty
+    // allocate a block of memory by returning the first item in the list or if empty
     // then allocate a new page of blocks, and return the first element and store the rest.
-    // if sizeof(T) does not match the requested size, then the global allocator is used.
+    // if _block_size does not match the requested size, then we assert.
     CC_ALLOCATOR_INLINE void* allocate(size_t size)
     {
         CC_ASSERT(block_size == size);
@@ -96,9 +99,7 @@ public:
 #endif
     }
     
-    // @brief
-    // deallocate a block sizeof(T) by pushing it on the head of a linked list of free blocks.
-    // if size is not sizeof(T) then the global allocator is used instead.
+    // @brief Deallocate a block by pushing it on the head of a linked list of free blocks.
     CC_ALLOCATOR_INLINE void deallocate(void* address, size_t size = 0)
     {
         CC_ASSERT(0 == size || block_size == size);
@@ -109,8 +110,7 @@ public:
 #endif
     }
     
-    // @brief
-    // checks allocated pages to determine whether or not a block
+    // @brief Checks allocated pages to determine whether or not a block
     // is owned by this allocator. This should be reasonably fast
     // for properly configured allocators with few large pages.
     CC_ALLOCATOR_INLINE bool owns(const void* const address) const
@@ -138,6 +138,10 @@ protected:
             CC_ASSERT(nullptr != _pages); \
         }
     
+    // @brief Method to push an allocated block onto the free list.
+    // No check is made that the block belongs to this allocator.
+    // No check is made that the block hasn't been already added to this allocator.
+    // There checks should be added for DEBUG builds.
     CC_ALLOCATOR_INLINE void push_front(void* block)
     {
         CC_ASSERT(block);
@@ -159,6 +163,11 @@ protected:
 #endif
     }
     
+    // @brief Method to pop a block off the free list.
+    // If no blocks are available, then the list is grown by _page_size
+    // Tuning of the page size is critical to getting good performance.
+    // Ideally you would use a page size that is around the high water mark
+    // for the number of blocks of this size being allocated.
     CC_ALLOCATOR_INLINE void* pop_front()
     {
         VALIDATE
@@ -178,11 +187,14 @@ protected:
     
 protected:
     
+    // @brief Returns the size of a page in bytes + overhead.
     constexpr size_t pageSize() const
     {
         return sizeof(intptr_t) + block_size * page_size;
     }
     
+    // @brief Allocates a new page from the global allocator,
+    // and adds all the blocks to the free list.
     CC_ALLOCATOR_INLINE void allocatePage()
     {
         intptr_t* page = (intptr_t*)ccAllocatorGlobal.allocate(pageSize());
@@ -208,15 +220,15 @@ protected:
     
 protected:
     
-    void* _list; // linked list of free blocks.
+    // @brief Linked list of free blocks.
+    void* _list;
     
-    // This could be optimized by baking a next pointer into the page size
-    // and linking the active pages together, especially in release builds.
-    // This would avoid the vector container entirely.
-    void* _pages; // list of allocated pages.
+    // @brief Linked list of allocated pages
+    void* _pages;
     
 #if DEBUG
-    size_t _available; // number of blocks that are free in the list.
+    // @briefe Number of blocks that are free in the list.
+    size_t _available;
 #endif
 };
 
