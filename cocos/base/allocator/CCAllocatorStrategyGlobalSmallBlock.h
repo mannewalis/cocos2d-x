@@ -56,7 +56,10 @@ public:
     #define UNLOCK \
         pthread_mutex_unlock((pthread_mutex_t*)_opaque_mutex);
 
+    // @brief define for allocator type, cannot be typedef because we want to eval at use
     #define AType(size) Allocator<AllocatorStrategyFixedBlock<size, kDefaultSmallBlockCount>>
+    
+    // @brief define for allocator strategy, cannot be typedef because we want to eval at use
     #define SType(size) AllocatorStrategyFixedBlock<size, kDefaultSmallBlockCount>
     
     void _lazy_init()
@@ -110,7 +113,10 @@ public:
     virtual ~AllocatorStrategyGlobalSmallBlock()
     {}
     
-    CC_ALLOCATOR_INLINE void* allocate(size_t size, typename std::allocator<void>::const_pointer = nullptr)
+    // @brief Allocate a block of some size. If the block is <= 8192 it is allocated out of an array
+    // of fixed size block allocators. If larger, then we default back to the global allocator.
+    // @param size Size of block to allocate. This will be rounded to the next power of two.
+    CC_ALLOCATOR_INLINE void* allocate(size_t size)
     {
         _lazy_init();
         
@@ -171,6 +177,8 @@ public:
         return address;
     }
     
+    // @brief Deallocate a block by choosing one of the fixed size block allocators
+    // or defaulting to the global allocator if we do not own this block.
     CC_ALLOCATOR_INLINE void deallocate(void* address, size_t size = 0)
     {
         // if we didn't get a size, then we need to find the allocator
@@ -204,8 +212,6 @@ public:
             OWNS(12, 4096, address);
             OWNS(13, 8192, address);
             }
-            
-            CC_ASSERT(0 != size);
         }
         
         if (size < sizeof(intptr_t)) // always allocate at least enough space to store a pointer. this is
@@ -213,7 +219,7 @@ public:
         
         // if the size is greater than what we determine to be a small block
         // size then default to calling the global allocator instead.
-        if (size > kMaxSize)
+        if (0 == size || size > kMaxSize)
             return ccAllocatorGlobal.deallocate(address, size);
         
         LOCK
@@ -260,6 +266,10 @@ protected:
     static constexpr size_t kMaxSmallBlockPower = 13; // 2^13 8192
     static constexpr size_t kMaxSize = 2 << (kMaxSmallBlockPower - 1); // 8192
     
+    // @brief Calculate the next power of two for a given size.
+    // Most blocks requested from this allocator are already a power of two.
+    // This means we cannot add overhead, hence the slightly less performant
+    // searching of fixed block pages to determine size if none is specified.
     size_t nextPow2BlockSize(size_t size) const
     {
         --size;
@@ -273,7 +283,10 @@ protected:
     
 protected:
     
+    // @brief POSIX mutex for locking
     void* _opaque_mutex;
+    
+    // @brief array of small block allocates from 2^2 -> 2^13
     void* _smallBlockAllocators[kMaxSmallBlockPower + 1];    
 };
 

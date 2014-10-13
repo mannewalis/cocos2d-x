@@ -48,7 +48,7 @@
     #define NS_CC_ALLOCATOR
 #endif
 
-// CC_ALLOCATOR_INLINE
+// @brief CC_ALLOCATOR_INLINE
 // Turn off inlining of methods when debugging to make stack traces readable and stepping through code sane.
 // By default inlined methods are hidden symbols since symbols are unique and inlines are not.
 #if DEBUG
@@ -60,12 +60,12 @@
 // allocator macros
 #if CC_ENABLE_ALLOCATOR
 
-    // macros for new/delete
+    // @brief macros for new/delete
     // we let global new/delete handle these as they are overridden.
     #define CC_NEW(klass, ...) new klass(__VAR_ARGS__)
     #define CC_DELETE(object) delete object;
 
-    // macros for malloc/free
+    // @brief macros for malloc/free
     // these will use the global allocator
     #define CC_MALLOC(size) ccAllocatorGlobal.allocate(size)
     #define CC_FREE(address) ccAllocatorGlobal.deallocate(address)
@@ -73,7 +73,8 @@
     // alloc on the stack
     #define CC_ALOCA(size) alloca(size)
 
-    // helper macro for overriding new/delete operators for a class.
+    // @brief helper macro for overriding new/delete operators for a class.
+    // This correctly passes the size in the deallocate method which is needed.
     #define CC_USE_ALLOCATOR_POOL(T, A) \
         CC_ALLOCATOR_INLINE void* operator new (size_t size) \
         { \
@@ -105,6 +106,8 @@
 
 #endif
 
+// @ brief Quick and dirty macro to dump an area of memory
+// useful for debugging blocks of memory from allocators.
 #define DUMP(a, l, C) \
 { \
     LOG("> %p len %zu\n", a, l); \

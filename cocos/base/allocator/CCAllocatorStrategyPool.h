@@ -38,6 +38,8 @@ NS_CC_ALLOCATOR_BEGIN
 // Templated class that represents a default allocatable object.
 // Provide custom implementations to change the constructor/destructor behavior,
 // or to change the default alignment of the object in memory.
+// @param T Type of object
+// @param _alignment Alignment of object T
 template <typename T, size_t _alignment = sizeof(uint32_t)>
 class ObjectTraits
 {
@@ -70,6 +72,10 @@ public:
 // are added when the allocator needs more storage.
 // ObjectTraits allows you to control the alignment, construction
 // and destruction of an object in the pool.
+// @param T Type of object.
+// @param _page_size Number of objects of T in each page.
+// @param O ObjectTraits for type T
+// @see CC_USE_ALLOCATOR_POOL
 template <typename T, size_t _page_size = 100, typename O = ObjectTraits<T>>
 class AllocatorStrategyPool
     : public Allocator<AllocatorStrategyFixedBlock<sizeof(T), _page_size>>
@@ -81,8 +87,11 @@ public:
     typedef value_type* pointer;
     
     // ugh wish I knew a way that I could declare this just once
-    typedef Allocator<AllocatorStrategyFixedBlock<sizeof(T),    _page_size>> tParentStrategy;
+    typedef Allocator<AllocatorStrategyFixedBlock<sizeof(T), _page_size>> tParentStrategy;
     
+    // @brief Allocate block of size T
+    // if size does not match sizeof(T) then the global allocator is called instead.
+    // @see CC_USE_ALLOCATOR_POOL
     CC_ALLOCATOR_INLINE void* allocate(size_t size)
     {
         T* object;
@@ -98,6 +107,9 @@ public:
         return object;
     }
     
+    // @brief Deallocate block of size T
+    // if size does not match sizeof(T) then the global allocator is called instead.
+    // @see CC_USE_ALLOCATOR_POOL
     CC_ALLOCATOR_INLINE void deallocate(void* address, size_t size = 0)
     {
         if (address)

@@ -32,8 +32,10 @@
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
 
-/** @brief
- */
+// @brief Template class that injects the type T as a subclass of Allocator
+// This allows us to call methods on T that are declared in Allocator without
+// the need for making those methods virtual, avoiding a vtable lookup per call.
+// With inlining, the calls below should collapse and a single call made.
 template <class T>
 class Allocator
     : public AllocatorBase

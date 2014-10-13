@@ -31,6 +31,7 @@
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
 
+// @brief Declare the global allocator instance
 CC_ALLOCATOR_GLOBAL ccAllocatorGlobal;
 
 NS_CC_ALLOCATOR_END

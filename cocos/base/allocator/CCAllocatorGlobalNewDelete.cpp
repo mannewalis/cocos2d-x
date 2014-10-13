@@ -35,9 +35,11 @@ USING_NS_CC_ALLOCATOR;
 
 namespace
 {
+    // @brief Declare the allocator for global new/delete
     static CC_ALLOCATOR_GLOBAL_NEW_DELETE global;
 }
 
+// @brief overrides global operator new array
 void* operator new[] (std::size_t size)
 {
     void* ptr = global.allocate(size);
@@ -46,6 +48,7 @@ void* operator new[] (std::size_t size)
     return ptr;    
 }
 
+// @brief overrides global operator new
 void* operator new(std::size_t size)
 {
     void* ptr = global.allocate(size);
@@ -54,6 +57,7 @@ void* operator new(std::size_t size)
     return ptr;
 }
 
+// @brief overrides global operator delete
 void operator delete(void* p) throw()
 {
     global.deallocate(p);
