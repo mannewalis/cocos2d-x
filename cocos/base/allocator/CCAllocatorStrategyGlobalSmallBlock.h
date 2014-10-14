@@ -120,18 +120,13 @@ public:
     {
         _lazy_init();
         
-        LOCK
-        
         if (size < sizeof(intptr_t)) // always allocate at least enough space to store a pointer. this is
             size = sizeof(intptr_t); // so we can link the empty blocks together in the block allocator.
         
         // if the size is greater than what we determine to be a small block
         // size then fall through to calling the global allocator instead.
         if (size > kMaxSize)
-        {
-            UNLOCK
             return ccAllocatorGlobal.allocate(size);
-        }
         
         // make sure the size fits into one of the
         // fixed sized block allocators we have above.
@@ -147,6 +142,8 @@ public:
             } \
             break;
         
+        LOCK
+
         void* address;
         
         switch (adjusted_size)
