@@ -194,6 +194,9 @@ public:
                     break; \
                 } \
             }
+            
+            LOCK
+            
             switch (sizeof(uint32_t))
             {
             OWNS(2,  4,    address);
@@ -209,6 +212,8 @@ public:
             OWNS(12, 4096, address);
             OWNS(13, 8192, address);
             }
+            
+            UNLOCK
         }
         
         if (size < sizeof(intptr_t)) // always allocate at least enough space to store a pointer. this is
