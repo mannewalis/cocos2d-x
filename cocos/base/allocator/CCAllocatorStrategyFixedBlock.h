@@ -42,7 +42,7 @@ NS_CC_ALLOCATOR_BEGIN
 
 // @brief define this to cause this allocator to fallback to the global allocator
 // this is just for testing purposes to see if this allocator is broken.
-#define FALLBACK_TO_GLOBAL
+//#define FALLBACK_TO_GLOBAL
 
 // @brief
 // Fixed sized block allocator strategy for allocating blocks
@@ -52,7 +52,7 @@ NS_CC_ALLOCATOR_BEGIN
 // @param _block_size the size of the fixed block allocated by this allocator.
 // @param _page_size the number of blocks to allocate when growing the free list.
 // @param _alignment the alignment size in bytes of each block.
-template <size_t _block_size, size_t _page_size = 100, size_t _alignment = sizeof(uint32_t)>
+template <size_t _block_size, size_t _page_size = 100, size_t _alignment = 16>
 class AllocatorStrategyFixedBlock
     : public Allocator<AllocatorStrategyFixedBlock<_block_size, _page_size, _alignment>>
 {
@@ -65,16 +65,14 @@ public:
     AllocatorStrategyFixedBlock()
         : _list(nullptr)
         , _pages(nullptr)
-#if DEBUG
         , _available(0)
-#endif
-    {}
+    {
+        LOG("foo");
+    }
     
     virtual ~AllocatorStrategyFixedBlock()
     {
-#if DEBUG
         CC_ASSERT(0 == _available); // assert if we didn't free all the blocks before destroying the allocator.
-#endif
         do
         {
             intptr_t* page = (intptr_t*)_pages;
@@ -145,6 +143,8 @@ protected:
     CC_ALLOCATOR_INLINE void push_front(void* block)
     {
         CC_ASSERT(block);
+        CC_ASSERT(block_size < AllocatorBase::kDefaultAlignment || 0 == ((intptr_t)block & (AllocatorBase::kDefaultAlignment - 1)));
+
         VALIDATE
         
         if (nullptr == _list)
@@ -158,9 +158,7 @@ protected:
             *p = (uintptr_t)_list;
             _list = block;
         }
-#if DEBUG
         ++_available;
-#endif
     }
     
     // @brief Method to pop a block off the free list.
@@ -179,25 +177,38 @@ protected:
         auto next = (void*)*(uintptr_t*)_list;
         auto block = _list;
         _list = next;
-#if DEBUG
         --_available;
-#endif
+        CC_ASSERT(block_size < AllocatorBase::kDefaultAlignment || 0 == ((intptr_t)block & (AllocatorBase::kDefaultAlignment - 1)));
         return block;
     }
     
 protected:
     
-    // @brief Returns the size of a page in bytes + overhead.
-    constexpr size_t pageSize() const
+    size_t pageCount() const
     {
-        return sizeof(intptr_t) + block_size * page_size;
+        size_t count = 0;
+        intptr_t* page = (intptr_t*)_pages;
+        while (page)
+        {
+            page = (intptr_t*)*page;
+            ++count;
+        }
+        return count;
+    }
+    
+    // @brief Returns the size of a page in bytes + overhead.
+    size_t pageSize() const
+    {
+        size_t aligned_size = AllocatorBase::nextPow2BlockSize(block_size);
+        return AllocatorBase::kDefaultAlignment + aligned_size * page_size;
     }
     
     // @brief Allocates a new page from the global allocator,
     // and adds all the blocks to the free list.
     CC_ALLOCATOR_INLINE void allocatePage()
     {
-        intptr_t* page = (intptr_t*)ccAllocatorGlobal.allocate(pageSize());
+        uint8_t* p = (uint8_t*)AllocatorBase::aligned(ccAllocatorGlobal.allocate(pageSize()));
+        intptr_t* page = (intptr_t*)p;
         if (nullptr == _pages)
         {
             _pages = page;
@@ -209,10 +220,11 @@ protected:
             _pages = page;
         }
         
-        ++page; // step past the linked list node
+        p += AllocatorBase::kDefaultAlignment; // step past the linked list node
         
-        uint8_t* block = (uint8_t*)page;
-        for (int i = 0; i < page_size; ++i, block += block_size)
+        size_t aligned_size = AllocatorBase::nextPow2BlockSize(block_size);
+        uint8_t* block = (uint8_t*)p;
+        for (int i = 0; i < page_size; ++i, block += aligned_size)
         {
             push_front(block);
         }
@@ -226,10 +238,8 @@ protected:
     // @brief Linked list of allocated pages
     void* _pages;
     
-#if DEBUG
-    // @briefe Number of blocks that are free in the list.
+    // @brief Number of blocks that are free in the list.
     size_t _available;
-#endif
 };
 
 NS_CC_ALLOCATOR_END

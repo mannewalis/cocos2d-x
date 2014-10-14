@@ -78,7 +78,7 @@ public:
 // @see CC_USE_ALLOCATOR_POOL
 template <typename T, size_t _page_size = 100, typename O = ObjectTraits<T>>
 class AllocatorStrategyPool
-    : public Allocator<AllocatorStrategyFixedBlock<sizeof(T), _page_size>>
+    : public AllocatorStrategyFixedBlock<sizeof(T), _page_size>
     , public O
 {
 public:
@@ -87,7 +87,7 @@ public:
     typedef value_type* pointer;
     
     // ugh wish I knew a way that I could declare this just once
-    typedef Allocator<AllocatorStrategyFixedBlock<sizeof(T), _page_size>> tParentStrategy;
+    typedef AllocatorStrategyFixedBlock<sizeof(T), _page_size> tParentStrategy;
     
     // @brief Allocate block of size T
     // if size does not match sizeof(T) then the global allocator is called instead.

@@ -42,7 +42,11 @@ public:
     
     typedef void* pointer;
     
-    enum { kDefaultAlignment = sizeof(uint32_t) };
+    enum { kDefaultAlignment = 16 };
+    
+    // this must be true for SSE instructions to be 16 byte aligned
+    // we can now use kDefault alignment as our smallest alloc size
+    static_assert(sizeof(uintptr_t) <= kDefaultAlignment, "pointer size must be smaller than default alignment");
     
     virtual ~AllocatorBase()
     {}
@@ -55,13 +59,19 @@ public:
         return (pointer) (((intptr_t)address + (alignment - 1)) & ~(alignment - 1));
     }
     
-    // @brief
-    // Given an address and alignment in bytes, returns the number of additional bytes required
-    // in order that the allocation can be aligned and still contain enough room.
-    CC_ALLOCATOR_INLINE size_t alignedAdjustment(const pointer address, const size_t alignment = kDefaultAlignment) const
+    // @brief Calculate the next power of two for a given size.
+    // Most blocks requested are already a power of two. For small block alloc
+    // this means we cannot add overhead, hence the slightly less performant
+    // searching of fixed block pages to determine size if none is specified.
+    size_t nextPow2BlockSize(size_t size) const
     {
-        size_t adjustment = alignment - ((intptr_t)address & (alignment - 1));
-        return adjustment == alignment ? 0 : adjustment;
+        --size;
+        size |= size >> 1;
+        size |= size >> 2;
+        size |= size >> 4;
+        size |= size >> 8;
+        size |= size >> 16;
+        return ++size;
     }
 };
 

@@ -55,9 +55,6 @@ public:
 
     #define UNLOCK \
         pthread_mutex_unlock((pthread_mutex_t*)_opaque_mutex);
-
-    // @brief define for allocator type, cannot be typedef because we want to eval at use
-    #define AType(size) Allocator<AllocatorStrategyFixedBlock<size, kDefaultSmallBlockCount>>
     
     // @brief define for allocator strategy, cannot be typedef because we want to eval at use
     #define SType(size) AllocatorStrategyFixedBlock<size, kDefaultSmallBlockCount>
@@ -86,8 +83,8 @@ public:
             // so instead we allocate from the global allocator and construct in place.
             #define SBA(n, size) \
                 { \
-                    auto v = ccAllocatorGlobal.allocate(sizeof(AType(size))); \
-                    _smallBlockAllocators[n] = (void*)(new (v) AType(size)); \
+                    auto v = ccAllocatorGlobal.allocate(sizeof(SType(size))); \
+                    _smallBlockAllocators[n] = (void*)(new (v) SType(size)); \
                 }
 
             SBA(2,  4);
@@ -120,32 +117,35 @@ public:
     {
         _lazy_init();
         
+        LOCK
+
         if (size < sizeof(intptr_t)) // always allocate at least enough space to store a pointer. this is
             size = sizeof(intptr_t); // so we can link the empty blocks together in the block allocator.
         
         // if the size is greater than what we determine to be a small block
         // size then fall through to calling the global allocator instead.
         if (size > kMaxSize)
+        {
+            UNLOCK
             return ccAllocatorGlobal.allocate(size);
+        }
         
         // make sure the size fits into one of the
         // fixed sized block allocators we have above.
-        size_t adjusted_size = nextPow2BlockSize(size);
+        size_t adjusted_size = AllocatorBase::nextPow2BlockSize(size);
        
         #define ALLOCATE(slot, size) \
             case size: \
             { \
                 void* v = _smallBlockAllocators[slot]; \
                 CC_ASSERT(v); \
-                auto a = (AType(size)*)v; \
+                auto a = (SType(size)*)v; \
                 address = a->allocate(adjusted_size); \
             } \
             break;
         
         void* address;
         
-        LOCK
-
         switch (adjusted_size)
         {
         ALLOCATE(2,  4);
@@ -170,7 +170,9 @@ public:
 
         #undef ALLOCATE
         
+        CC_ASSERT(adjusted_size < AllocatorBase::kDefaultAlignment || 0 == ((intptr_t)address & (AllocatorBase::kDefaultAlignment - 1)));
         CC_ASSERT(nullptr != address);
+        
         return address;
     }
     
@@ -178,6 +180,8 @@ public:
     // or defaulting to the global allocator if we do not own this block.
     CC_ALLOCATOR_INLINE void deallocate(void* address, size_t size = 0)
     {
+        LOCK
+
         // if we didn't get a size, then we need to find the allocator
         // by asking each if they own the block. For allocators that
         // have few large pages, this is extremely fast.
@@ -187,15 +191,13 @@ public:
             case S: \
             { \
                 void* v = _smallBlockAllocators[slot]; \
-                auto a = (AType(S)*)v; \
+                auto a = (SType(S)*)v; \
                 if (a->owns(address)) \
                 { \
                     size = SType(S)::block_size; \
                     break; \
                 } \
             }
-            
-            LOCK
             
             switch (sizeof(uint32_t))
             {
@@ -212,8 +214,6 @@ public:
             OWNS(12, 4096, address);
             OWNS(13, 8192, address);
             }
-            
-            UNLOCK
         }
         
         if (size < sizeof(intptr_t)) // always allocate at least enough space to store a pointer. this is
@@ -226,19 +226,17 @@ public:
         
         // make sure the size fits into one of the
         // fixed sized block allocators we have above.
-        size_t adjusted_size = nextPow2BlockSize(size);
+        size_t adjusted_size = AllocatorBase::nextPow2BlockSize(size);
         
         #define DEALLOCATE(slot, size, address) \
             case size: \
             { \
                 void* v = _smallBlockAllocators[slot]; \
-                auto a = (AType(size)*)v; \
+                auto a = (SType(size)*)v; \
                 a->deallocate(address, size); \
             } \
             break;
         
-        LOCK
-
         switch (adjusted_size)
         {
         DEALLOCATE(2,  4,    address);
@@ -259,7 +257,7 @@ public:
         }
         
         UNLOCK
-        
+                
         #undef DEALLOCATE
     }
     
@@ -267,21 +265,6 @@ protected:
     
     static constexpr size_t kMaxSmallBlockPower = 13; // 2^13 8192
     static constexpr size_t kMaxSize = 2 << (kMaxSmallBlockPower - 1); // 8192
-    
-    // @brief Calculate the next power of two for a given size.
-    // Most blocks requested from this allocator are already a power of two.
-    // This means we cannot add overhead, hence the slightly less performant
-    // searching of fixed block pages to determine size if none is specified.
-    size_t nextPow2BlockSize(size_t size) const
-    {
-        --size;
-        size |= size >> 1;
-        size |= size >> 2;
-        size |= size >> 4;
-        size |= size >> 8;
-        size |= size >> 16;
-        return ++size;
-    }
     
 protected:
     

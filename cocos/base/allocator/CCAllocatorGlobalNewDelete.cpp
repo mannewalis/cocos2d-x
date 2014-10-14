@@ -60,7 +60,8 @@ void* operator new(std::size_t size)
 // @brief overrides global operator delete
 void operator delete(void* p) throw()
 {
-    global.deallocate(p);
+    if (p)
+        global.deallocate(p);
 }
 
 #endif // CC_ENABLE_ALLOCATOR
