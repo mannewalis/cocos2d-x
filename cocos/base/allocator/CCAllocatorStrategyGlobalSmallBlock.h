@@ -142,10 +142,10 @@ public:
             } \
             break;
         
-        LOCK
-
         void* address;
         
+        LOCK
+
         switch (adjusted_size)
         {
         ALLOCATE(2,  4);
@@ -166,9 +166,9 @@ public:
             break;
         }
 
-        #undef ALLOCATE
-        
         UNLOCK
+
+        #undef ALLOCATE
         
         CC_ASSERT(nullptr != address);
         return address;
@@ -219,8 +219,6 @@ public:
         if (0 == size || size > kMaxSize)
             return ccAllocatorGlobal.deallocate(address, size);
         
-        LOCK
-        
         // make sure the size fits into one of the
         // fixed sized block allocators we have above.
         size_t adjusted_size = nextPow2BlockSize(size);
@@ -234,6 +232,8 @@ public:
             } \
             break;
         
+        LOCK
+
         switch (adjusted_size)
         {
         DEALLOCATE(2,  4,    address);
