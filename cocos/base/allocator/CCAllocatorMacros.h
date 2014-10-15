@@ -71,7 +71,7 @@
     #define CC_FREE(address) ccAllocatorGlobal.deallocate(address)
 
     // alloc on the stack
-    #define CC_ALOCA(size) alloca(size)
+    #define CC_ALLOCA(size) alloca(size)
 
     // @brief helper macro for overriding new/delete operators for a class.
     // This correctly passes the size in the deallocate method which is needed.

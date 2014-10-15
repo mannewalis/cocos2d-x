@@ -66,9 +66,7 @@ public:
         : _list(nullptr)
         , _pages(nullptr)
         , _available(0)
-    {
-        LOG("foo");
-    }
+    {}
     
     virtual ~AllocatorStrategyFixedBlock()
     {
