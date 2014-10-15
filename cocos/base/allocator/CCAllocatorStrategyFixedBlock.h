@@ -135,7 +135,7 @@ public:
         const size_t pSize = pageSize();
         while (p)
         {
-            if (a >= p && a <= (p + pSize))
+            if (a >= p && a < (p + pSize))
             {
                 UNLOCK
                 return true;
