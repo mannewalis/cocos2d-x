@@ -213,10 +213,9 @@ protected:
 protected:
         
     // @brief Returns the size of a page in bytes + overhead.
-    size_t pageSize() const
+    constexpr size_t pageSize() const
     {
-        size_t aligned_size = AllocatorBase::nextPow2BlockSize(block_size);
-        return AllocatorBase::kDefaultAlignment + aligned_size * page_size;
+        return AllocatorBase::kDefaultAlignment + AllocatorBase::nextPow2BlockSize(block_size) * page_size;
     }
     
     // @brief Allocates a new page from the global allocator,
