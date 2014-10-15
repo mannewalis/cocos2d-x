@@ -58,7 +58,7 @@ public:
         {
             first = false;
             
-            // call our own constructor. Global can be called before the constructors are called.
+            // call our own constructor. Global new can be called before the constructors are called.
             // Make sure it gets called by having it done lazily in the call to allocate.
             new (this) AllocatorStrategyGlobalSmallBlock();
         }
