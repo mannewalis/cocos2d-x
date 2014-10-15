@@ -44,6 +44,14 @@ NS_CC_ALLOCATOR_BEGIN
 // this is just for testing purposes to see if this allocator is broken.
 //#define FALLBACK_TO_GLOBAL
 
+// so we cannot use std::mutex because it allocates memory
+// which causes an infinite loop of death and exceptions.
+#define LOCK \
+    pthread_mutex_lock((pthread_mutex_t*)_opaque_mutex);
+
+#define UNLOCK \
+    pthread_mutex_unlock((pthread_mutex_t*)_opaque_mutex);
+
 // @brief
 // Fixed sized block allocator strategy for allocating blocks
 // of memory that are the same size.
@@ -66,7 +74,13 @@ public:
         : _list(nullptr)
         , _pages(nullptr)
         , _available(0)
-    {}
+    {
+        _opaque_mutex = ccAllocatorGlobal.allocate(sizeof(pthread_mutex_t));
+        pthread_mutexattr_t mta;
+        pthread_mutexattr_init(&mta);
+        pthread_mutexattr_settype(&mta, PTHREAD_MUTEX_RECURSIVE);
+        pthread_mutex_init((pthread_mutex_t*)_opaque_mutex, &mta);
+    }
     
     virtual ~AllocatorStrategyFixedBlock()
     {
@@ -114,15 +128,21 @@ public:
 #ifdef FALLBACK_TO_GLOBAL
         return true; // since everything uses the global allocator, we can just lie and say we own this address.
 #else
+        LOCK
+        
         const uint8_t* const a = (const uint8_t* const)address;
         const uint8_t* p = (uint8_t*)_pages;
         const size_t pSize = pageSize();
         while (p)
         {
             if (a >= p && a <= (p + pSize))
+            {
+                UNLOCK
                 return true;
+            }
             p = (uint8_t*)(*(uintptr_t*)p);
         }
+        UNLOCK
         return false;
 #endif
     }
@@ -144,6 +164,8 @@ protected:
         CC_ASSERT(block);
         CC_ASSERT(block_size < AllocatorBase::kDefaultAlignment || 0 == ((intptr_t)block & (AllocatorBase::kDefaultAlignment - 1)));
 
+        LOCK
+        
         VALIDATE
         
         if (nullptr == _list)
@@ -158,6 +180,8 @@ protected:
             _list = block;
         }
         ++_available;
+        
+        UNLOCK
     }
     
     // @brief Method to pop a block off the free list.
@@ -167,8 +191,10 @@ protected:
     // for the number of blocks of this size being allocated.
     CC_ALLOCATOR_INLINE void* pop_front()
     {
-        VALIDATE
+        LOCK
         
+        VALIDATE
+
         if (nullptr == _list)
         {
             allocatePage();
@@ -177,24 +203,15 @@ protected:
         auto block = _list;
         _list = next;
         --_available;
+        
+        UNLOCK
+        
         CC_ASSERT(block_size < AllocatorBase::kDefaultAlignment || 0 == ((intptr_t)block & (AllocatorBase::kDefaultAlignment - 1)));
         return block;
     }
     
 protected:
-    
-    size_t pageCount() const
-    {
-        size_t count = 0;
-        intptr_t* page = (intptr_t*)_pages;
-        while (page)
-        {
-            page = (intptr_t*)*page;
-            ++count;
-        }
-        return count;
-    }
-    
+        
     // @brief Returns the size of a page in bytes + overhead.
     size_t pageSize() const
     {
@@ -239,6 +256,9 @@ protected:
     
     // @brief Number of blocks that are free in the list.
     size_t _available;
+    
+    // @brief POSIX mutex for locking
+    void* _opaque_mutex;
 };
 
 NS_CC_ALLOCATOR_END

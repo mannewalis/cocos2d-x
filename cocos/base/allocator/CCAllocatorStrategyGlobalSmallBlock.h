@@ -48,14 +48,6 @@ public:
     
     static constexpr int kDefaultSmallBlockCount = 100;
     
-    // so we cannot use std::mutex because it allocates memory
-    // which causes an infinite loop of death and exceptions.
-    #define LOCK \
-        pthread_mutex_lock((pthread_mutex_t*)_opaque_mutex);
-
-    #define UNLOCK \
-        pthread_mutex_unlock((pthread_mutex_t*)_opaque_mutex);
-    
     // @brief define for allocator strategy, cannot be typedef because we want to eval at use
     #define SType(size) AllocatorStrategyFixedBlock<size, kDefaultSmallBlockCount>
     
@@ -69,13 +61,7 @@ public:
             // call our own constructor. Not strictly needed in this case,
             // but if anything gets added to this class or derived classes
             // that requires construction, it would be better to have this.
-            AllocatorStrategyGlobalSmallBlock();
-
-            _opaque_mutex = ccAllocatorGlobal.allocate(sizeof(pthread_mutex_t));
-            pthread_mutexattr_t mta;
-            pthread_mutexattr_init(&mta);
-            pthread_mutexattr_settype(&mta, PTHREAD_MUTEX_RECURSIVE);
-            pthread_mutex_init((pthread_mutex_t*)_opaque_mutex, &mta);
+            new (this) AllocatorStrategyGlobalSmallBlock();
 
             memset(_smallBlockAllocators, 0, sizeof(_smallBlockAllocators));
             
@@ -120,18 +106,13 @@ public:
     {
         _lazy_init();
         
-        LOCK
-
         if (size < sizeof(intptr_t)) // always allocate at least enough space to store a pointer. this is
             size = sizeof(intptr_t); // so we can link the empty blocks together in the block allocator.
         
         // if the size is greater than what we determine to be a small block
         // size then fall through to calling the global allocator instead.
         if (size > kMaxSize)
-        {
-            UNLOCK
             return ccAllocatorGlobal.allocate(size);
-        }
         
         // make sure the size fits into one of the
         // fixed sized block allocators we have above.
@@ -169,8 +150,6 @@ public:
             break;
         }
 
-        UNLOCK
-
         #undef ALLOCATE
         
         CC_ASSERT(adjusted_size < AllocatorBase::kDefaultAlignment || 0 == ((intptr_t)address & (AllocatorBase::kDefaultAlignment - 1)));
@@ -183,8 +162,6 @@ public:
     // or defaulting to the global allocator if we do not own this block.
     CC_ALLOCATOR_INLINE void deallocate(void* address, size_t size = 0)
     {
-        LOCK
-
         // if we didn't get a size, then we need to find the allocator
         // by asking each if they own the block. For allocators that
         // have few large pages, this is extremely fast.
@@ -259,8 +236,6 @@ public:
             throw std::bad_alloc();
         }
         
-        UNLOCK
-                
         #undef DEALLOCATE
     }
     
@@ -270,9 +245,6 @@ protected:
     static constexpr size_t kMaxSize = 2 << (kMaxSmallBlockPower - 1); // 8192
     
 protected:
-    
-    // @brief POSIX mutex for locking
-    void* _opaque_mutex;
     
     // @brief array of small block allocates from 2^2 -> 2^13
     void* _smallBlockAllocators[kMaxSmallBlockPower + 1];    
