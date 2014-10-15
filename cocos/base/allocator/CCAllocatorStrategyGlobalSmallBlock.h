@@ -108,7 +108,10 @@ public:
     {}
     
     virtual ~AllocatorStrategyGlobalSmallBlock()
-    {}
+    {
+        for (int i = 0; i <= kMaxSmallBlockPower; ++i)
+            ccAllocatorGlobal.deallocate(_smallBlockAllocators[i]);
+    }
     
     // @brief Allocate a block of some size. If the block is <= 8192 it is allocated out of an array
     // of fixed size block allocators. If larger, then we default back to the global allocator.
