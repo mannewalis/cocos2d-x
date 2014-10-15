@@ -116,9 +116,10 @@ public:
 #else
         const uint8_t* const a = (const uint8_t* const)address;
         const uint8_t* p = (uint8_t*)_pages;
+        const size_t pSize = pageSize();
         while (p)
         {
-            if (a >= p && a <= (p + pageSize()))
+            if (a >= p && a <= (p + pSize))
                 return true;
             p = (uint8_t*)(*(uintptr_t*)p);
         }
