@@ -45,11 +45,11 @@ namespace ui {
     , _bottomLeft(nullptr)
     , _bottom(nullptr)
     , _bottomRight(nullptr)
+    , _scale9Enabled(true)
     , _insetLeft(0)
     , _insetTop(0)
     , _insetRight(0)
     , _insetBottom(0)
-    , _scale9Enabled(true)
     {
         this->setAnchorPoint(Vec2(0.5,0.5));
     }
@@ -149,7 +149,8 @@ namespace ui {
     
     bool Scale9Sprite::initWithBatchNode(cocos2d::SpriteBatchNode *batchnode, const cocos2d::Rect &rect, const cocos2d::Rect &capInsets)
     {
-        return initWithBatchNode(batchnode, rect, false, capInsets);
+        auto sprite = Sprite::createWithTexture(batchnode->getTexture());
+        return init(sprite, rect, false, capInsets);
     }
     
 #define    TRANSLATE_X(x, y, xtranslate) \
@@ -828,7 +829,7 @@ y+=ytranslate;         \
     void Scale9Sprite::setSpriteFrame(SpriteFrame * spriteFrame, const Rect& capInsets)
     {
         Sprite * sprite = Sprite::createWithTexture(spriteFrame->getTexture());
-        this->updateWithSprite(sprite, spriteFrame->getRect(), spriteFrame->isRotated(), spriteFrame->getOffset(), spriteFrame->getOriginalSize(), Rect::ZERO);
+        this->updateWithSprite(sprite, spriteFrame->getRect(), spriteFrame->isRotated(), spriteFrame->getOffset(), spriteFrame->getOriginalSize(), capInsets);
         
         // Reset insets
         this->_insetLeft = capInsets.origin.x;

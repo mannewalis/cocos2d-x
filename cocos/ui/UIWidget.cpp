@@ -30,6 +30,7 @@ THE SOFTWARE.
 #include "base/CCDirector.h"
 #include "base/CCEventFocus.h"
 #include "base/CCEventDispatcher.h"
+#include "ui/UILayoutComponent.h"
 
 NS_CC_BEGIN
 
@@ -135,32 +136,33 @@ Widget* Widget::_focusedWidget = nullptr;
 Widget::FocusNavigationController* Widget::_focusNavigationController = nullptr;
     
 Widget::Widget():
+_unifySize(false),
 _enabled(true),
 _bright(true),
 _touchEnabled(false),
 _highlight(false),
+_affectByClipping(false),
+_ignoreSize(false),
+_propagateTouchEvents(true),
 _brightStyle(BrightStyle::NONE),
-_touchBeganPosition(Vec2::ZERO),
-_touchMovePosition(Vec2::ZERO),
-_touchEndPosition(Vec2::ZERO),
-_touchEventListener(nullptr),
-_touchEventSelector(nullptr),
+_sizeType(SizeType::ABSOLUTE),
+_positionType(PositionType::ABSOLUTE),
 _actionTag(0),
 _customSize(Size::ZERO),
-_ignoreSize(false),
-_affectByClipping(false),
-_sizeType(SizeType::ABSOLUTE),
 _sizePercent(Vec2::ZERO),
-_positionType(PositionType::ABSOLUTE),
 _positionPercent(Vec2::ZERO),
 _hitted(false),
 _touchListener(nullptr),
+_touchBeganPosition(Vec2::ZERO),
+_touchMovePosition(Vec2::ZERO),
+_touchEndPosition(Vec2::ZERO),
 _flippedX(false),
 _flippedY(false),
+_layoutParameterType(LayoutParameter::Type::NONE),
 _focused(false),
 _focusEnabled(true),
-_layoutParameterType(LayoutParameter::Type::NONE),
-_propagateTouchEvents(true)
+_touchEventListener(nullptr),
+_touchEventSelector(nullptr)
 {
   
 }
@@ -229,7 +231,7 @@ void Widget::onExit()
 
 void Widget::visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags)
 {
-    if (_visible)
+    if (_visible || !isVisitableByVisitingCamera())
     {
         adaptRenderers();
         ProtectedNode::visit(renderer, parentTransform, parentFlags);
@@ -250,16 +252,32 @@ void Widget::initRenderer()
 {
 }
     
+LayoutComponent* Widget::getOrCreateLayoutComponent()
+{
+    auto layoutComponent = this->getComponent(__LAYOUT_COMPONENT_NAME);
+    if (nullptr == layoutComponent)
+    {
+        LayoutComponent *component = LayoutComponent::create();
+        this->addComponent(component);
+        layoutComponent = component;
+    }
+    
+    return (LayoutComponent*)layoutComponent;
+}
+   
 void Widget::setContentSize(const cocos2d::Size &contentSize)
 {
     ProtectedNode::setContentSize(contentSize);
     
     _customSize = contentSize;
-    if (_ignoreSize)
+    if (_unifySize)
+    {
+        //unify Size logic
+    }
+    else if (_ignoreSize)
     {
         _contentSize = getVirtualRendererSize();
     }
-    
     if (_running)
     {
         Widget* widgetParent = getWidgetParent();
@@ -410,6 +428,11 @@ Widget::SizeType Widget::getSizeType() const
 
 void Widget::ignoreContentAdaptWithSize(bool ignore)
 {
+    if (_unifySize)
+    {
+        this->setContentSize(_customSize);
+        return;
+    }
     if (_ignoreSize == ignore)
     {
         return;
@@ -441,7 +464,7 @@ const Size& Widget::getCustomSize() const
     return _customSize;
 }
 
-const Vec2& Widget::getSizePercent() const
+const Vec2& Widget::getSizePercent()
 {
     return _sizePercent;
 }
@@ -475,6 +498,11 @@ Size Widget::getVirtualRendererSize() const
     
 void Widget::updateContentSizeWithTextureSize(const cocos2d::Size &size)
 {
+    if (_unifySize)
+    {
+        this->setContentSize(size);
+        return;
+    }
     if (_ignoreSize)
     {
         this->setContentSize(size);
@@ -1273,6 +1301,16 @@ void Widget::enableDpadNavigation(bool enable)
 }
 
 
+bool Widget::isUnifySizeEnabled()const
+{
+    return _unifySize;
 }
 
+void Widget::setUnifySizeEnabled(bool enable)
+{
+    _unifySize = enable;
+}
+
+
+}
 NS_CC_END

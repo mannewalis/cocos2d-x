@@ -59,9 +59,7 @@ class TextureCache;
 class Renderer;
 class Camera;
 
-#if  (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT)
 class Console;
-#endif
 
 /**
 @brief Class that creates and handles the main Window and manages how
@@ -92,26 +90,11 @@ enum class MATRIX_STACK_TYPE
 
 class CC_DLL Director : public Ref
 {
-private:
-    std::stack<Mat4> _modelViewMatrixStack;
-    std::stack<Mat4> _projectionMatrixStack;
-    std::stack<Mat4> _textureMatrixStack;
-protected:
-    void initMatrixStack();
-public:
-    void pushMatrix(MATRIX_STACK_TYPE type);
-    void popMatrix(MATRIX_STACK_TYPE type);
-    void loadIdentityMatrix(MATRIX_STACK_TYPE type);
-    void loadMatrix(MATRIX_STACK_TYPE type, const Mat4& mat);
-    void multiplyMatrix(MATRIX_STACK_TYPE type, const Mat4& mat);
-    Mat4 getMatrix(MATRIX_STACK_TYPE type);
-    void resetMatrixStack();
 public:
     static const char *EVENT_PROJECTION_CHANGED;
     static const char* EVENT_AFTER_UPDATE;
     static const char* EVENT_AFTER_VISIT;
     static const char* EVENT_AFTER_DRAW;
-
 
     /** @typedef ccDirectorProjection
      Possible OpenGL projections used by director
@@ -391,9 +374,7 @@ public:
     /** Returns the Console 
      @since v3.0
      */
-#if  (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT)
     Console* getConsole() const { return _console; }
-#endif
 
     /* Gets delta time since last tick to main loop */
 	float getDeltaTime() const;
@@ -402,6 +383,14 @@ public:
      *  get Frame Rate
      */
     float getFrameRate() const { return _frameRate; }
+
+    void pushMatrix(MATRIX_STACK_TYPE type);
+    void popMatrix(MATRIX_STACK_TYPE type);
+    void loadIdentityMatrix(MATRIX_STACK_TYPE type);
+    void loadMatrix(MATRIX_STACK_TYPE type, const Mat4& mat);
+    void multiplyMatrix(MATRIX_STACK_TYPE type, const Mat4& mat);
+    const Mat4& getMatrix(MATRIX_STACK_TYPE type);
+    void resetMatrixStack();
 
 protected:
     void purgeDirector();
@@ -420,6 +409,12 @@ protected:
     //textureCache creation or release
     void initTextureCache();
     void destroyTextureCache();
+
+    void initMatrixStack();
+
+    std::stack<Mat4> _modelViewMatrixStack;
+    std::stack<Mat4> _projectionMatrixStack;
+    std::stack<Mat4> _textureMatrixStack;
 
     /** Scheduler associated with this director
      @since v2.0
@@ -503,10 +498,8 @@ protected:
     /* Renderer for the Director */
     Renderer *_renderer;
 
-#if  (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT)
     /* Console for the director */
     Console *_console;
-#endif
 
     // GLView will recreate stats labels to fit visible rect
     friend class GLView;

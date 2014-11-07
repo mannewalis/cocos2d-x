@@ -62,6 +62,16 @@ Animate3D* Animate3D::create(Animation3D* animation, float fromTime, float durat
     return  animate;
 }
 
+Animate3D* Animate3D::createWithFrames(Animation3D* animation, int startFrame, int endFrame, float frameRate)
+{
+    float perFrameTime = 1.f / frameRate;
+    float fromTime = startFrame * perFrameTime;
+    float duration = (endFrame - startFrame) * perFrameTime;
+    
+    auto animate = create(animation, fromTime, duration);
+    return  animate;
+}
+
 /** returns a clone of action */
 Animate3D* Animate3D::clone() const
 {
@@ -237,13 +247,13 @@ void Animate3D::setWeight(float weight)
 }
 
 Animate3D::Animate3D()
-: _absSpeed(1.f)
+: _state(Animate3D::Animate3DState::Running)
+, _animation(nullptr)
+, _absSpeed(1.f)
 , _weight(1.f)
 , _start(0.f)
 , _last(1.f)
-, _animation(nullptr)
 , _playReverse(false)
-, _state(Animate3D::Animate3DState::Running)
 , _accTransTime(0.0f)
 , _lastTime(0.0f)
 {

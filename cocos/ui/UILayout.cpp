@@ -51,13 +51,15 @@ static GLint s_layer = -1;
 IMPLEMENT_CLASS_GUI_INFO(Layout)
 
 Layout::Layout():
-_clippingEnabled(false),
 _backGroundScale9Enabled(false),
 _backGroundImage(nullptr),
 _backGroundImageFileName(""),
 _backGroundImageCapInsets(Rect::ZERO),
 _colorType(BackGroundColorType::NONE),
 _bgImageTexType(TextureResType::LOCAL),
+_backGroundImageTextureSize(Size::ZERO),
+_backGroundImageColor(Color3B::WHITE),
+_backGroundImageOpacity(255),
 _colorRender(nullptr),
 _gradientRender(nullptr),
 _cColor(Color3B::WHITE),
@@ -65,14 +67,13 @@ _gStartColor(Color3B::WHITE),
 _gEndColor(Color3B::WHITE),
 _alongVector(Vec2(0.0f, -1.0f)),
 _cOpacity(255),
-_backGroundImageTextureSize(Size::ZERO),
+_clippingEnabled(false),
 _layoutType(Type::ABSOLUTE),
 _clippingType(ClippingType::STENCIL),
 _clippingStencil(nullptr),
 _scissorRectDirty(false),
 _clippingRect(Rect::ZERO),
 _clippingParent(nullptr),
-_doLayoutDirty(true),
 _clippingRectDirty(true),
 _currentStencilEnabled(GL_FALSE),
 _currentStencilWriteMask(~0),
@@ -86,12 +87,11 @@ _currentDepthWriteMask(GL_TRUE),
 _currentAlphaTestEnabled(GL_FALSE),
 _currentAlphaTestFunc(GL_ALWAYS),
 _currentAlphaTestRef(1),
-_backGroundImageColor(Color3B::WHITE),
-_backGroundImageOpacity(255),
-_passFocusToChild(true),
+_doLayoutDirty(true),
+_isInterceptTouch(false),
 _loopFocus(false),
-_isFocusPassing(false),
-_isInterceptTouch(false)
+_passFocusToChild(true),
+_isFocusPassing(false)
 {
     //no-op
 }
@@ -644,6 +644,7 @@ void Layout::setBackGroundImage(const std::string& fileName,TextureResType texTy
     if (_backGroundImage == nullptr)
     {
         addBackGroundImage();
+        _backGroundImage->setScale9Enabled(_backGroundScale9Enabled);
     }
     _backGroundImageFileName = fileName;
     _bgImageTexType = texType;
@@ -1771,17 +1772,14 @@ bool  Layout::isWidgetAncestorSupportLoopFocus(Widget* widget, FocusDirection di
         else
         {
             CCASSERT(0, "invalid layout type");
+            return false;
         }
-        
     }
     else
     {
         return isWidgetAncestorSupportLoopFocus(parent, direction);
     }
 }
-
-
-
 
 Widget* Layout::findNextFocusedWidget(FocusDirection direction, Widget* current)
 {

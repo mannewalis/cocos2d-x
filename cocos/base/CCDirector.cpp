@@ -47,7 +47,7 @@ THE SOFTWARE.
 #include "renderer/CCTextureCache.h"
 #include "renderer/ccGLStateCache.h"
 #include "renderer/CCRenderer.h"
-#include "base/CCCamera.h"
+#include "2d/CCCamera.h"
 #include "base/CCUserDefault.h"
 #include "base/ccFPSImages.h"
 #include "base/CCScheduler.h"
@@ -155,9 +155,8 @@ bool Director::init(void)
 
     _renderer = new (std::nothrow) Renderer;
 
-#if (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT)
     _console = new (std::nothrow) Console;
-#endif
+
     return true;
 }
 
@@ -181,9 +180,8 @@ Director::~Director(void)
 
     delete _renderer;
 
-#if (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT)
     delete _console;
-#endif
+
 
     CC_SAFE_RELEASE(_eventDispatcher);
     
@@ -542,15 +540,15 @@ void Director::multiplyMatrix(MATRIX_STACK_TYPE type, const Mat4& mat)
 
 void Director::pushMatrix(MATRIX_STACK_TYPE type)
 {
-    if(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW == type)
+    if(type == MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW)
     {
         _modelViewMatrixStack.push(_modelViewMatrixStack.top());
     }
-    else if(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION == type)
+    else if(type == MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION)
     {
         _projectionMatrixStack.push(_projectionMatrixStack.top());
     }
-    else if(MATRIX_STACK_TYPE::MATRIX_STACK_TEXTURE == type)
+    else if(type == MATRIX_STACK_TYPE::MATRIX_STACK_TEXTURE)
     {
         _textureMatrixStack.push(_textureMatrixStack.top());
     }
@@ -560,36 +558,23 @@ void Director::pushMatrix(MATRIX_STACK_TYPE type)
     }
 }
 
-Mat4 Director::getMatrix(MATRIX_STACK_TYPE type)
+const Mat4& Director::getMatrix(MATRIX_STACK_TYPE type)
 {
-    Mat4 result;
-    if(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW == type)
+    if(type == MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW)
     {
-        result = _modelViewMatrixStack.top();
+        return _modelViewMatrixStack.top();
     }
-    else if(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION == type)
+    else if(type == MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION)
     {
-        result = _projectionMatrixStack.top();
+        return _projectionMatrixStack.top();
     }
-    else if(MATRIX_STACK_TYPE::MATRIX_STACK_TEXTURE == type)
+    else if(type == MATRIX_STACK_TYPE::MATRIX_STACK_TEXTURE)
     {
-        result = _textureMatrixStack.top();
+        return _textureMatrixStack.top();
     }
-    else
-    {
-        CCASSERT(false, "unknow matrix stack type, will return modelview matrix instead");
-        result =  _modelViewMatrixStack.top();
-    }
-//    float diffResult(0);
-//    for (int index = 0; index <16; ++index)
-//    {
-//        diffResult += abs(result2.mat[index] - result.mat[index]);
-//    }
-//    if(diffResult > 1e-30)
-//    {
-//        CCASSERT(false, "Error in director matrix stack");
-//    }
-    return result;
+
+    CCASSERT(false, "unknow matrix stack type, will return modelview matrix instead");
+    return  _modelViewMatrixStack.top();
 }
 
 void Director::setProjection(Projection projection)
@@ -719,17 +704,15 @@ static void GLToClipTransform(Mat4 *transformOut)
     
     Director* director = Director::getInstance();
     CCASSERT(nullptr != director, "Director is null when seting matrix stack");
-    
-    Mat4 projection;
-    projection = director->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
+
+    auto projection = director->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WP8
     //if needed, we need to undo the rotation for Landscape orientation in order to get the correct positions
     projection = Director::getInstance()->getOpenGLView()->getReverseOrientationMatrix() * projection;
 #endif
 
-    Mat4 modelview;
-    modelview = director->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+    auto modelview = director->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
     *transformOut = projection * modelview;
 }
 
@@ -1276,8 +1259,10 @@ void DisplayLinkDirector::startAnimation()
 
     _invalid = false;
 
+#ifndef WP8_SHADER_COMPILER
     Application::getInstance()->setAnimationInterval(_animationInterval);
-    
+#endif
+
     // fix issue #3509, skip one fps to avoid incorrect time calculation.
     setNextDeltaTimeZero(true);
 }
