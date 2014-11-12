@@ -29,56 +29,25 @@
 
 NS_CC_BEGIN
 
-// @brief base class for scissor commands, provides a static count
-// of the nested scissor commands that have begun. Scissor state
-// is only disabled once the count reaches zero.
-class ScissorCommand
-    : public RenderCommand
-{
-public:
-    
-    static int scissorCount() 
-    {
-        return _scissorCount;
-    }
-    
-    void setPreviousClippingRegion(const Rect& region)
-    {
-        _clippingRegion = region;
-    }
-    
-    const Rect& previousClippingRegion() const
-    {
-        return _clippingRegion;
-    }
-    
-protected:
-    
-    // @brief tracks the number of nested scissor commands,
-    // scissor is disabled when all commands have completed.
-    static int _scissorCount;
-    
-    // @brief the previous scissor clipping region for counts > 0.
-    Rect _clippingRegion;
-};
-
 // @brief increments the scissor count and enables the scissor
 // if this is the first begin. It also remembers the old scissor
 // rectangle, and will restore it when it ends.
 class BeginScissorCommand
-    : public ScissorCommand
+    : public RenderCommand
 {
 public:
     BeginScissorCommand();
     void init(float depth, const Rect& clippingRegion);
     void execute();
+protected:
+    Rect _clippingRegion;
 };
 
 // @brief ends a scissor command, restores the previous scissor
 // state if any, and decrements the scissor count. If the scissor
 // count reaches zero, then the scissor is disabled.
 class EndScissorCommand
-    : public ScissorCommand
+    : public RenderCommand
 {
 public:
     EndScissorCommand();

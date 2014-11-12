@@ -11,9 +11,6 @@
 
 NS_CC_BEGIN
 
-int ScissorCommand::_scissorCount = 0;
-
-
 BeginScissorCommand::BeginScissorCommand()
 {
     _type = RenderCommand::Type::BEGIN_SCISSOR_COMMAND;
@@ -27,9 +24,7 @@ void BeginScissorCommand::init(float depth, const Rect& clippingRegion)
 
 void BeginScissorCommand::execute()
 {
-    ++_scissorCount;
-    if (1 == _scissorCount)
-        glEnable(GL_SCISSOR_TEST);
+    glEnable(GL_SCISSOR_TEST);
     GLView* glView = Director::getInstance()->getOpenGLView();
     glView->setScissorInPoints(_clippingRegion.origin.x, _clippingRegion.origin.y, _clippingRegion.size.width, _clippingRegion.size.height);
 }
@@ -47,9 +42,7 @@ void EndScissorCommand::init(float depth)
 
 void EndScissorCommand::execute()
 {
-    --_scissorCount;
-    if (0 == _scissorCount)
-        glDisable(GL_SCISSOR_TEST);    
+    glDisable(GL_SCISSOR_TEST);    
 }
 
 NS_CC_END
