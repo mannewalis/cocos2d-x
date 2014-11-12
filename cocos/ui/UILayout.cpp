@@ -423,13 +423,19 @@ void Layout::onAfterVisitScissor()
     
 void Layout::scissorClippingVisit(Renderer *renderer, const Mat4& parentTransform, uint32_t parentFlags)
 {
-    _beginScissorCommand.init(_globalZOrder, getClippingRect(), false);
-    renderer->addCommand(&_beginScissorCommand);
-
+    if (_clippingEnabled)
+    {
+        _beginScissorCommand.init(_globalZOrder, getClippingRect(), false);
+        renderer->addCommand(&_beginScissorCommand);
+    }
+    
     ProtectedNode::visit(renderer, parentTransform, parentFlags);
     
-    _endScissorCommand.init(_globalZOrder);
-    renderer->addCommand(&_endScissorCommand);
+    if (_clippingEnabled)
+    {
+        _endScissorCommand.init(_globalZOrder);
+        renderer->addCommand(&_endScissorCommand);
+    }
 }
 
 void Layout::setClippingEnabled(bool able)
