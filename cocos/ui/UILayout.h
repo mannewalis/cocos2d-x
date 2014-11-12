@@ -29,6 +29,7 @@ THE SOFTWARE.
 #include "ui/GUIExport.h"
 #include "renderer/CCCustomCommand.h"
 #include "renderer/CCGroupCommand.h"
+#include "renderer/CCScissorCommand.h"
 
 NS_CC_BEGIN
 
@@ -515,8 +516,9 @@ protected:
     CustomCommand _beforeVisitCmdStencil;
     CustomCommand _afterDrawStencilCmd;
     CustomCommand _afterVisitCmdStencil;
-    CustomCommand _beforeVisitCmdScissor;
-    CustomCommand _afterVisitCmdScissor;
+    
+    BeginScissorCommand _beginScissorCommand;
+    EndScissorCommand _endScissorCommand;
     
     bool _doLayoutDirty;
     bool _isInterceptTouch;

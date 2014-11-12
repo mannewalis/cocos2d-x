@@ -423,15 +423,13 @@ void Layout::onAfterVisitScissor()
     
 void Layout::scissorClippingVisit(Renderer *renderer, const Mat4& parentTransform, uint32_t parentFlags)
 {
-    _beforeVisitCmdScissor.init(_globalZOrder);
-    _beforeVisitCmdScissor.func = CC_CALLBACK_0(Layout::onBeforeVisitScissor, this);
-    renderer->addCommand(&_beforeVisitCmdScissor);
+    _beginScissorCommand.init(_globalZOrder, getClippingRect(), false);
+    renderer->addCommand(&_beginScissorCommand);
 
     ProtectedNode::visit(renderer, parentTransform, parentFlags);
     
-    _afterVisitCmdScissor.init(_globalZOrder);
-    _afterVisitCmdScissor.func = CC_CALLBACK_0(Layout::onAfterVisitScissor, this);
-    renderer->addCommand(&_afterVisitCmdScissor);
+    _endScissorCommand.init(_globalZOrder);
+    renderer->addCommand(&_endScissorCommand);
 }
 
 void Layout::setClippingEnabled(bool able)

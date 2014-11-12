@@ -448,6 +448,7 @@ void Renderer::visitRenderQueue(const RenderQueue& queue)
             break;
                 
             case RenderCommand::Type::BEGIN_SCISSOR_COMMAND:
+                flush();
                 command->execute<BeginScissorCommand>();
                 break;
                 
@@ -522,6 +523,7 @@ void Renderer::visitTransparentRenderQueue(const TransparentRenderQueue& queue)
                 break;
     
             case RenderCommand::Type::BEGIN_SCISSOR_COMMAND:
+                flush();
                 command->execute<BeginScissorCommand>();
                 break;
                 
