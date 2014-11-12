@@ -37,11 +37,10 @@ void ClippingRectangleNode::setClippingRegion(const Rect &clippingRegion)
     _clippingRegion = clippingRegion;
 }
 
-void ClippingRectangleNode::onBeforeVisitScissor()
+void ClippingRectangleNode::visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags)
 {
-    if (_clippingEnabled) {
-        glEnable(GL_SCISSOR_TEST);
-        
+    if (_clippingEnabled)
+    {
         float scaleX = _scaleX;
         float scaleY = _scaleY;
         Node *parent = this->getParent();
@@ -52,33 +51,22 @@ void ClippingRectangleNode::onBeforeVisitScissor()
         }
         
         const Point pos = convertToWorldSpace(Point(_clippingRegion.origin.x, _clippingRegion.origin.y));
-        GLView* glView = Director::getInstance()->getOpenGLView();
-        glView->setScissorInPoints(pos.x * scaleX,
+        const Rect clippingRect = {pos.x * scaleX,
                                    pos.y * scaleY,
                                    _clippingRegion.size.width * scaleX,
-                                   _clippingRegion.size.height * scaleY);
+                                    _clippingRegion.size.height * scaleY};
+    
+        _beforeVisitCmdScissor.init(_globalZOrder, clippingRect);
+        renderer->addCommand(&_beforeVisitCmdScissor);
     }
-}
-
-void ClippingRectangleNode::onAfterVisitScissor()
-{
-    if (_clippingEnabled)
-    {
-        glDisable(GL_SCISSOR_TEST);
-    }
-}
-
-void ClippingRectangleNode::visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags)
-{
-    _beforeVisitCmdScissor.init(_globalZOrder);
-    _beforeVisitCmdScissor.func = CC_CALLBACK_0(ClippingRectangleNode::onBeforeVisitScissor, this);
-    renderer->addCommand(&_beforeVisitCmdScissor);
     
     Node::visit(renderer, parentTransform, parentFlags);
     
-    _afterVisitCmdScissor.init(_globalZOrder);
-    _afterVisitCmdScissor.func = CC_CALLBACK_0(ClippingRectangleNode::onAfterVisitScissor, this);
-    renderer->addCommand(&_afterVisitCmdScissor);
+    if (_clippingEnabled)
+    {
+        _afterVisitCmdScissor.init(_globalZOrder);
+        renderer->addCommand(&_afterVisitCmdScissor);
+    }
 }
 
 NS_CC_END

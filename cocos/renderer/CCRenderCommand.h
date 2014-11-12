@@ -50,7 +50,9 @@ public:
         GROUP_COMMAND,
         MESH_COMMAND,
         PRIMITIVE_COMMAND,
-        TRIANGLES_COMMAND
+        TRIANGLES_COMMAND,
+        BEGIN_SCISSOR_COMMAND,
+        END_SCISSOR_COMMAND
     };
 
     /** Get Render Command Id */
@@ -64,6 +66,13 @@ public:
     
     /** set transparent flag */
     inline void setTransparent(bool isTransparent) { _isTransparent = isTransparent; }
+    
+    /** templated execute method to avoid vtable lookup **/
+    template <class T>
+    inline void execute()
+    {
+        static_cast<T*>(this)->execute();
+    }
 
 protected:
     RenderCommand();
