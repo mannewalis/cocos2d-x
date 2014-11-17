@@ -52,7 +52,10 @@ public:
         PRIMITIVE_COMMAND,
         TRIANGLES_COMMAND,
         BEGIN_SCISSOR_COMMAND,
-        END_SCISSOR_COMMAND
+        END_SCISSOR_COMMAND,
+        BEGIN_STENCIL_COMMAND,
+        READY_STENCIL_COMMAND,
+        END_STENCIL_COMMAND
     };
 
     /** Get Render Command Id */

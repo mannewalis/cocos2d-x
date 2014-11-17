@@ -12,7 +12,7 @@
 NS_CC_BEGIN
 
 int ScissorCommand::_scissorCount = 0;
-Rect ScissorCommand::_currentClippingRegion;
+ScissorCommand::tClippingRegions ScissorCommand::_clippingRegions;
 
 BeginScissorCommand::BeginScissorCommand()
 {
@@ -23,30 +23,34 @@ void BeginScissorCommand::init(float depth, const Rect& clippingRegion, bool res
 {
     _globalOrder = depth;
     _clippingRegion = clippingRegion;
-    
-    if (0 < _scissorCount)
-        _previousClippingRegion = _currentClippingRegion;
-    
-    if (respectPreviousScissor)
-    {
-        //set the intersection of _parentScissorRect and frame as the new scissor rect
-        if (_clippingRegion.intersectsRect(_previousClippingRegion))
-        {
-            float x = MAX(_clippingRegion.origin.x, _previousClippingRegion.origin.x);
-            float y = MAX(_clippingRegion.origin.y, _previousClippingRegion.origin.y);
-            float xx = MIN(_clippingRegion.origin.x+_clippingRegion.size.width, _previousClippingRegion.origin.x+_previousClippingRegion.size.width);
-            float yy = MIN(_clippingRegion.origin.y+_clippingRegion.size.height, _previousClippingRegion.origin.y+_previousClippingRegion.size.height);
-            _clippingRegion = Rect(x, y, xx-x, yy-y);
-        }
-    }
-    
-    _currentClippingRegion = _clippingRegion;
+    _respectPreviousScissor = respectPreviousScissor;
 }
 
 void BeginScissorCommand::execute()
 {
     if (0 == _scissorCount)
         glEnable(GL_SCISSOR_TEST);
+    
+    if (0 < _scissorCount)
+    {
+        if (_respectPreviousScissor)
+        {
+            const auto previousClippingRegion = _clippingRegions.top();
+            
+            //set the intersection of _parentScissorRect and frame as the new scissor rect
+            if (_clippingRegion.intersectsRect(previousClippingRegion))
+            {
+                float x = MAX(_clippingRegion.origin.x, previousClippingRegion.origin.x);
+                float y = MAX(_clippingRegion.origin.y, previousClippingRegion.origin.y);
+                float xx = MIN(_clippingRegion.origin.x+_clippingRegion.size.width, previousClippingRegion.origin.x+previousClippingRegion.size.width);
+                float yy = MIN(_clippingRegion.origin.y+_clippingRegion.size.height, previousClippingRegion.origin.y+previousClippingRegion.size.height);
+                _clippingRegion = Rect(x, y, xx-x, yy-y);
+            }
+        }
+    }
+    
+    _clippingRegions.push(_clippingRegion);
+
     GLView* glView = Director::getInstance()->getOpenGLView();
     glView->setScissorInPoints(_clippingRegion.origin.x, _clippingRegion.origin.y, _clippingRegion.size.width, _clippingRegion.size.height);
     ++_scissorCount;
@@ -70,9 +74,10 @@ void EndScissorCommand::execute()
         glDisable(GL_SCISSOR_TEST);
     else
     {
+        _clippingRegions.pop();
+        const auto previousClippingRegion = _clippingRegions.top();
         GLView* glView = Director::getInstance()->getOpenGLView();
-        glView->setScissorInPoints(_previousClippingRegion.origin.x, _previousClippingRegion.origin.y, _previousClippingRegion.size.width, _previousClippingRegion.size.height);
-        _currentClippingRegion = _previousClippingRegion;
+        glView->setScissorInPoints(previousClippingRegion.origin.x, previousClippingRegion.origin.y, previousClippingRegion.size.width, previousClippingRegion.size.height);
     }
 }
 

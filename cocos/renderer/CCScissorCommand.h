@@ -26,6 +26,7 @@
  ****************************************************************************/
 
 #include "renderer/CCRenderCommand.h"
+#include <stack>
 
 NS_CC_BEGIN
 
@@ -47,15 +48,16 @@ protected:
     // @brief the scissor clipping region for counts > 0.
     Rect _clippingRegion;
     
-    // @brief the previous clipping region.
-    Rect _previousClippingRegion;
+    // @brief flag to respect previous clipping regions for nested scissors.
+    bool _respectPreviousScissor;
 
     // @brief tracks the number of nested scissor commands,
     // scissor is disabled when all commands have completed.
     static int _scissorCount;
     
     // @brief previous clipping region
-    static Rect _currentClippingRegion;
+    typedef std::stack<Rect> tClippingRegions;
+    static tClippingRegions _clippingRegions;
 };
 
 // @brief increments the scissor count and enables the scissor

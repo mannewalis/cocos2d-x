@@ -36,6 +36,7 @@
 #include "renderer/ccGLStateCache.h"
 #include "renderer/CCMeshCommand.h"
 #include "renderer/CCScissorCommand.h"
+#include "renderer/CCStencilCommand.h"
 #include "base/CCConfiguration.h"
 #include "base/CCDirector.h"
 #include "base/CCEventDispatcher.h"
@@ -457,6 +458,20 @@ void Renderer::visitRenderQueue(const RenderQueue& queue)
                 command->execute<EndScissorCommand>();
                 break;
                 
+            case RenderCommand::Type::BEGIN_STENCIL_COMMAND:
+                flush();
+                command->execute<BeginStencilCommand>();
+                break;
+                
+            case RenderCommand::Type::READY_STENCIL_COMMAND:
+                command->execute<ReadyStencilCommand>();
+                break;
+                
+            case RenderCommand::Type::END_STENCIL_COMMAND:
+                flush();
+                command->execute<EndStencilCommand>();
+                break;
+                
             default:
             {
                 CCLOGERROR("Unknown commands in renderQueue");
@@ -530,6 +545,20 @@ void Renderer::visitTransparentRenderQueue(const TransparentRenderQueue& queue)
             case RenderCommand::Type::END_SCISSOR_COMMAND:
                 flush();
                 command->execute<EndScissorCommand>();
+                break;
+                
+            case RenderCommand::Type::BEGIN_STENCIL_COMMAND:
+                flush();
+                command->execute<BeginStencilCommand>();
+                break;
+                
+            case RenderCommand::Type::READY_STENCIL_COMMAND:
+                command->execute<ReadyStencilCommand>();
+                break;
+                
+            case RenderCommand::Type::END_STENCIL_COMMAND:
+                flush();
+                command->execute<EndStencilCommand>();
                 break;
                 
             default:
