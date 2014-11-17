@@ -109,14 +109,15 @@ void StencilCommand::drawFullScreenQuadClearStencil()
 }
 
 
-void BeginStencilCommand::init(float depth, bool inverted, float alphaThreshold, Node* stencil)
+void BeginStencilCommand::init(float depth, bool inverted, float alphaThreshold, Node* stencil, bool clearStencil)
 {
     _globalOrder = depth;
     _inverted = inverted;
     _alphaThreshold = alphaThreshold;
     _stencil = stencil;
+    _clearStencil = clearStencil;
     
-    if (_alphaThreshold < 1)
+    if (_stencil && _alphaThreshold < 1)
     {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_MAC || CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
 #else
@@ -158,32 +159,29 @@ void BeginStencilCommand::execute()
 
     _stencilStates.push(state);
 
-    // disable depth test while drawing the stencil
-    //glDisable(GL_DEPTH_TEST);
-    // disable update to the depth buffer while drawing the stencil,
-    // as the stencil is not meant to be rendered in the real scene,
-    // it should never prevent something else to be drawn,
-    // only disabling depth buffer update should do
-    glDepthMask(GL_FALSE);
-    
-    ///////////////////////////////////
-    // CLEAR STENCIL BUFFER
-    
-    // manually clear the stencil buffer by drawing a fullscreen rectangle on it
-    // setup the stencil test func like this:
-    // for each pixel in the fullscreen rectangle
-    //     never draw it into the frame buffer
-    //     if not in inverted mode: set the current layer value to 0 in the stencil buffer
-    //     if in inverted mode: set the current layer value to 1 in the stencil buffer
-    glStencilFunc(GL_NEVER, state._mask_layer, state._mask_layer);
-    glStencilOp(!_inverted ? GL_ZERO : GL_REPLACE, GL_KEEP, GL_KEEP);
-    
-    // draw a fullscreen solid rectangle to clear the stencil buffer
-    drawFullScreenQuadClearStencil();
-    
-    ///////////////////////////////////
-    // DRAW CLIPPING STENCIL
-    
+    if (_clearStencil)
+    {
+        // disable depth test while drawing the stencil
+        //glDisable(GL_DEPTH_TEST);
+        // disable update to the depth buffer while drawing the stencil,
+        // as the stencil is not meant to be rendered in the real scene,
+        // it should never prevent something else to be drawn,
+        // only disabling depth buffer update should do
+        glDepthMask(GL_FALSE);
+        
+        // manually clear the stencil buffer by drawing a fullscreen rectangle on it
+        // setup the stencil test func like this:
+        // for each pixel in the fullscreen rectangle
+        //     never draw it into the frame buffer
+        //     if not in inverted mode: set the current layer value to 0 in the stencil buffer
+        //     if in inverted mode: set the current layer value to 1 in the stencil buffer
+        glStencilFunc(GL_NEVER, state._mask_layer, state._mask_layer);
+        glStencilOp(!_inverted ? GL_ZERO : GL_REPLACE, GL_KEEP, GL_KEEP);
+        
+        // draw a fullscreen solid rectangle to clear the stencil buffer
+        drawFullScreenQuadClearStencil();
+    }
+        
     // setup the stencil test func like this:
     // for each pixel in the stencil node
     //     never draw it into the frame buffer

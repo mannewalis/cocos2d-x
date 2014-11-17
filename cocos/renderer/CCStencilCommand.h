@@ -84,7 +84,7 @@ public:
     {
         _type = RenderCommand::Type::BEGIN_STENCIL_COMMAND;
     }
-    void init(float depth, bool inverted = false, float alphaThreshold = 0, Node* stencil = nullptr);
+    void init(float depth, bool inverted = false, float alphaThreshold = 0, Node* stencil = nullptr, bool clearStencil = true);
     void execute();
     
 protected:
@@ -92,6 +92,7 @@ protected:
     bool _inverted;
     float _alphaThreshold;
     Node* _stencil;
+    bool _clearStencil;
 };
 
 

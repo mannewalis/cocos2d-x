@@ -34,7 +34,6 @@ THE SOFTWARE.
 #include "base/CCProtocols.h"
 #include "renderer/CCTextureAtlas.h"
 #include "renderer/CCQuadCommand.h"
-#include "renderer/CCCustomCommand.h"
 
 NS_CC_BEGIN
 
