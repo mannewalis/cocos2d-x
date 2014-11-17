@@ -31,7 +31,6 @@
 #include "2d/CCNode.h"
 #include "platform/CCGL.h"
 #include "renderer/CCGroupCommand.h"
-#include "renderer/CCCustomCommand.h"
 #include "renderer/CCStencilCommand.h"
 
 NS_CC_BEGIN
