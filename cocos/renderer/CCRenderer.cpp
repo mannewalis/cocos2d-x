@@ -356,7 +356,7 @@ void Renderer::visitRenderQueue(const RenderQueue& queue)
     {
         auto command = queue[index];
         auto commandType = command->getType();
-        
+                
         switch (commandType)
         {
             case RenderCommand::Type::TRIANGLES_COMMAND:
@@ -463,8 +463,9 @@ void Renderer::visitRenderQueue(const RenderQueue& queue)
                 command->execute<BeginStencilCommand>();
                 break;
                 
-            case RenderCommand::Type::READY_STENCIL_COMMAND:
-                command->execute<ReadyStencilCommand>();
+            case RenderCommand::Type::AFTER_STENCIL_COMMAND:
+                flush();
+                command->execute<AfterStencilCommand>();
                 break;
                 
             case RenderCommand::Type::END_STENCIL_COMMAND:
@@ -552,8 +553,8 @@ void Renderer::visitTransparentRenderQueue(const TransparentRenderQueue& queue)
                 command->execute<BeginStencilCommand>();
                 break;
                 
-            case RenderCommand::Type::READY_STENCIL_COMMAND:
-                command->execute<ReadyStencilCommand>();
+            case RenderCommand::Type::AFTER_STENCIL_COMMAND:
+                command->execute<AfterStencilCommand>();
                 break;
                 
             case RenderCommand::Type::END_STENCIL_COMMAND:

@@ -37,23 +37,7 @@ class StencilCommand
     : public RenderCommand
 {
 protected:
-    
-    static void setProgram(Node *n, GLProgram *p)
-    {
-        n->setGLProgram(p);
-        
-        auto& children = n->getChildren();
-        for(const auto &child : children) {
-            setProgram(child, p);
-        }
-    }
-    
-protected:
-    
-    bool _inverted;
-    float _alphaThreshold;
-    Node* _stencil;
-    
+
     struct tStencilState
     {
         GLboolean _enabled;
@@ -75,6 +59,12 @@ protected:
         
         GLclampf _alphaTestRef;
     };
+
+    static void setProgram(Node *n, GLProgram *p);
+    tStencilState getCurrentState() const;
+    void drawFullScreenQuadClearStencil();
+
+protected:
     
     typedef std::stack<tStencilState> tStencilStates;
     static tStencilStates _stencilStates;
@@ -99,22 +89,27 @@ public:
     
 protected:
     
-    tStencilState getCurrentState() const;
-    void drawFullScreenQuadClearStencil();
+    bool _inverted;
+    float _alphaThreshold;
+    Node* _stencil;
 };
 
 
-class ReadyStencilCommand
+class AfterStencilCommand
     : public StencilCommand
 {
 public:
     
-    ReadyStencilCommand()
+    AfterStencilCommand()
     {
-        _type = RenderCommand::Type::READY_STENCIL_COMMAND;
+        _type = RenderCommand::Type::AFTER_STENCIL_COMMAND;
     }
-    void init(float depth);
+    void init(float depth, float alphaThreshold = 0);
     void execute();
+    
+protected:
+    
+    float _alphaThreshold;
 };
 
 

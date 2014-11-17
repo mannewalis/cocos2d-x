@@ -31,6 +31,7 @@
 #include "2d/CCNode.h"
 #include "platform/CCGL.h"
 #include "renderer/CCGroupCommand.h"
+#include "renderer/CCCustomCommand.h"
 #include "renderer/CCStencilCommand.h"
 
 NS_CC_BEGIN
@@ -51,7 +52,7 @@ public:
      The stencil node will be retained.
      */
     static ClippingNode* create(Node *stencil);
-
+    
     /** The Node to use as a stencil to do the clipping.
      The stencil node will be retained.
      This default to nil.
@@ -73,7 +74,7 @@ public:
      */
     bool isInverted() const;
     void setInverted(bool inverted);
-
+    
     // Overrides
     /**
      * @js NA
@@ -105,7 +106,7 @@ CC_CONSTRUCTOR_ACCESS:
      * @lua NA
      */
     virtual ~ClippingNode();
-
+    
     /** Initializes a clipping node without a stencil.
      */
     virtual bool init();
@@ -114,42 +115,21 @@ CC_CONSTRUCTOR_ACCESS:
      The stencil node will be retained, and its parent will be set to this clipping node.
      */
     virtual bool init(Node *stencil);
-
+    
 protected:
     /**draw fullscreen quad to clear stencil bits
-    */
-    //void drawFullScreenQuadClearStencil();
-
+     */
+    void drawFullScreenQuadClearStencil();
+    
     Node* _stencil;
     GLfloat _alphaThreshold;
     bool    _inverted;
-
-//    //renderData and callback
-//    void onBeforeVisit();
-//    void onAfterDrawStencil();
-//    void onAfterVisit();
-//
-//    GLboolean _currentStencilEnabled;
-//    GLuint _currentStencilWriteMask;
-//    GLenum _currentStencilFunc;
-//    GLint _currentStencilRef;
-//    GLuint _currentStencilValueMask;
-//    GLenum _currentStencilFail;
-//    GLenum _currentStencilPassDepthFail;
-//    GLenum _currentStencilPassDepthPass;
-//    GLboolean _currentDepthWriteMask;
-//
-//    GLboolean _currentAlphaTestEnabled;
-//    GLenum _currentAlphaTestFunc;
-//    GLclampf _currentAlphaTestRef;
-//
-//    GLint _mask_layer_le;
     
-    GroupCommand _groupCommand;
+    GroupCommand        _groupCommand;
     BeginStencilCommand _beginStencilCommand;
-    ReadyStencilCommand _readyStencilCommand;
-    EndStencilCommand _endStencilCommand;
-
+    AfterStencilCommand _afterStencilCommand;
+    EndStencilCommand   _endStencilCommand;
+    
 private:
     CC_DISALLOW_COPY_AND_ASSIGN(ClippingNode);
 };
