@@ -301,5 +301,21 @@ To enable set it to a value different than 0. Disabled by default.
 #ifndef CC_CONSTRUCTOR_ACCESS
 #define CC_CONSTRUCTOR_ACCESS protected
 #endif
- 
+
+/** @def CC_ENABLE_ALLOCATOR
+ Turn on creation of global allocator and pool allocators.
+ When disabled, CC_NEW, CC_DELETE, CC_MALLOC, and CC_FREE essentially call new, delete, malloc and free.
+ When enabled, extra parameters can be used to tag memory and point to different allocator implementations.
+ */
+#ifndef CC_ENABLE_ALLOCATOR
+#define CC_ENABLE_ALLOCATOR 1
+#endif
+
+/** @def CC_OVERRIDE_GLOBAL_NEW_DELETE
+ Turn on overriding of new and delete with the default allocator
+ */
+#ifndef CC_OVERRIDE_GLOBAL_NEW_DELETE
+#define CC_OVERRIDE_GLOBAL_NEW_DELETE cocos2d::allocator::Allocator<>
+#endif
+
 #endif // __CCCONFIG_H__

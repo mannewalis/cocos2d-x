@@ -22,10 +22,9 @@ from argparse import ArgumentParser
 if sys.platform == 'win32':
     import _winreg
 
-TESTS_PROJ_PATH = "tests/lua-tests"
-ANDROID_SO_PATH = "project/proj.android/libs"
-ANDROID_A_PATH = "project/proj.android/obj/local"
-MK_PATH = "project/proj.android/jni/Application.mk"
+ANDROID_SO_PATH = "frameworks/runtime-src/proj.android/libs"
+ANDROID_A_PATH = "frameworks/runtime-src/proj.android/obj/local"
+MK_PATH = "frameworks/runtime-src/proj.android/jni/Application.mk"
 CONSOLE_PATH = "tools/cocos2d-console/bin"
 
 def os_is_win32():
@@ -56,7 +55,7 @@ class Generator(object):
 
     def __init__(self, args):
         self.need_clean = args.need_clean
-        self.disable_strip = args.disable_strip
+        self.enable_strip = args.enable_strip
         self.use_incredibuild = args.use_incredibuild
         self.tool_dir = os.path.realpath(os.path.dirname(__file__))
         self.no_android = args.no_android
@@ -81,26 +80,27 @@ class Generator(object):
             file_obj.close()
 
     def build_android(self):
-        # build .a for android
+        # build .so for android
+        language = "lua"
+
         console_dir = os.path.join(self.engine_dir, CONSOLE_PATH)
         cmd_path = os.path.join(console_dir, "cocos")
-        proj_path = os.path.join(self.engine_dir, TESTS_PROJ_PATH)
+        proj_name = "My%sGame" % language
+        proj_path = os.path.join(self.engine_dir, proj_name)
+        if os.path.exists(proj_path):
+            shutil.rmtree(proj_path)
+
+        # create a runtime project
+        create_cmd = "%s new -l %s -t runtime -d %s %s" % (cmd_path, language, self.engine_dir, proj_name)
+        run_shell(create_cmd)
 
         # Add multi ABI in Application.mk
         mk_file = os.path.join(proj_path, MK_PATH)
-        f = open(mk_file)
-        file_content = f.read()
-        f.close()
-
         self.modify_mk(mk_file)
 
         # build it
         build_cmd = "%s compile -s %s -p android --ndk-mode release -j 4" % (cmd_path, proj_path)
         run_shell(build_cmd)
-
-        f = open(mk_file, "w")
-        f.write(file_content)
-        f.close()
 
         # copy .a to prebuilt dir
         obj_dir = os.path.join(proj_path, ANDROID_A_PATH)
@@ -114,16 +114,16 @@ class Generator(object):
         }
         excopy.copy_files_with_config(copy_cfg, obj_dir, prebuilt_dir)
 
-        if not self.disable_strip:
+        if self.enable_strip:
             # strip the android libs
             ndk_root = os.environ["NDK_ROOT"]
             if os_is_win32():
                 if self.is_32bit_windows():
-                    bit_str = ""
+                    bit_str = "x86"
                 else:
-                    bit_str = "-x86_64"
+                    bit_str = "x86_64"
 
-                sys_folder_name = "windows%s" % bit_str
+                sys_folder_name = "windows-%s" % bit_str
             elif os_is_mac():
                 sys_folder_name = "darwin-x86_64"
 
@@ -131,6 +131,9 @@ class Generator(object):
             if os.path.exists(strip_cmd_path):
                 strip_cmd = "%s -S %s/armeabi*/*.a" % (strip_cmd_path, prebuilt_dir)
                 run_shell(strip_cmd)
+
+        # remove the project
+        shutil.rmtree(proj_path)
 
     def get_required_vs_version(self, proj_file):
         # get the VS version required by the project
@@ -318,7 +321,7 @@ class Generator(object):
             shutil.rmtree(ios_sim_libs_dir)
             shutil.rmtree(ios_dev_libs_dir)
 
-            if not self.disable_strip:
+            if self.enable_strip:
                 # strip the libs
                 ios_strip_cmd = "xcrun -sdk iphoneos strip -S %s/*.a" % ios_out_dir
                 run_shell(ios_strip_cmd)
@@ -347,7 +350,7 @@ if __name__ == "__main__":
     parser = ArgumentParser(description="Generate prebuilt engine for Cocos Engine.")
     parser.add_argument('-c', dest='need_clean', action="store_true", help='Remove the \"prebuilt\" directory first.')
     parser.add_argument('-n', "--no-android", dest='no_android', action="store_true", help='Not build android libs.')
-    parser.add_argument('-d', "--disable-strip", dest='disable_strip', action="store_true", help='Disable the strip of the generated libs.')
+    parser.add_argument('-s', "--strip", dest='enable_strip', action="store_true", help='Strip the generated libs.')
     parser.add_argument('-i', "--incredibuild", dest='use_incredibuild', action="store_true", help='Use incredibuild to build win32 projects. Only available on windows.')
     (args, unknown) = parser.parse_known_args()
 
