@@ -128,11 +128,10 @@ namespace cocos2d {
 }
 
 AudioEngineImpl::AudioEngineImpl()
-: _lazyInitLoop(true)
+: _threadPool(nullptr)
+, _lazyInitLoop(true)
 , _currentAudioID(0)
-, _threadPool(nullptr)
 {
-    
 }
 
 AudioEngineImpl::~AudioEngineImpl()
@@ -229,7 +228,7 @@ int AudioEngineImpl::play2d(const std::string &filePath ,bool loop ,float volume
         _lazyInitLoop = false;
         
         auto scheduler = cocos2d::Director::getInstance()->getScheduler();
-        scheduler->schedule(schedule_selector(AudioEngineImpl::update), this, 0.05f, false);
+        scheduler->schedule(CC_SCHEDULE_SELECTOR(AudioEngineImpl::update), this, 0.05f, false);
     }
     
     return _currentAudioID++;
@@ -340,7 +339,7 @@ bool AudioEngineImpl::stop(int audioID)
         }
     }
     
-    alSourcei(player._alSource, AL_BUFFER, NULL);
+    alSourcei(player._alSource, AL_BUFFER, 0);
     
     _alSourceUsed[player._alSource] = false;
     _audioPlayers.erase(audioID);
@@ -353,7 +352,7 @@ void AudioEngineImpl::stopAll()
     for(int index = 0; index < MAX_AUDIOINSTANCES; ++index)
     {
         alSourceStop(_alSources[index]);
-        alSourcei(_alSources[index], AL_BUFFER, NULL);
+        alSourcei(_alSources[index], AL_BUFFER, 0);
         _alSourceUsed[_alSources[index]] = false;
     }
     
@@ -487,7 +486,7 @@ void AudioEngineImpl::update(float dt)
         _lazyInitLoop = true;
         
         auto scheduler = cocos2d::Director::getInstance()->getScheduler();
-        scheduler->unschedule(schedule_selector(AudioEngineImpl::update), this);
+        scheduler->unschedule(CC_SCHEDULE_SELECTOR(AudioEngineImpl::update), this);
     }
 }
 

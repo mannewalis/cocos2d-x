@@ -31,6 +31,16 @@ THE SOFTWARE.
 #include "base/ObjectFactory.h"
 #include "cocostudio/CocosStudioExport.h"
 
+namespace protocolbuffers
+{
+    class NodeTree;
+}
+
+namespace tinyxml2
+{
+    class XMLElement;
+}
+
 namespace cocostudio {
     
     class CocoLoader;
@@ -218,7 +228,7 @@ public:
     
     virtual void setPropsForAllCustomWidgetFromJsonDictionary(const std::string& classType,
                                                               cocos2d::ui::Widget* widget,
-                                                              const rapidjson::Value& customOptions);
+                                                              const rapidjson::Value& customOptions);        
 };
 
 

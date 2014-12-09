@@ -13,41 +13,6 @@
         {
             "from": "../../../res",
             "to": "res"
-        },
-        {
-            "from": "../../cocos2d-x/cocos/scripting/lua-bindings/script/cocos2d",
-            "to": ""
-        },
-        {
-            "from": "../../cocos2d-x/cocos/scripting/lua-bindings/script/cocosdenshion",
-            "to": ""
-        },
-        {
-            "from": "../../cocos2d-x/cocos/scripting/lua-bindings/script/cocosbuilder",
-            "to": ""
-        },
-        {
-            "from": "../../cocos2d-x/cocos/scripting/lua-bindings/script/cocostudio",
-            "to": ""
-        },
-        {
-            "from": "../../cocos2d-x/cocos/scripting/lua-bindings/script/extension",
-            "to": ""
-        },
-        {
-            "from": "../../cocos2d-x/cocos/scripting/lua-bindings/script/network",
-            "to": ""
-        },
-        {
-            "from": "../../cocos2d-x/cocos/scripting/lua-bindings/script/ui",
-            "to": ""
-        },
-        {
-            "from": "../../cocos2d-x/external/lua/luasocket",
-            "to": "",
-            "include": [
-                "*.lua"
-            ]
         }
     ]
 }

@@ -80,7 +80,10 @@ static std::function<Layer*()> createFunctions[] =
     CL(LabelIssue4428Test),
     CL(LabelIssue4999Test),
     CL(LabelLineHeightTest),
-    CL(LabelAdditionalKerningTest)
+    CL(LabelAdditionalKerningTest),
+    CL(LabelIssue8492Test),
+    CL(LabelMultilineWithOutline),
+    CL(LabelIssue9255Test)
 };
 
 #define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
@@ -231,7 +234,7 @@ LabelFNTColorAndOpacity::LabelFNTColorAndOpacity()
     label2->setPosition( VisibleRect::center() );
     label3->setPosition( VisibleRect::rightTop() );
     
-    schedule( schedule_selector(LabelFNTColorAndOpacity::step) );//:@selector(step:)];
+    schedule(CC_CALLBACK_1(LabelFNTColorAndOpacity::step, this), "step_key");
 }
 
 void LabelFNTColorAndOpacity::step(float dt)
@@ -313,7 +316,7 @@ LabelFNTSpriteActions::LabelFNTSpriteActions()
     auto lastChar = (Sprite*) label2->getLetter(3);
     lastChar->runAction( rot_4ever->clone() );
     
-    schedule( schedule_selector(LabelFNTSpriteActions::step), 0.1f);
+    schedule(CC_CALLBACK_1(LabelFNTSpriteActions::step, this), 0.1f, "step_key");
 }
 
 void LabelFNTSpriteActions::step(float dt)
@@ -504,7 +507,7 @@ LabelFNTandTTFEmpty::LabelFNTandTTFEmpty()
     addChild(label3, 0, kTagBitmapAtlas3);
     label3->setPosition(Vec2(s.width/2, 100));
 
-    schedule(schedule_selector(LabelFNTandTTFEmpty::updateStrings), 1.0f);
+    schedule(CC_CALLBACK_1(LabelFNTandTTFEmpty::updateStrings, this), 1.0f, "update_strings_key");
 
     setEmpty = false;
 }
@@ -1356,7 +1359,7 @@ LabelCharMapTest::LabelCharMapTest()
     label2->setPosition( Vec2(10,200) );
     label2->setOpacity( 32 );
 
-    schedule(schedule_selector(LabelCharMapTest::step)); 
+    schedule(CC_CALLBACK_1(LabelCharMapTest::step, this), "step_key");
 }
 
 void LabelCharMapTest::step(float dt)
@@ -1411,7 +1414,7 @@ LabelCharMapColorTest::LabelCharMapColorTest()
 
     _time = 0;
 
-    schedule( schedule_selector(LabelCharMapColorTest::step) ); //:@selector(step:)];
+    schedule(CC_CALLBACK_1(LabelCharMapColorTest::step, this), "step_key");
 }
 
 void LabelCharMapColorTest::actionFinishCallback()
@@ -1813,4 +1816,64 @@ std::string LabelAdditionalKerningTest::title() const
 std::string LabelAdditionalKerningTest::subtitle() const
 {
     return "Testing additional kerning of label";
+}
+
+LabelIssue8492Test::LabelIssue8492Test()
+{
+    auto label = Label::createWithBMFont("fonts/bitmapFontChinese.fnt", "中国中国中国中国中国");
+    label->setDimensions(5,100);
+    label->setPosition(VisibleRect::center());
+    addChild(label);
+}
+
+std::string LabelIssue8492Test::title() const
+{
+    return "Reorder issue #8492";
+}
+
+std::string LabelIssue8492Test::subtitle() const
+{
+    return "Work fine when dimensions are not enough to fit one character";
+}
+
+LabelMultilineWithOutline::LabelMultilineWithOutline()
+{
+    auto label =  Label::createWithTTF("Multiline txet\nwith\noutline feature", "fonts/arial.ttf", 24);
+    label->enableOutline(Color4B::ORANGE,1);
+    label->setPosition(VisibleRect::center());
+    addChild(label);
+}
+
+std::string LabelMultilineWithOutline::title() const
+{
+    return "Reorder issue #9095";
+}
+
+std::string LabelMultilineWithOutline::subtitle() const
+{
+    return "end in string 'outline feature'";
+}
+
+
+LabelIssue9255Test::LabelIssue9255Test()
+{
+    Size s = Director::getInstance()->getWinSize();
+    auto parent = Node::create();
+    parent->setPosition(s.width/2, s.height/2);
+    parent->setVisible(false);
+    this->addChild(parent);
+
+    auto label =  Label::createWithTTF("Crashed!!!", "fonts/HKYuanMini.ttf", 24);
+    label->setPosition(VisibleRect::center());
+    parent->addChild(label);
+}
+
+std::string LabelIssue9255Test::title() const
+{
+    return "Test for Issue #9255";
+}
+
+std::string LabelIssue9255Test::subtitle() const
+{
+    return "switch to desktop and switch back. Crashed!!!";
 }

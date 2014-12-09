@@ -5,7 +5,21 @@
 
 --------------------------------
 --  Clone a action with the specified name from the container. 
--- @function [parent=#ActionTimelineCache] createAction 
+-- @function [parent=#ActionTimelineCache] createActionFromJson 
+-- @param self
+-- @param #string fileName
+-- @return ActionTimeline#ActionTimeline ret (return value: ccs.ActionTimeline)
+        
+--------------------------------
+-- 
+-- @function [parent=#ActionTimelineCache] createActionWithFlatBuffersFile 
+-- @param self
+-- @param #string fileName
+-- @return ActionTimeline#ActionTimeline ret (return value: ccs.ActionTimeline)
+        
+--------------------------------
+-- 
+-- @function [parent=#ActionTimelineCache] loadAnimationActionWithFlatBuffersFile 
 -- @param self
 -- @param #string fileName
 -- @return ActionTimeline#ActionTimeline ret (return value: ccs.ActionTimeline)
@@ -22,17 +36,17 @@
         
 --------------------------------
 -- 
--- @function [parent=#ActionTimelineCache] loadAnimationActionWithContent 
+-- @function [parent=#ActionTimelineCache] loadAnimationActionWithFile 
 -- @param self
 -- @param #string fileName
--- @param #string content
 -- @return ActionTimeline#ActionTimeline ret (return value: ccs.ActionTimeline)
         
 --------------------------------
 -- 
--- @function [parent=#ActionTimelineCache] loadAnimationActionWithFile 
+-- @function [parent=#ActionTimelineCache] loadAnimationActionWithContent 
 -- @param self
 -- @param #string fileName
+-- @param #string content
 -- @return ActionTimeline#ActionTimeline ret (return value: ccs.ActionTimeline)
         
 --------------------------------
@@ -45,5 +59,12 @@
 --  Destroys the singleton 
 -- @function [parent=#ActionTimelineCache] destroyInstance 
 -- @param self
+        
+--------------------------------
+-- 
+-- @function [parent=#ActionTimelineCache] createAction 
+-- @param self
+-- @param #string fileName
+-- @return ActionTimeline#ActionTimeline ret (return value: ccs.ActionTimeline)
         
 return nil

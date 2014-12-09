@@ -37,7 +37,7 @@ THE SOFTWARE.
 #include "base/CCDirector.h"
 #include "base/CCScheduler.h"
 #include "base/CCEventDispatcher.h"
-#include "base/CCCamera.h"
+#include "2d/CCCamera.h"
 #include "2d/CCActionManager.h"
 #include "2d/CCScene.h"
 #include "2d/CCComponent.h"
@@ -59,6 +59,8 @@ THE SOFTWARE.
 #else
 #define RENDER_IN_SUBPIXEL(__ARGS__) (ceil(__ARGS__))
 #endif
+
+extern int g_physicsSceneCount;
 
 NS_CC_BEGIN
 
@@ -82,16 +84,18 @@ Node::Node(void)
 , _scaleX(1.0f)
 , _scaleY(1.0f)
 , _scaleZ(1.0f)
-, _positionZ(0.0f)
 , _position(Vec2::ZERO)
+, _positionZ(0.0f)
+, _usingNormalizedPosition(false)
+, _normalizedPositionDirty(false)
 , _skewX(0.0f)
 , _skewY(0.0f)
 , _anchorPointInPoints(Vec2::ZERO)
 , _anchorPoint(Vec2::ZERO)
 , _contentSize(Size::ZERO)
-, _useAdditionalTransform(false)
 , _transformDirty(true)
 , _inverseDirty(true)
+, _useAdditionalTransform(false)
 , _transformUpdated(true)
 // children (lazy allocs)
 // lazy alloc
@@ -100,6 +104,8 @@ Node::Node(void)
 , _parent(nullptr)
 // "whole screen" objects. like Scenes and Layers, should set _ignoreAnchorPointForPosition to true
 , _tag(Node::INVALID_TAG)
+, _name("")
+, _hashOfName(0)
 // userData is always inited as nil
 , _userData(nullptr)
 , _userObject(nullptr)
@@ -125,10 +131,6 @@ Node::Node(void)
 , _realColor(Color3B::WHITE)
 , _cascadeColorEnabled(false)
 , _cascadeOpacityEnabled(false)
-, _usingNormalizedPosition(false)
-, _normalizedPositionDirty(false)
-, _name("")
-, _hashOfName(0)
 , _cameraMask(1)
 {
     // set default scheduler and actionManager
@@ -215,7 +217,7 @@ void Node::cleanup()
 {
     // actions
     this->stopAllActions();
-    this->unscheduleAllSelectors();
+    this->unscheduleAllCallbacks();
 
 #if CC_ENABLE_SCRIPT_BINDING
     if ( _scriptType != kScriptTypeNone)
@@ -425,7 +427,13 @@ void Node::setScale(float scale)
     _transformUpdated = _transformDirty = _inverseDirty = true;
     
 #if CC_USE_PHYSICS
-    updatePhysicsBodyTransform(getScene());
+    if(g_physicsSceneCount == 0)
+        return;
+    auto scene = getScene();
+    if (!scene || scene->getPhysicsWorld())
+    {
+        updatePhysicsBodyTransform(scene);
+    }
 #endif
 }
 
@@ -446,7 +454,13 @@ void Node::setScale(float scaleX,float scaleY)
     _transformUpdated = _transformDirty = _inverseDirty = true;
     
 #if CC_USE_PHYSICS
-    updatePhysicsBodyTransform(getScene());
+    if(g_physicsSceneCount == 0)
+        return;
+    auto scene = getScene();
+    if (!scene || scene->getPhysicsWorld())
+    {
+        updatePhysicsBodyTransform(scene);
+    }
 #endif
 }
 
@@ -460,7 +474,13 @@ void Node::setScaleX(float scaleX)
     _transformUpdated = _transformDirty = _inverseDirty = true;
     
 #if CC_USE_PHYSICS
-    updatePhysicsBodyTransform(getScene());
+    if(g_physicsSceneCount == 0)
+        return;
+    auto scene = getScene();
+    if (!scene || scene->getPhysicsWorld())
+    {
+        updatePhysicsBodyTransform(scene);
+    }
 #endif
 }
 
@@ -503,7 +523,13 @@ void Node::setScaleY(float scaleY)
     _transformUpdated = _transformDirty = _inverseDirty = true;
     
 #if CC_USE_PHYSICS
-    updatePhysicsBodyTransform(getScene());
+    if(g_physicsSceneCount == 0)
+        return;
+    auto scene = getScene();
+    if (!scene || scene->getPhysicsWorld())
+    {
+        updatePhysicsBodyTransform(scene);
+    }
 #endif
 }
 
@@ -794,7 +820,13 @@ Scene* Node::getScene() const
     if(!_parent)
         return nullptr;
     
-    return _parent->getScene();
+    auto sceneNode = _parent;
+    while (sceneNode->_parent)
+    {
+        sceneNode = sceneNode->_parent;
+    }
+
+    return dynamic_cast<Scene*>(sceneNode);
 }
 
 Rect Node::getBoundingBox() const
@@ -993,8 +1025,8 @@ void Node::addChildHelper(Node* child, int localZOrder, int tag, const std::stri
     
 #if CC_USE_PHYSICS
     // Recursive add children with which have physics body.
-    Scene* scene = this->getScene();
-    if (scene != nullptr && scene->getPhysicsWorld() != nullptr)
+    auto scene = this->getScene();
+    if (scene && scene->getPhysicsWorld())
     {
         child->updatePhysicsBodyTransform(scene);
         scene->addChildToPhysicsWorld(child);
@@ -1100,6 +1132,21 @@ void Node::removeAllChildren()
     this->removeAllChildrenWithCleanup(true);
 }
 
+#if CC_USE_PHYSICS
+void Node::removeFromPhysicsWorld()
+{
+    if (_physicsBody != nullptr)
+    {
+        _physicsBody->removeFromWorld();
+    }
+
+    for (auto child : _children)
+    {
+        child->removeFromPhysicsWorld();
+    }
+}
+#endif
+
 void Node::removeAllChildrenWithCleanup(bool cleanup)
 {
     // not using detachChild improves speed here
@@ -1115,10 +1162,7 @@ void Node::removeAllChildrenWithCleanup(bool cleanup)
         }
 
 #if CC_USE_PHYSICS
-        if (child->_physicsBody != nullptr)
-        {
-            child->_physicsBody->removeFromWorld();
-        }
+        child->removeFromPhysicsWorld();
 #endif
 
         if (cleanup)
@@ -1144,11 +1188,7 @@ void Node::detachChild(Node *child, ssize_t childIndex, bool doCleanup)
     }
     
 #if CC_USE_PHYSICS
-    if (child->_physicsBody != nullptr)
-    {
-        child->_physicsBody->removeFromWorld();
-    }
-    
+    child->removeFromPhysicsWorld();
 #endif
 
     // If you don't do cleanup, the child's actions will not get removed and the
@@ -1481,7 +1521,7 @@ ssize_t Node::getNumberOfRunningActions() const
 void Node::setScheduler(Scheduler* scheduler)
 {
     if( scheduler != _scheduler ) {
-        this->unscheduleAllSelectors();
+        this->unscheduleAllCallbacks();
         CC_SAFE_RETAIN(scheduler);
         CC_SAFE_RELEASE(_scheduler);
         _scheduler = scheduler;
@@ -1491,6 +1531,11 @@ void Node::setScheduler(Scheduler* scheduler)
 bool Node::isScheduled(SEL_SCHEDULE selector)
 {
     return _scheduler->isScheduled(selector, this);
+}
+
+bool Node::isScheduled(const std::string &key)
+{
+    return _scheduler->isScheduled(key, this);
 }
 
 void Node::scheduleUpdate()
@@ -1529,12 +1574,12 @@ void Node::unscheduleUpdate()
 
 void Node::schedule(SEL_SCHEDULE selector)
 {
-    this->schedule(selector, 0.0f, kRepeatForever, 0.0f);
+    this->schedule(selector, 0.0f, CC_REPEAT_FOREVER, 0.0f);
 }
 
 void Node::schedule(SEL_SCHEDULE selector, float interval)
 {
-    this->schedule(selector, interval, kRepeatForever, 0.0f);
+    this->schedule(selector, interval, CC_REPEAT_FOREVER, 0.0f);
 }
 
 void Node::schedule(SEL_SCHEDULE selector, float interval, unsigned int repeat, float delay)
@@ -1545,9 +1590,29 @@ void Node::schedule(SEL_SCHEDULE selector, float interval, unsigned int repeat, 
     _scheduler->schedule(selector, this, interval , repeat, delay, !_running);
 }
 
+void Node::schedule(const std::function<void(float)> &callback, const std::string &key)
+{
+    _scheduler->schedule(callback, this, 0, !_running, key);
+}
+
+void Node::schedule(const std::function<void(float)> &callback, float interval, const std::string &key)
+{
+    _scheduler->schedule(callback, this, interval, !_running, key);
+}
+
+void Node::schedule(const std::function<void(float)>& callback, float interval, unsigned int repeat, float delay, const std::string &key)
+{
+    _scheduler->schedule(callback, this, interval, repeat, delay, !_running, key);
+}
+
 void Node::scheduleOnce(SEL_SCHEDULE selector, float delay)
 {
     this->schedule(selector, 0.0f, 0, delay);
+}
+
+void Node::scheduleOnce(const std::function<void(float)> &callback, float delay, const std::string &key)
+{
+    _scheduler->schedule(callback, this, 0, 0, delay, !_running, key);
 }
 
 void Node::unschedule(SEL_SCHEDULE selector)
@@ -1559,7 +1624,12 @@ void Node::unschedule(SEL_SCHEDULE selector)
     _scheduler->unschedule(selector, this);
 }
 
-void Node::unscheduleAllSelectors()
+void Node::unschedule(const std::string &key)
+{
+    _scheduler->unschedule(key, this);
+}
+
+void Node::unscheduleAllCallbacks()
 {
     _scheduler->unscheduleAllForTarget(this);
 }
@@ -1920,14 +1990,14 @@ void Node::updatePhysicsBodyPosition(Scene* scene)
 {
     if (_physicsBody != nullptr)
     {
-        if (scene != nullptr && scene->getPhysicsWorld() != nullptr)
+        if (scene && scene->getPhysicsWorld())
         {
-            Vec2 pos = getParent() == scene ? getPosition() : scene->convertToNodeSpace(_parent->convertToWorldSpace(getPosition()));
+            Vec2 pos = _parent == scene ? _position : scene->convertToNodeSpace(_parent->convertToWorldSpace(_position));
             _physicsBody->setPosition(pos);
         }
         else
         {
-            _physicsBody->setPosition(getPosition());
+            _physicsBody->setPosition(_position);
         }
     }
     
@@ -1944,7 +2014,7 @@ void Node::updatePhysicsBodyRotation(Scene* scene)
         if (scene != nullptr && scene->getPhysicsWorld() != nullptr)
         {
             float rotation = _rotationZ_X;
-            for (Node* parent = _parent; parent != scene; parent = parent->getParent())
+            for (Node* parent = _parent; parent != scene; parent = parent->_parent)
             {
                 rotation += parent->getRotation();
             }
@@ -1971,10 +2041,10 @@ void Node::updatePhysicsBodyScale(Scene* scene)
         {
             float scaleX = _scaleX / _physicsScaleStartX;
             float scaleY = _scaleY / _physicsScaleStartY;
-            for (Node* parent = _parent; parent != scene; parent = parent->getParent())
+            for (Node* parent = _parent; parent != scene; parent = parent->_parent)
             {
-                scaleX *= parent->getScaleX();
-                scaleY *= parent->getScaleY();
+                scaleX *= parent->_scaleX;
+                scaleY *= parent->_scaleY;
             }
             _physicsBody->setScale(scaleX, scaleY);
         }
