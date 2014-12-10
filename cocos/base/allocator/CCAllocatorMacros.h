@@ -33,9 +33,6 @@
 // printf is safe to use
 #define LOG printf
 
-// make things a little shorter
-#define CONF Configuration::getInstance()->getValue
-
 // namespace allocator {}
 #ifdef __cplusplus
     #define NS_CC_ALLOCATOR_BEGIN   namespace allocator {
@@ -99,7 +96,7 @@
     #define CC_FREE(address) free(address)
 
     // alloc on the stack
-    #define CC_ALOCA(size) alloca(size)
+    #define CC_ALLOCA(size) alloca(size)
 
     // throw these away if not enabled
     #define CC_USE_ALLOCATOR_POOL(...)
