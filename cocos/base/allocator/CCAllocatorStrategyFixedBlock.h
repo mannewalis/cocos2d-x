@@ -37,7 +37,10 @@
 #include "base/allocator/CCAllocatorMacros.h"
 #include "base/allocator/CCAllocatorGlobal.h"
 #include "base/allocator/CCAllocatorMutex.h"
+#include "base/allocator/CCAllocatorDiagnostics.h"
 #include <vector>
+#include <typeinfo>
+#include <sstream>
 
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
@@ -68,10 +71,18 @@ public:
         : _list(nullptr)
         , _pages(nullptr)
         , _available(0)
-    {}
+    {
+#if CC_ENABLE_ALLOCATOR_DIAGNOSTICS
+        AllocatorDiagnostics::instance()->trackAllocator(this);
+#endif
+    }
     
     virtual ~AllocatorStrategyFixedBlock()
     {
+#if CC_ENABLE_ALLOCATOR_DIAGNOSTICS
+        AllocatorDiagnostics::instance()->untrackAllocator(this);
+#endif
+
         CC_ASSERT(0 == _available); // assert if we didn't free all the blocks before destroying the allocator.
         do
         {
@@ -134,6 +145,15 @@ public:
         return false;
 #endif
     }
+    
+#if CC_ENABLE_ALLOCATOR_DIAGNOSTICS
+    std::string diagnostics() const
+    {
+        std::stringstream s;
+        s << typeid(AllocatorStrategyFixedBlock).name() << "count:" << _available << "\n";
+        return s.str();
+    }
+#endif
     
 protected:
     
