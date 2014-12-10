@@ -49,6 +49,12 @@ public:
     // we can now use kDefault alignment as our smallest alloc size
     static_assert(sizeof(uintptr_t) <= kDefaultAlignment, "pointer size must be smaller than default alignment");
     
+#if CC_ENABLE_ALLOCATOR_DIAGNOSTICS
+    AllocatorBase()
+        : _next_allocator(nullptr)
+    {}
+#endif
+    
     virtual ~AllocatorBase()
     {}
     
@@ -64,7 +70,7 @@ public:
     // Most blocks requested are already a power of two. For small block alloc
     // this means we cannot add overhead, hence the slightly less performant
     // searching of fixed block pages to determine size if none is specified.
-    size_t nextPow2BlockSize(size_t size) const
+    CC_ALLOCATOR_INLINE size_t nextPow2BlockSize(size_t size) const
     {
         --size;
         size |= size >> 1;
@@ -74,6 +80,15 @@ public:
         size |= size >> 16;
         return ++size;
     }
+    
+#if CC_ENABLE_ALLOCATOR_DIAGNOSTICS
+    // @brief return any diagnostic info for this allocator
+    virtual std::string diagnostics() const
+    {
+        return "";
+    }
+    AllocatorBase* _next_allocator;
+#endif//CC_ENABLE_ALLOCATOR_DIAGNOSTICS
 };
 
 NS_CC_ALLOCATOR_END

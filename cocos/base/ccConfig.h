@@ -307,18 +307,24 @@ To enable set it to a value different than 0. Disabled by default.
  as specified by CC_ALLOCATOR_GLOBAL below.
  */
 #ifndef CC_ENABLE_ALLOCATOR
-# define CC_ENABLE_ALLOCATOR 0
+# define CC_ENABLE_ALLOCATOR 1
+#endif
+
+/** @def CC_ENABLE_ALLOCATOR_DIAGNOSTICS
+ Turn on debugging of allocators. This is slower, uses 
+ more memory, and should not be used for production builds.
+ */
+#ifndef CC_ENABLE_ALLOCATOR_DIAGNOSTICS
+# define CC_ENABLE_ALLOCATOR_DIAGNOSTICS 1
 #endif
 
 /** @def CC_ENABLE_ALLOCATOR_GLOBAL_NEW_DELETE
  Turn on override of global new and delete 
  as specified by CC_ALLOCATOR_GLOBAL_NEW_DELETE below.
  */
-#if CC_ENABLE_ALLOCATOR
-# ifndef CC_ENABLE_ALLOCATOR_GLOBAL_NEW_DELETE
-#  define CC_ENABLE_ALLOCATOR_GLOBAL_NEW_DELETE 0
+#ifndef CC_ENABLE_ALLOCATOR_GLOBAL_NEW_DELETE
+# define CC_ENABLE_ALLOCATOR_GLOBAL_NEW_DELETE 1
 # endif//CC_ENABLE_ALLOCATOR_GLOBAL_NEW_DELETE
-#endif//CC_ENABLE_ALLOCATOR
 
 /** @def CC_ALLOCATOR_GLOBAL
  Specify allocator to use for global allocator

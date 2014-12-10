@@ -67,30 +67,36 @@ public:
     
     AllocatorStrategyGlobalSmallBlock()
     {
-        memset(_smallBlockAllocators, 0, sizeof(_smallBlockAllocators));
-        
-        // cannot call new on the allocator here because it will recurse
-        // so instead we allocate from the global allocator and construct in place.
-        #define SBA(n, size) \
-        { \
-            auto v = ccAllocatorGlobal.allocate(sizeof(SType(size))); \
-            _smallBlockAllocators[n] = (void*)(new (v) SType(size)); \
+        static bool once = true;
+        if (once)
+        {
+            once = false;
+            
+            memset(_smallBlockAllocators, 0, sizeof(_smallBlockAllocators));
+            
+            // cannot call new on the allocator here because it will recurse
+            // so instead we allocate from the global allocator and construct in place.
+            #define SBA(n, size) \
+            { \
+                auto v = ccAllocatorGlobal.allocate(sizeof(SType(size))); \
+                _smallBlockAllocators[n] = (void*)(new (v) SType(size)); \
+            }
+            
+            SBA(2,  4);
+            SBA(3,  8);
+            SBA(4,  16);
+            SBA(5,  32);
+            SBA(6,  64);
+            SBA(7,  128);
+            SBA(8,  256);
+            SBA(9,  512);
+            SBA(10, 1024);
+            SBA(11, 2048);
+            SBA(12, 4096);
+            SBA(13, 8192);
+            
+            #undef SBA
         }
-        
-        SBA(2,  4);
-        SBA(3,  8);
-        SBA(4,  16);
-        SBA(5,  32);
-        SBA(6,  64);
-        SBA(7,  128);
-        SBA(8,  256);
-        SBA(9,  512);
-        SBA(10, 1024);
-        SBA(11, 2048);
-        SBA(12, 4096);
-        SBA(13, 8192);
-        
-        #undef SBA
     }
     
     virtual ~AllocatorStrategyGlobalSmallBlock()
@@ -122,7 +128,7 @@ public:
             case size: \
             { \
                 void* v = _smallBlockAllocators[slot]; \
-                CC_ASSERT(v); \
+                CC_ASSERT(nullptr != v); \
                 auto a = (SType(size)*)v; \
                 address = a->allocate(adjusted_size); \
             } \
@@ -171,6 +177,7 @@ public:
             case S: \
             { \
                 void* v = _smallBlockAllocators[slot]; \
+                CC_ASSERT(nullptr != v); \
                 auto a = (SType(S)*)v; \
                 if (a->owns(address)) \
                 { \
@@ -212,6 +219,7 @@ public:
             case size: \
             { \
                 void* v = _smallBlockAllocators[slot]; \
+                CC_ASSERT(nullptr != v); \
                 auto a = (SType(size)*)v; \
                 a->deallocate(address, size); \
             } \
@@ -246,7 +254,7 @@ protected:
     
 protected:
     
-    // @brief array of small block allocates from 2^2 -> 2^13
+    // @brief array of small block allocators from 2^2 -> 2^13
     void* _smallBlockAllocators[kMaxSmallBlockPower + 1];    
 };
 

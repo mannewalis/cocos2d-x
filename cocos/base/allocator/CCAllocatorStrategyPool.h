@@ -30,7 +30,10 @@
 #include "base/allocator/CCAllocatorMacros.h"
 #include "base/allocator/CCAllocatorGlobal.h"
 #include "base/allocator/CCAllocatorStrategyFixedBlock.h"
+#include "base/allocator/CCAllocatorDiagnostics.h"
 #include <vector>
+#include <typeinfo>
+#include <sstream>
 
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
@@ -64,6 +67,12 @@ public:
     {
         address->~T();
     }
+    
+    // @brief returns the name of this object type T
+    const char* name() const
+    {
+        return typeid(T).name();
+    }
 };
 
 
@@ -89,7 +98,7 @@ public:
     
     // ugh wish I knew a way that I could declare this just once
     typedef AllocatorStrategyFixedBlock<sizeof(T), _page_size> tParentStrategy;
-    
+        
     // @brief Allocate block of size T
     // if size does not match sizeof(T) then the global allocator is called instead.
     // @see CC_USE_ALLOCATOR_POOL
@@ -126,6 +135,15 @@ public:
             }
         }
     }
+    
+#if CC_ENABLE_ALLOCATOR_DIAGNOSTICS
+    std::string diagnostics() const
+    {
+        std::stringstream s;
+        s << typeid(AllocatorStrategyPool).name() << "count:" << tParentStrategy::_available << "\n";
+        return s.str();
+    }
+#endif
 };
 
 NS_CC_ALLOCATOR_END

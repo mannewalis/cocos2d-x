@@ -1923,6 +1923,10 @@
 		B60C5BD519AC68B10056FBDE /* CCBillBoard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B60C5BD219AC68B10056FBDE /* CCBillBoard.cpp */; };
 		B60C5BD619AC68B10056FBDE /* CCBillBoard.h in Headers */ = {isa = PBXBuildFile; fileRef = B60C5BD319AC68B10056FBDE /* CCBillBoard.h */; };
 		B60C5BD719AC68B10056FBDE /* CCBillBoard.h in Headers */ = {isa = PBXBuildFile; fileRef = B60C5BD319AC68B10056FBDE /* CCBillBoard.h */; };
+		D0B765711A38D55900EF332A /* CCAllocatorDiagnostics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0B7656F1A38D55900EF332A /* CCAllocatorDiagnostics.cpp */; };
+		D0B765721A38D55900EF332A /* CCAllocatorDiagnostics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0B7656F1A38D55900EF332A /* CCAllocatorDiagnostics.cpp */; };
+		D0B765731A38D55900EF332A /* CCAllocatorDiagnostics.h in Headers */ = {isa = PBXBuildFile; fileRef = D0B765701A38D55900EF332A /* CCAllocatorDiagnostics.h */; };
+		D0B765741A38D55900EF332A /* CCAllocatorDiagnostics.h in Headers */ = {isa = PBXBuildFile; fileRef = D0B765701A38D55900EF332A /* CCAllocatorDiagnostics.h */; };
 		D0EB3C881A3785CA0086DE3F /* CCAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = D0EB3C7E1A3785CA0086DE3F /* CCAllocator.h */; };
 		D0EB3C891A3785CA0086DE3F /* CCAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = D0EB3C7E1A3785CA0086DE3F /* CCAllocator.h */; };
 		D0EB3C8A1A3785CA0086DE3F /* CCAllocatorBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D0EB3C7F1A3785CA0086DE3F /* CCAllocatorBase.h */; };
@@ -2999,6 +3003,8 @@
 		B67C624319D4186F00F11FC6 /* ccShader_3D_ColorNormal.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ccShader_3D_ColorNormal.frag; sourceTree = "<group>"; };
 		B67C624419D4186F00F11FC6 /* ccShader_3D_ColorNormalTex.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ccShader_3D_ColorNormalTex.frag; sourceTree = "<group>"; };
 		B67C624519D4186F00F11FC6 /* ccShader_3D_PositionNormalTex.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ccShader_3D_PositionNormalTex.vert; sourceTree = "<group>"; };
+		D0B7656F1A38D55900EF332A /* CCAllocatorDiagnostics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCAllocatorDiagnostics.cpp; sourceTree = "<group>"; };
+		D0B765701A38D55900EF332A /* CCAllocatorDiagnostics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAllocatorDiagnostics.h; sourceTree = "<group>"; };
 		D0EB3C7E1A3785CA0086DE3F /* CCAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAllocator.h; sourceTree = "<group>"; };
 		D0EB3C7F1A3785CA0086DE3F /* CCAllocatorBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAllocatorBase.h; sourceTree = "<group>"; };
 		D0EB3C801A3785CA0086DE3F /* CCAllocatorGlobal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCAllocatorGlobal.cpp; sourceTree = "<group>"; };
@@ -5147,6 +5153,8 @@
 			children = (
 				D0EB3C7E1A3785CA0086DE3F /* CCAllocator.h */,
 				D0EB3C7F1A3785CA0086DE3F /* CCAllocatorBase.h */,
+				D0B7656F1A38D55900EF332A /* CCAllocatorDiagnostics.cpp */,
+				D0B765701A38D55900EF332A /* CCAllocatorDiagnostics.h */,
 				D0EB3C801A3785CA0086DE3F /* CCAllocatorGlobal.cpp */,
 				D0EB3C811A3785CA0086DE3F /* CCAllocatorGlobal.h */,
 				D0EB3C821A3785CA0086DE3F /* CCAllocatorGlobalNewDelete.cpp */,
@@ -5245,6 +5253,7 @@
 				1A570073180BC5A10088DEC7 /* CCActionGrid.h in Headers */,
 				15AE1BCC19AAE01E00C27E9E /* CCControlButton.h in Headers */,
 				D0EB3C981A3785CA0086DE3F /* CCAllocatorStrategyGlobalSmallBlock.h in Headers */,
+				D0B765731A38D55900EF332A /* CCAllocatorDiagnostics.h in Headers */,
 				5034CA3B191D591100CE6051 /* ccShader_PositionColor.vert in Headers */,
 				1A570077180BC5A10088DEC7 /* CCActionGrid3D.h in Headers */,
 				1A57007B180BC5A10088DEC7 /* CCActionInstant.h in Headers */,
@@ -5789,6 +5798,7 @@
 				B37510861823ACA100B3BA6A /* CCPhysicsWorldInfo_chipmunk.h in Headers */,
 				15AE1BC019AADFF000C27E9E /* WebSocket.h in Headers */,
 				3823840A1A25900F002C4610 /* FlatBuffersSerialize.h in Headers */,
+				D0B765741A38D55900EF332A /* CCAllocatorDiagnostics.h in Headers */,
 				1A570080180BC5A10088DEC7 /* CCActionInterval.h in Headers */,
 				15AE192D19AAD35100C27E9E /* CCActionFrame.h in Headers */,
 				15AE192F19AAD35100C27E9E /* CCActionFrameEasing.h in Headers */,
@@ -6507,6 +6517,7 @@
 				15AE199619AAD39600C27E9E /* ListViewReader.cpp in Sources */,
 				50ABC0191926664800A911A9 /* CCSAXParser.cpp in Sources */,
 				15AE189219AAD33D00C27E9E /* CCLayerGradientLoader.cpp in Sources */,
+				D0B765711A38D55900EF332A /* CCAllocatorDiagnostics.cpp in Sources */,
 				15AE1B6A19AADA9900C27E9E /* UIDeprecated.cpp in Sources */,
 				15AE183C19AAD2F700C27E9E /* CCSkeleton3D.cpp in Sources */,
 				15AE1A2319AAD3D500C27E9E /* b2BroadPhase.cpp in Sources */,
@@ -6981,6 +6992,7 @@
 				15AE19B419AAD39700C27E9E /* TextAtlasReader.cpp in Sources */,
 				15AE194019AAD35100C27E9E /* CCBone.cpp in Sources */,
 				1A570215180BCBF40088DEC7 /* CCRenderTexture.cpp in Sources */,
+				D0B765721A38D55900EF332A /* CCAllocatorDiagnostics.cpp in Sources */,
 				1A570222180BCC1A0088DEC7 /* CCParticleBatchNode.cpp in Sources */,
 				292DB15019B4574100A80320 /* UIEditBoxImpl-stub.cpp in Sources */,
 				15AE185F19AAD31200C27E9E /* SimpleAudioEngine.mm in Sources */,
