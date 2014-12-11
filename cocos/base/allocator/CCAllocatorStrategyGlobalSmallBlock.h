@@ -203,14 +203,14 @@ public:
             }
         }
         
-        if (size < sizeof(intptr_t)) // always allocate at least enough space to store a pointer. this is
-            size = sizeof(intptr_t); // so we can link the empty blocks together in the block allocator.
-        
         // if the size is greater than what we determine to be a small block
         // size then default to calling the global allocator instead.
         if (0 == size || size > kMaxSize)
             return ccAllocatorGlobal.deallocate(address, size);
         
+        if (size < sizeof(intptr_t)) // always allocate at least enough space to store a pointer. this is
+            size = sizeof(intptr_t); // so we can link the empty blocks together in the block allocator.
+
         // make sure the size fits into one of the
         // fixed sized block allocators we have above.
         size_t adjusted_size = AllocatorBase::nextPow2BlockSize(size);

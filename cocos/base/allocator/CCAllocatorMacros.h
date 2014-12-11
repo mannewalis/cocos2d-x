@@ -49,7 +49,7 @@
 // @brief CC_ALLOCATOR_INLINE
 // Turn off inlining of methods when debugging to make stack traces readable and stepping through code sane.
 // By default inlined methods are hidden symbols since symbols are unique and inlines are not.
-#if DEBUG
+#if COCOS2D_DEBUG
     #define CC_ALLOCATOR_INLINE
 #else
     #define CC_ALLOCATOR_INLINE _LIBCPP_INLINE_VISIBILITY
