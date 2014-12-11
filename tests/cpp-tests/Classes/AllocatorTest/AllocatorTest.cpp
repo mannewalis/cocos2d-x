@@ -31,7 +31,7 @@ namespace AllocatorTestNS
 {
 
 #if CC_ENABLE_ALLOCATOR
-Test1::tAllocator Test1::_allocator;
+Test1::tAllocator Test1::_allocator("Test1", kNumberOfInstances);
 #endif // CC_ENABLE_ALLOCATOR
     
 static int sceneIdx = -1;

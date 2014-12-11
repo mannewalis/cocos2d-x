@@ -55,7 +55,7 @@ public:
     static constexpr size_t kMaxSmallBlockPower = 13; // 2^13 8192
   
     // @brief define for allocator strategy, cannot be typedef because we want to eval at use
-    #define SType(size) AllocatorStrategyFixedBlock<size, kDefaultSmallBlockCount>
+    #define SType(size) AllocatorStrategyFixedBlock<size>
     
     void _lazy_init()
     {
@@ -88,7 +88,7 @@ public:
             if (size <= _maxBlockSize) \
             { \
                 auto v = ccAllocatorGlobal.allocate(sizeof(SType(size))); \
-                _smallBlockAllocators[n] = (void*)(new (v) SType(size)); \
+                _smallBlockAllocators[n] = new (v) SType(size)("Global::"#size); \
             }
             
             SBA(2,  4);

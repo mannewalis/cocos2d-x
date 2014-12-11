@@ -57,24 +57,25 @@ NS_CC_ALLOCATOR_BEGIN
 // @param _block_size the size of the fixed block allocated by this allocator.
 // @param _page_size the number of blocks to allocate when growing the free list.
 // @param _alignment the alignment size in bytes of each block.
-template <size_t _block_size, size_t _page_size = 100, size_t _alignment = 16>
+template <size_t _block_size, size_t _alignment = 16>
 class AllocatorStrategyFixedBlock
-    : public Allocator<AllocatorStrategyFixedBlock<_block_size, _page_size, _alignment>>
+    : public Allocator<AllocatorStrategyFixedBlock<_block_size, _alignment>>
 {
 public:
     
     static constexpr size_t block_size = _block_size;
-    static constexpr size_t page_size  = _page_size;
     static constexpr size_t alignment  = _alignment;
     
-    AllocatorStrategyFixedBlock()
+    AllocatorStrategyFixedBlock(const char* tag = nullptr, size_t pageSize = 100)
         : _list(nullptr)
         , _pages(nullptr)
         , _allocated(0)
+        , _pageSize(pageSize)
     {
 #if CC_ENABLE_ALLOCATOR_DIAGNOSTICS
         _highestCount = 0;
         AllocatorDiagnostics::instance()->trackAllocator(this);
+        AllocatorBase::setTag(tag ? tag : typeid(AllocatorStrategyFixedBlock).name());
 #endif
     }
     
@@ -150,7 +151,7 @@ public:
     std::string diagnostics() const
     {
         std::stringstream s;
-        s << typeid(AllocatorStrategyFixedBlock).name() << " count:" << _allocated << " highest:" << _highestCount << "\n";
+        s << AllocatorBase::tag() << " count:" << _allocated << " highest:" << _highestCount << "\n";
         return s.str();
     }
     size_t _highestCount;
@@ -237,7 +238,7 @@ protected:
     // @brief Returns the size of a page in bytes + overhead.
     constexpr size_t pageSize() const
     {
-        return AllocatorBase::kDefaultAlignment + AllocatorBase::nextPow2BlockSize(block_size) * page_size;
+        return AllocatorBase::kDefaultAlignment + AllocatorBase::nextPow2BlockSize(block_size) * _pageSize;
     }
     
     // @brief Allocates a new page from the global allocator,
@@ -259,10 +260,10 @@ protected:
         
         p += AllocatorBase::kDefaultAlignment; // step past the linked list node
         
-        _allocated += page_size;
+        _allocated += _pageSize;
         size_t aligned_size = AllocatorBase::nextPow2BlockSize(block_size);
         uint8_t* block = (uint8_t*)p;
-        for (int i = 0; i < page_size; ++i, block += aligned_size)
+        for (int i = 0; i < _pageSize; ++i, block += aligned_size)
         {
             push_front(block);
         }
@@ -275,6 +276,9 @@ protected:
     
     // @brief Linked list of allocated pages.
     void* _pages;
+    
+    // @brief number of blocks per page.
+    size_t _pageSize;
     
     // @brief Number of blocks that are currently allocated.
     size_t _allocated;

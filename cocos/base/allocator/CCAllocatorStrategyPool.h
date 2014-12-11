@@ -86,9 +86,9 @@ public:
 // @param _page_size Number of objects of T in each page.
 // @param O ObjectTraits for type T
 // @see CC_USE_ALLOCATOR_POOL
-template <typename T, size_t _page_size = 100, typename O = ObjectTraits<T>>
+template <typename T, typename O = ObjectTraits<T>>
 class AllocatorStrategyPool
-    : public AllocatorStrategyFixedBlock<sizeof(T), _page_size>
+    : public AllocatorStrategyFixedBlock<sizeof(T)>
     , public O
 {
 public:
@@ -97,8 +97,12 @@ public:
     typedef value_type* pointer;
     
     // ugh wish I knew a way that I could declare this just once
-    typedef AllocatorStrategyFixedBlock<sizeof(T), _page_size> tParentStrategy;
-        
+    typedef AllocatorStrategyFixedBlock<sizeof(T)> tParentStrategy;
+    
+    AllocatorStrategyPool(const char* tag = nullptr, size_t poolSize = 100)
+        : tParentStrategy(tag, poolSize)
+    {}
+    
     // @brief Allocate block of size T
     // if size does not match sizeof(T) then the global allocator is called instead.
     // @see CC_USE_ALLOCATOR_POOL
@@ -140,9 +144,9 @@ public:
     std::string diagnostics() const
     {
         std::stringstream s;
-        s << typeid(AllocatorStrategyPool).name() << " count:" << tParentStrategy::_allocated << " highest:" << tParentStrategy::_highestCount << "\n";
+        s << AllocatorBase::tag() << " count:" << tParentStrategy::_allocated << " highest:" << tParentStrategy::_highestCount << "\n";
         return s.str();
-    }
+    }    
 #endif
 };
 

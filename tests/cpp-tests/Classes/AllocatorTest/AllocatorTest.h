@@ -53,7 +53,7 @@ namespace AllocatorTestNS
         uint8_t bytes[kObjectSize];
         
 #if CC_ENABLE_ALLOCATOR
-        typedef cocos2d::allocator::AllocatorStrategyPool<Test1, kNumberOfInstances> tAllocator;
+        typedef cocos2d::allocator::AllocatorStrategyPool<Test1> tAllocator;
         static tAllocator _allocator;
 #endif // CC_ENABLE_ALLOCATOR
         CC_USE_ALLOCATOR_POOL(Test1, _allocator);

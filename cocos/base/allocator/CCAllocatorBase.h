@@ -82,6 +82,18 @@ public:
     }
     
 #if CC_ENABLE_ALLOCATOR_DIAGNOSTICS
+    void setTag(const char* tag)
+    {
+        strncpy(_tag, tag, sizeof(_tag));
+    }
+    
+    const char* tag() const
+    {
+        return _tag;
+    }
+    
+    char _tag[1000];
+    
     // @brief return any diagnostic info for this allocator
     virtual std::string diagnostics() const
     {
