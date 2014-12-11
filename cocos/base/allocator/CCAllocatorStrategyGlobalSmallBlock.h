@@ -37,7 +37,6 @@
 #include "base/allocator/CCAllocator.h"
 #include "base/allocator/CCAllocatorGlobal.h"
 #include "base/allocator/CCAllocatorStrategyFixedBlock.h"
-#include "base/CCConfiguration.h"
 
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
@@ -79,16 +78,12 @@ public:
             
             memset(_smallBlockAllocators, 0, sizeof(_smallBlockAllocators));
             
-            // default to the maximum small block size this allocator can handle.
-            _maxBlockSize = 2 << (kMaxSmallBlockPower - 1); // 8192
-            
             // cannot call new on the allocator here because it will recurse
             // so instead we allocate from the global allocator and construct in place.
             #define SBA(n, size) \
-            if (size <= _maxBlockSize) \
             { \
                 auto v = ccAllocatorGlobal.allocate(sizeof(SType(size))); \
-                _smallBlockAllocators[n] = new (v) SType(size)("Global::"#size); \
+                _smallBlockAllocators[n] = (void*)(new (v) SType(size)("Global::"#size)); \
             }
             
             SBA(2,  4);
