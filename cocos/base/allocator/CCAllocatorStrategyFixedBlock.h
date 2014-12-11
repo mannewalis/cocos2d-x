@@ -70,9 +70,10 @@ public:
     AllocatorStrategyFixedBlock()
         : _list(nullptr)
         , _pages(nullptr)
-        , _available(0)
+        , _allocated(0)
     {
 #if CC_ENABLE_ALLOCATOR_DIAGNOSTICS
+        _highestCount = 0;
         AllocatorDiagnostics::instance()->trackAllocator(this);
 #endif
     }
@@ -83,7 +84,6 @@ public:
         AllocatorDiagnostics::instance()->untrackAllocator(this);
 #endif
 
-        CC_ASSERT(0 == _available); // assert if we didn't free all the blocks before destroying the allocator.
         do
         {
             intptr_t* page = (intptr_t*)_pages;
@@ -150,28 +150,36 @@ public:
     std::string diagnostics() const
     {
         std::stringstream s;
-        s << typeid(AllocatorStrategyFixedBlock).name() << "count:" << _available << "\n";
+        s << typeid(AllocatorStrategyFixedBlock).name() << " count:" << _allocated << " highest:" << _highestCount << "\n";
         return s.str();
     }
+    size_t _highestCount;
 #endif
     
 protected:
     
+#if COCOS2D_DEBUG
     #define VALIDATE \
         if (nullptr != _list) \
         { \
             CC_ASSERT(nullptr != _pages); \
         }
+#else
+    #define VALIDATE
+#endif
     
     // @brief Method to push an allocated block onto the free list.
-    // No check is made that the block belongs to this allocator.
     // No check is made that the block hasn't been already added to this allocator.
-    // There checks should be added for DEBUG builds.
     CC_ALLOCATOR_INLINE void push_front(void* block)
     {
         CC_ASSERT(block);
         CC_ASSERT(block_size < AllocatorBase::kDefaultAlignment || 0 == ((intptr_t)block & (AllocatorBase::kDefaultAlignment - 1)));
 
+#if COCOS2D_DEBUG
+        // additional check that we own this block
+        CC_ASSERT(true == owns(block));
+#endif
+        
         LOCK(_mutex);
         
         VALIDATE
@@ -187,7 +195,8 @@ protected:
             *p = (uintptr_t)_list;
             _list = block;
         }
-        ++_available;
+        CC_ASSERT(_allocated > 0);
+        --_allocated;
         
         UNLOCK(_mutex);
     }
@@ -210,7 +219,12 @@ protected:
         auto next = (void*)*(uintptr_t*)_list;
         auto block = _list;
         _list = next;
-        --_available;
+        ++_allocated;
+
+#if CC_ENABLE_ALLOCATOR_DIAGNOSTICS
+        if (_allocated > _highestCount)
+            _highestCount = _allocated;
+#endif
         
         UNLOCK(_mutex);
         
@@ -245,6 +259,7 @@ protected:
         
         p += AllocatorBase::kDefaultAlignment; // step past the linked list node
         
+        _allocated += page_size;
         size_t aligned_size = AllocatorBase::nextPow2BlockSize(block_size);
         uint8_t* block = (uint8_t*)p;
         for (int i = 0; i < page_size; ++i, block += aligned_size)
@@ -261,8 +276,8 @@ protected:
     // @brief Linked list of allocated pages.
     void* _pages;
     
-    // @brief Number of blocks that are free in the list.
-    size_t _available;
+    // @brief Number of blocks that are currently allocated.
+    size_t _allocated;
     
     // @brief mutex for thread safety.
     AllocatorMutex _mutex;

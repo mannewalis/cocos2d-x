@@ -140,7 +140,7 @@ public:
     std::string diagnostics() const
     {
         std::stringstream s;
-        s << typeid(AllocatorStrategyPool).name() << "count:" << tParentStrategy::_available << "\n";
+        s << typeid(AllocatorStrategyPool).name() << " count:" << tParentStrategy::_allocated << " highest:" << tParentStrategy::_highestCount << "\n";
         return s.str();
     }
 #endif
