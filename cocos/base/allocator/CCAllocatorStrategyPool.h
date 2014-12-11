@@ -31,6 +31,7 @@
 #include "base/allocator/CCAllocatorGlobal.h"
 #include "base/allocator/CCAllocatorStrategyFixedBlock.h"
 #include "base/allocator/CCAllocatorDiagnostics.h"
+#include "base/CCConfiguration.h"
 #include <vector>
 #include <typeinfo>
 #include <sstream>
@@ -100,8 +101,11 @@ public:
     typedef AllocatorStrategyFixedBlock<sizeof(T)> tParentStrategy;
     
     AllocatorStrategyPool(const char* tag = nullptr, size_t poolSize = 100)
-        : tParentStrategy(tag, poolSize)
-    {}
+        : tParentStrategy(tag)
+    {
+        poolSize = Configuration::getInstance()->getValue(tag, Value((int)poolSize)).asInt();
+        tParentStrategy::_pageSize = poolSize;
+    }
     
     // @brief Allocate block of size T
     // if size does not match sizeof(T) then the global allocator is called instead.
@@ -144,7 +148,7 @@ public:
     std::string diagnostics() const
     {
         std::stringstream s;
-        s << AllocatorBase::tag() << " count:" << tParentStrategy::_allocated << " highest:" << tParentStrategy::_highestCount << "\n";
+        s << AllocatorBase::tag() << " initialCount:" << tParentStrategy::_pageSize << " count:" << tParentStrategy::_allocated << " highest:" << tParentStrategy::_highestCount << "\n";
         return s.str();
     }    
 #endif

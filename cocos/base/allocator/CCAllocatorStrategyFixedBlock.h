@@ -151,7 +151,7 @@ public:
     std::string diagnostics() const
     {
         std::stringstream s;
-        s << AllocatorBase::tag() << " count:" << _allocated << " highest:" << _highestCount << "\n";
+        s << AllocatorBase::tag() << " initialCount:" << _pageSize << " count:" << _allocated << " highest:" << _highestCount << "\n";
         return s.str();
     }
     size_t _highestCount;
