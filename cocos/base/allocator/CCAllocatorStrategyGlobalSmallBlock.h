@@ -37,6 +37,7 @@
 #include "base/allocator/CCAllocator.h"
 #include "base/allocator/CCAllocatorGlobal.h"
 #include "base/allocator/CCAllocatorStrategyFixedBlock.h"
+#include "base/CCConfiguration.h"
 
 NS_CC_BEGIN
 NS_CC_ALLOCATOR_BEGIN
@@ -47,8 +48,12 @@ class AllocatorStrategyGlobalSmallBlock
 {
 public:
     
-    static constexpr int kDefaultSmallBlockCount = 100;
+    // default number of block to allocate per page.
+    static constexpr size_t kDefaultSmallBlockCount = 100;
     
+    // default max small block size pool.
+    static constexpr size_t kMaxSmallBlockPower = 13; // 2^13 8192
+  
     // @brief define for allocator strategy, cannot be typedef because we want to eval at use
     #define SType(size) AllocatorStrategyFixedBlock<size, kDefaultSmallBlockCount>
     
@@ -74,9 +79,13 @@ public:
             
             memset(_smallBlockAllocators, 0, sizeof(_smallBlockAllocators));
             
+            // default to the maximum small block size this allocator can handle.
+            _maxBlockSize = 2 << (kMaxSmallBlockPower - 1); // 8192
+            
             // cannot call new on the allocator here because it will recurse
             // so instead we allocate from the global allocator and construct in place.
             #define SBA(n, size) \
+            if (size <= _maxBlockSize) \
             { \
                 auto v = ccAllocatorGlobal.allocate(sizeof(SType(size))); \
                 _smallBlockAllocators[n] = (void*)(new (v) SType(size)); \
@@ -102,7 +111,8 @@ public:
     virtual ~AllocatorStrategyGlobalSmallBlock()
     {
         for (int i = 0; i <= kMaxSmallBlockPower; ++i)
-            ccAllocatorGlobal.deallocate(_smallBlockAllocators[i]);
+            if (_smallBlockAllocators[i])
+                ccAllocatorGlobal.deallocate(_smallBlockAllocators[i]);
     }
     
     // @brief Allocate a block of some size. If the block is <= 8192 it is allocated out of an array
@@ -117,7 +127,7 @@ public:
         
         // if the size is greater than what we determine to be a small block
         // size then fall through to calling the global allocator instead.
-        if (size > kMaxSize)
+        if (size > _maxBlockSize)
             return ccAllocatorGlobal.allocate(size);
         
         // make sure the size fits into one of the
@@ -205,7 +215,7 @@ public:
         
         // if the size is greater than what we determine to be a small block
         // size then default to calling the global allocator instead.
-        if (0 == size || size > kMaxSize)
+        if (0 == size || size > _maxBlockSize)
             return ccAllocatorGlobal.deallocate(address, size);
         
         if (size < sizeof(intptr_t)) // always allocate at least enough space to store a pointer. this is
@@ -249,13 +259,11 @@ public:
     
 protected:
     
-    static constexpr size_t kMaxSmallBlockPower = 13; // 2^13 8192
-    static constexpr size_t kMaxSize = 2 << (kMaxSmallBlockPower - 1); // 8192
-    
-protected:
-    
     // @brief array of small block allocators from 2^2 -> 2^13
-    void* _smallBlockAllocators[kMaxSmallBlockPower + 1];    
+    void* _smallBlockAllocators[kMaxSmallBlockPower + 1];
+    
+    // @brief the max size of a block this allocator will pool before using global allocator
+    size_t _maxBlockSize;
 };
 
 NS_CC_ALLOCATOR_END
