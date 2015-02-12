@@ -888,6 +888,7 @@
 		C08689C218D370C90093E810 /* background.caf in Resources */ = {isa = PBXBuildFile; fileRef = C08689C018D370C90093E810 /* background.caf */; };
 		C08689C318D370C90093E810 /* background.caf in Resources */ = {isa = PBXBuildFile; fileRef = C08689C018D370C90093E810 /* background.caf */; };
 		C08689C418D370C90093E810 /* background.caf in Resources */ = {isa = PBXBuildFile; fileRef = C08689C018D370C90093E810 /* background.caf */; };
+		D055B4EB1A8ABAF7006F9EC4 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D055B4EA1A8ABAF7006F9EC4 /* Metal.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D0FD03641A3B546400825BB5 /* AllocatorTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0FD03621A3B546400825BB5 /* AllocatorTest.cpp */; };
 		D0FD03651A3B546400825BB5 /* AllocatorTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0FD03621A3B546400825BB5 /* AllocatorTest.cpp */; };
 		D60AE43417F7FFE100757E4B /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D60AE43317F7FFE100757E4B /* CoreMotion.framework */; };
@@ -2011,6 +2012,7 @@
 		C04F93581941B05400E9FEAB /* TileMapTest2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TileMapTest2.cpp; sourceTree = "<group>"; };
 		C04F93591941B05400E9FEAB /* TileMapTest2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TileMapTest2.h; sourceTree = "<group>"; };
 		C08689C018D370C90093E810 /* background.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = background.caf; path = "../tests/cpp-tests/Resources/background.caf"; sourceTree = "<group>"; };
+		D055B4EA1A8ABAF7006F9EC4 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/Metal.framework; sourceTree = DEVELOPER_DIR; };
 		D0FD03621A3B546400825BB5 /* AllocatorTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AllocatorTest.cpp; path = AllocatorTest/AllocatorTest.cpp; sourceTree = "<group>"; };
 		D0FD03631A3B546400825BB5 /* AllocatorTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AllocatorTest.h; path = AllocatorTest/AllocatorTest.h; sourceTree = "<group>"; };
 		D60AE43317F7FFE100757E4B /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreMotion.framework; sourceTree = DEVELOPER_DIR; };
@@ -2191,6 +2193,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D055B4EB1A8ABAF7006F9EC4 /* Metal.framework in Frameworks */,
 				52B47A341A534B2B004E4C60 /* Security.framework in Frameworks */,
 				3EA0FB66191B933000B170C8 /* MediaPlayer.framework in Frameworks */,
 				1AAF5400180E39D4000584C8 /* libcocos2d iOS.a in Frameworks */,
@@ -3976,6 +3979,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D055B4EA1A8ABAF7006F9EC4 /* Metal.framework */,
 				AC1C8B6E1A7F6FA8006DCCB1 /* AVFoundation.framework */,
 				AC1C8B6C1A7F6FA0006DCCB1 /* UIKit.framework */,
 				AC1C8B6A1A7F6F99006DCCB1 /* OpenGLES.framework */,
