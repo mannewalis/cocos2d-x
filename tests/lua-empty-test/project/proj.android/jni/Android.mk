@@ -9,11 +9,11 @@ LOCAL_MODULE_FILENAME := liblua_empty_test
 LOCAL_SRC_FILES := main.cpp \
                    ../../Classes/AppDelegate.cpp
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../Classes \
-                    $(LOCAL_PATH)/../../../../../external/lua/tolua \
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../Classes
 
 LOCAL_STATIC_LIBRARIES := cocos2d_lua_static
 
 include $(BUILD_SHARED_LIBRARY)
 
+$(call import-module,.)
 $(call import-module,scripting/lua-bindings/proj.android)

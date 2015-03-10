@@ -29,10 +29,6 @@
 #include "base/ccMacros.h"
 #include "base/CCRef.h"
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN)
-    #define SUPPORT_NO_CLIENT_SIDE_ARRAYS
-#endif
-
 NS_CC_BEGIN
 
 class EventListenerCustom;
@@ -70,56 +66,61 @@ public:
     };
     
     virtual ~GLArrayBuffer();
-    
+
+    // @brief sets all the elements of the client and native buffer.
+    //        element count is updated to reflect the new count.
+    //        if defer is true, then the native buffer will not be updated.
+    void setElements(const void* elements, ssize_t count, bool defer = true);
+
     // @brief updates a region of the client and native buffer
     //        if defer is true, then the native buffer will not be updated.
-    void updateElements(const void* elements, size_t count, size_t begin = 0, bool defer = true);
+    void updateElements(const void* elements, ssize_t count, ssize_t begin = 0, bool defer = true);
     
     // @brief inserts elements into the client and native buffer.
     //        if defer is true, then the native buffer will not be updated.
-    void insertElements(const void* elements, size_t count, size_t begin, bool defer = true);
+    void insertElements(const void* elements, ssize_t count, ssize_t begin, bool defer = true);
 
     // @brief appends elements into the client and native buffer.
     //        if defer is true, then the native buffer will not be updated.
-    void appendElements(const void* elements, size_t count, bool defer = true);
+    void appendElements(const void* elements, ssize_t count, bool defer = true);
 
     // @brief removes elements from the client and native buffer.
     //        if defer is true, then the native buffer is not updated.
-    void removeElements(size_t count, size_t begin, bool defer = true);
+    void removeElements(ssize_t count, ssize_t begin, bool defer = true);
     
     // @brief increases the capacity of the buffer by count elements
     //        optionally zeroes out the elements.
-    void addCapacity(size_t count, bool zero = false);
+    void addCapacity(ssize_t count, bool zero = false);
     
     // @brief swaps elements in the buffer without resizing the buffer
     //        if defer is true, then the native buffer is not updated.
-    void swapElements(size_t source, size_t dest, size_t count);
+    void swapElements(ssize_t source, ssize_t dest, ssize_t count);
 
     // @brief moves elements in the buffer to the dest index.
     //        if defer is true, then the native buffer is not updated.
-    void moveElements(size_t source, size_t dest, size_t count);
+    void moveElements(ssize_t source, ssize_t dest, ssize_t count);
 
     // @brief if dirty, copies elements to the client buffer (if any)
     // and optionally submits the elements to the native buffer (if any)
     // if elements is null, then the entire client is commited to native. 
-    void bindAndCommit(const void* elements = nullptr, size_t count = 0, size_t begin = 0);
+    void bindAndCommit(const void* elements = nullptr, ssize_t count = 0, ssize_t begin = 0);
 
-    size_t getSize() const
+    ssize_t getSize() const
     {
         return getElementCount() * getElementSize();
     }
     
-    size_t getCapacityInBytes() const
+    ssize_t getCapacityInBytes() const
     {
         return getCapacity() * getElementSize();
     }
     
-    CC_DEPRECATED_ATTRIBUTE uint32_t getVBO() const
+    CC_DEPRECATED(v3) uint32_t getVBO() const
     {
         return _vbo;
     }
 
-    void setElementCount(size_t count)
+    void setElementCount(ssize_t count)
     {
         CCASSERT(count <= _capacity, "element count cannot exceed capacity");
         if (count != _elementCount)
@@ -129,29 +130,29 @@ public:
         }
     }
     
-    size_t getElementCount() const
+    ssize_t getElementCount() const
     {
         return _elementCount;
     }
     
-    size_t getElementSize() const
+    ssize_t getElementSize() const
     {
         return _elementSize;
     }
     
-    size_t getCapacity() const
+    ssize_t getCapacity() const
     {
         return _capacity;
     }
     
     bool hasClient() const
     {
-        return _arrayType & ArrayType::Client;
+        return _arrayType & ArrayType::Client ? true : false;
     }
     
     bool hasNative() const
     {
-        return _arrayType & ArrayType::Native;
+        return _arrayType & ArrayType::Native ? true : false;
     }
     
     bool isDirty() const
@@ -169,15 +170,22 @@ public:
     void recreate() const;
     
     // @brief returns the client array if present, otherwise nullptr
-    template <typename T = void>
-    T* getElementsT() const
+    template <typename T>
+    T* getElementsOfType() const
     {
         return hasClient() ? static_cast<T*>(_elements) : nullptr;
     }
 
-    // @brief append
     template <typename T>
-    size_t appendElementsT(T* source, size_t elements = 1, bool defer = true)
+    void setElementsOfType(const T* element, ssize_t count, bool defer = true)
+    {
+        CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
+        auto mult = sizeof(T) / getElementSize();
+        setElements((const void*)element, mult * count, defer);
+    }
+
+    template <typename T>
+    ssize_t appendElementsOfType(T* source, ssize_t elements = 1, bool defer = true)
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
@@ -186,7 +194,7 @@ public:
     }
     
     template <typename T>
-    void updateElementsT(const T* element, size_t count, size_t begin, bool defer = true)
+    void updateElementsOfType(const T* element, ssize_t count, ssize_t begin, bool defer = true)
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
@@ -194,7 +202,7 @@ public:
     }
     
     template <typename T>
-    void insertElementsT(const T* element, size_t count, size_t begin, bool defer = true)
+    void insertElementsOfType(const T* element, ssize_t count, ssize_t begin, bool defer = true)
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
@@ -202,7 +210,7 @@ public:
     }
     
     template <typename T>
-    void removeElementsT(size_t count, size_t begin, bool defer = true)
+    void removeElementsOfType(ssize_t count, ssize_t begin, bool defer = true)
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
@@ -210,7 +218,7 @@ public:
     }
     
     template <typename T>
-    void addCapacityT(size_t count, bool zero = false)
+    void addCapacityOfType(ssize_t count, bool zero = false)
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
@@ -218,7 +226,7 @@ public:
     }
     
     template <typename T>
-    void swapElementsT(size_t source, size_t dest, size_t count)
+    void swapElementsOfType(ssize_t source, ssize_t dest, ssize_t count)
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
@@ -226,7 +234,7 @@ public:
     }
 
     template <typename T>
-    void moveElementsT(size_t source, size_t dest, size_t count)
+    void moveElementsOfType(ssize_t source, ssize_t dest, ssize_t count)
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
@@ -237,8 +245,8 @@ protected:
 
     GLArrayBuffer();
 
-    bool init(size_t elementSize, size_t maxElements, ArrayType arrayType, ArrayMode arrayMode, bool zero);
-    void setCapacity(size_t capacity, bool zero);
+    bool init(ssize_t elementSize, ssize_t maxElements, ArrayType arrayType, ArrayMode arrayMode, bool zero);
+    void setCapacity(ssize_t capacity, bool zero);
     
     // @brief for OpenGL this provides the binding target of the array.
     virtual int nativeBindTarget() const = 0;
@@ -247,15 +255,15 @@ protected:
 
     // native only
     uint32_t _vbo;
-    size_t _vboSize;
+    ssize_t _vboSize;
     int _target;
     
     // client buffer only
-    size_t _elementCount;
+    ssize_t _elementCount;
     void* _elements;
     
-    size_t _elementSize;
-    size_t _capacity;
+    ssize_t _elementSize;
+    ssize_t _capacity;
 
     ArrayType _arrayType;
     ArrayMode _arrayMode;
@@ -271,7 +279,7 @@ class CC_DLL VertexBuffer
 public:
     
     template <class T = VertexBuffer>
-    static T* create(size_t size, size_t count, ArrayType arrayType = ArrayType::Default, ArrayMode arrayMode = ArrayMode::LongLived, bool zero = false)
+    static T* create(ssize_t size, ssize_t count, ArrayType arrayType = ArrayType::Default, ArrayMode arrayMode = ArrayMode::LongLived, bool zero = false)
     {
         auto result = new (std::nothrow) T;
         if (result && result->init(size, count, arrayType, arrayMode, zero))
@@ -283,9 +291,9 @@ public:
         return nullptr;
     }
     
-    CC_DEPRECATED_ATTRIBUTE int getSizePerVertex() const { return (int)getElementSize(); }
-    CC_DEPRECATED_ATTRIBUTE int getVertexNumber() const { return (int)getElementCount(); }
-    CC_DEPRECATED_ATTRIBUTE bool updateVertices(const void* vertices, int count, int begin) { updateElements(vertices, count, begin); return true; }
+    CC_DEPRECATED(v3) int getSizePerVertex() const { return (int)getElementSize(); }
+    CC_DEPRECATED(v3) int getVertexNumber() const { return (int)getElementCount(); }
+    CC_DEPRECATED(v3) bool updateVertices(const void* vertices, int count, int begin) { updateElements(vertices, count, begin); return true; }
 
 protected:
     
@@ -305,7 +313,7 @@ public:
     };
     
     template <class T = IndexBuffer>
-    static IndexBuffer* create(IndexType type, size_t count, ArrayType arrayType = ArrayType::Default, ArrayMode arrayMode = ArrayMode::LongLived, bool zero = false)
+    static IndexBuffer* create(IndexType type, ssize_t count, ArrayType arrayType = ArrayType::Default, ArrayMode arrayMode = ArrayMode::LongLived, bool zero = false)
     {
         auto result = new (std::nothrow) T;
         if (result && result->init(type, count, arrayType, arrayMode, zero))
@@ -322,9 +330,9 @@ public:
         return _type;
     }
     
-    CC_DEPRECATED_ATTRIBUTE int getSizePerIndex() const { return (int)getElementSize(); }
-    CC_DEPRECATED_ATTRIBUTE int getIndexNumber() const { return (int)getElementCount(); }
-    CC_DEPRECATED_ATTRIBUTE bool updateIndices(const void* indices, int count, int begin) { updateElements(indices, count, begin); return true; }
+    CC_DEPRECATED(v3) int getSizePerIndex() const { return (int)getElementSize(); }
+    CC_DEPRECATED(v3) int getIndexNumber() const { return (int)getElementCount(); }
+    CC_DEPRECATED(v3) bool updateIndices(const void* indices, int count, int begin) { updateElements(indices, count, begin); return true; }
 
 protected:
     
@@ -332,7 +340,7 @@ protected:
         : _type(IndexType::INDEX_TYPE_NONE)
     {}
 
-    bool init(IndexType type, size_t count, ArrayType arrayType, ArrayMode arrayMode, bool zero)
+    bool init(IndexType type, ssize_t count, ArrayType arrayType, ArrayMode arrayMode, bool zero)
     {
         if (!GLArrayBuffer::init(IndexType::INDEX_TYPE_SHORT_16 == type ? 2 : 4, count, arrayType, arrayMode, zero))
             return false;

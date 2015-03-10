@@ -34,6 +34,8 @@
 #include "renderer/CCGLProgramCache.h"
 #include "renderer/ccGLStateCache.h"
 #include "renderer/CCMeshCommand.h"
+#include "renderer/CCScissorCommand.h"
+#include "renderer/CCStencilCommand.h"
 #include "base/CCConfiguration.h"
 #include "base/CCDirector.h"
 #include "base/CCEventDispatcher.h"
@@ -136,8 +138,8 @@ void RenderQueue::clear()
 
 void RenderQueue::saveRenderState()
 {
-    _isDepthEnabled = glIsEnabled(GL_DEPTH_TEST);
-    _isCullEnabled = glIsEnabled(GL_CULL_FACE);
+    _isDepthEnabled = glIsEnabled(GL_DEPTH_TEST) != GL_FALSE;
+    _isCullEnabled = glIsEnabled(GL_CULL_FACE) != GL_FALSE;
     glGetBooleanv(GL_DEPTH_WRITEMASK, &_isDepthWrite);
     
     CHECK_GL_ERROR_DEBUG();
@@ -366,7 +368,7 @@ void Renderer::addCommand(RenderCommand* command, int renderQueue)
     CCASSERT(!_isRendering, "Cannot add command while rendering");
     CCASSERT(renderQueue >=0, "Invalid render queue");
     CCASSERT(command->getType() != RenderCommand::Type::UNKNOWN_COMMAND, "Invalid Command Type");
-    
+
     _renderGroups[renderQueue].push_back(command);
 }
 
@@ -490,6 +492,31 @@ void Renderer::processRenderCommand(RenderCommand* command)
         flush();
         auto cmd = static_cast<BatchCommand*>(command);
         cmd->execute();
+    }
+    else if(RenderCommand::Type::BEGIN_SCISSOR_COMMAND == commandType)
+    {
+        flush();
+        command->execute<BeginScissorCommand>();
+    }
+    else if(RenderCommand::Type::END_SCISSOR_COMMAND == commandType)
+    {
+        flush();
+        command->execute<EndScissorCommand>();
+    }
+    else if(RenderCommand::Type::BEGIN_STENCIL_COMMAND == commandType)
+    {
+        flush();
+        command->execute<BeginStencilCommand>();
+    }
+    else if(RenderCommand::Type::AFTER_STENCIL_COMMAND == commandType)
+    {
+        flush();
+        command->execute<AfterStencilCommand>();
+    }
+    else if(RenderCommand::Type::END_STENCIL_COMMAND == commandType)
+    {
+        flush();
+        command->execute<EndStencilCommand>();
     }
     else
     {
