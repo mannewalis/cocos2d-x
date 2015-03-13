@@ -76,7 +76,7 @@ bool VertexData::addStream(ElementArrayBuffer* buffer, const VertexAttribute& st
     if (nullptr == buffer)
         return false;
     
-    Director::getInstance()->getGraphicsInterface()->vertexArraySpecifyAttribute(_vao, stream._semantic, stream._offset, (NS_PRIVATE::DataType)stream._type, stream._size, stream._normalize);
+    Director::getInstance()->getGraphicsInterface()->vertexArraySpecifyAttribute(_vao, buffer->getBO(), stream._semantic, stream._offset, (NS_PRIVATE::DataType)stream._type, stream._size, stream._normalize);
     
     setDirty(true);
     

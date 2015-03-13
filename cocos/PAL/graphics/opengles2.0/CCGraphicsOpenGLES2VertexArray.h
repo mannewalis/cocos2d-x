@@ -38,7 +38,7 @@
 NS_PRIVATE_BEGIN
 
 class GraphicsOpenGLES2ArrayBuffer;
-class GraphicsOpenGLES2IndexBuffer;
+class GraphicsOpenGLES2Buffer;
 
 class GraphicsOpenGLES2VertexArray
     : public GraphicsVertexArray<GraphicsOpenGLES2VertexArray>
@@ -49,7 +49,7 @@ public:
     virtual ~GraphicsOpenGLES2VertexArray();
     
     bool destroy();
-    bool specifyAttribute(ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized);
+    bool specifyAttribute(GraphicsOpenGLES2Buffer* buffer, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized);
     void drawElements(ssize_t start, ssize_t count);
     
 protected:

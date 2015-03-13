@@ -112,6 +112,11 @@ public:
     }
     
     CC_DEPRECATED(v3) uint32_t getVBO() const;
+    
+    NS_PRIVATE::handle getBO() const
+    {
+        return _bo;
+    }
 
     void setElementCount(ssize_t count)
     {
@@ -160,7 +165,7 @@ public:
     
     void clear();
 
-    virtual void recreate() = 0;
+    virtual void recreate();
     
     // @brief returns the client array if present, otherwise nullptr
     template <typename T>
@@ -244,13 +249,12 @@ protected:
     // @brief if dirty, copies elements to the client buffer (if any)
     // and optionally submits the elements to the native buffer (if any)
     // if elements is null, then the entire client is commited to native.
-    virtual bool commitElements(const void* elements = nullptr, ssize_t count = 0, ssize_t begin = 0) = 0;
+    bool commitElements(const void* elements, ssize_t count, ssize_t begin);
 
 protected:
 
     // native only
-    NS_PRIVATE::handle _nativeBuffer;
-    ssize_t _nativeBufferSize;
+    NS_PRIVATE::handle _bo;
     
     // client buffer only
     ssize_t _elementCount;
@@ -288,9 +292,6 @@ public:
     CC_DEPRECATED(v3) int getSizePerVertex() const { return (int)getElementSize(); }
     CC_DEPRECATED(v3) int getVertexNumber() const { return (int)getElementCount(); }
     CC_DEPRECATED(v3) bool updateVertices(const void* vertices, int count, int begin) { updateElements(vertices, count, begin); return true; }
-
-    void recreate();
-    bool commitElements(const void* elements, ssize_t count, ssize_t begin);
 };
 
 class CC_DLL IndexBuffer
@@ -322,9 +323,6 @@ public:
     {
         return _type;
     }
-    
-    void recreate();
-    bool commitElements(const void* elements, ssize_t count, ssize_t begin);
     
     CC_DEPRECATED(v3) int getSizePerIndex() const { return (int)getElementSize(); }
     CC_DEPRECATED(v3) int getIndexNumber() const { return (int)getElementCount(); }

@@ -34,8 +34,7 @@ USING_NS_PRIVATE;
 NS_CC_BEGIN
 
 ElementArrayBuffer::ElementArrayBuffer()
-    : _nativeBuffer(HANDLE_INVALID)
-    , _nativeBufferSize(0)
+    : _bo(HANDLE_INVALID)
     , _elementCount(0)
     , _elements(nullptr)
     , _elementSize(0)
@@ -48,7 +47,7 @@ ElementArrayBuffer::ElementArrayBuffer()
 
 ElementArrayBuffer::~ElementArrayBuffer()
 {
-    Director::getInstance()->getGraphicsInterface()->bufferDestroy(_nativeBuffer);
+    Director::getInstance()->getGraphicsInterface()->bufferDestroy(_bo);
     CC_SAFE_FREE(_elements);
 }
 
@@ -202,47 +201,23 @@ void ElementArrayBuffer::setCapacity(ssize_t capacity, bool zero)
 
 CC_DEPRECATED(v3) unsigned ElementArrayBuffer::getVBO() const
 {
-    return Director::getInstance()->getGraphicsInterface()->bufferGetBO(_nativeBuffer);
+    return Director::getInstance()->getGraphicsInterface()->bufferGetBO(_bo);
 }
 
-//
-// VertexBuffer
-//
-
-bool VertexBuffer::commitElements(const void* elements, ssize_t count, ssize_t begin)
+bool ElementArrayBuffer::commitElements(const void* elements, ssize_t count, ssize_t begin)
 {
     CCASSERT(true == hasNative(), "ElementArrayBuffer::bindAndCommit : array has no native buffer");
     CCASSERT(isDirty() == true, "redundant call to commit elements");
     setDirty(false);
-    return Director::getInstance()->getGraphicsInterface()->bufferCommitElements(_nativeBuffer, elements, count, begin);
+    return Director::getInstance()->getGraphicsInterface()->bufferCommitElements(_bo, elements, count, begin);
 }
 
-void VertexBuffer::recreate()
+void ElementArrayBuffer::recreate()
 {
-    Director::getInstance()->getGraphicsInterface()->bufferDestroy(_nativeBuffer);
-    _nativeBuffer = Director::getInstance()->getGraphicsInterface()->bufferCreate(_elementSize, _elementCount, (NS_PRIVATE::ArrayMode)_arrayMode, false);
+    Director::getInstance()->getGraphicsInterface()->bufferDestroy(_bo);
+    _bo = Director::getInstance()->getGraphicsInterface()->bufferCreate(_elementSize, _elementCount, (NS_PRIVATE::ArrayMode)_arrayMode, false);
     if (_elements)
-        Director::getInstance()->getGraphicsInterface()->bufferCommitElements(_nativeBuffer, _elements, _elementCount, 0);
-}
-
-//
-// IndexBuffer
-//
-
-bool IndexBuffer::commitElements(const void* elements, ssize_t count, ssize_t begin)
-{
-    CCASSERT(true == hasNative(), "ElementArrayBuffer::bindAndCommit : array has no native buffer");
-    CCASSERT(isDirty() == true, "redundant call to commit elements");
-    setDirty(false);
-    return Director::getInstance()->getGraphicsInterface()->bufferCommitElements(_nativeBuffer, elements, count, begin);
-}
-
-void IndexBuffer::recreate()
-{
-    Director::getInstance()->getGraphicsInterface()->bufferDestroy(_nativeBuffer);
-    _nativeBuffer = Director::getInstance()->getGraphicsInterface()->bufferCreate(_elementSize, _elementCount, (NS_PRIVATE::ArrayMode)_arrayMode, false);
-    if (_elements)
-        Director::getInstance()->getGraphicsInterface()->bufferCommitElements(_nativeBuffer, _elements, _elementCount, 0);
+        Director::getInstance()->getGraphicsInterface()->bufferCommitElements(_bo, _elements, _elementCount, 0);
 }
 
 NS_CC_END

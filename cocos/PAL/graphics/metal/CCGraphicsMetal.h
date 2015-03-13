@@ -63,7 +63,7 @@ public:
     bool vertexArrayDelete(handle object);
     
     // @brief specifies a vertex attribute.
-    bool vertexArraySpecifyAttribute(handle object, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized);
+    bool vertexArraySpecifyAttribute(handle object, handle buffer, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized);
     
     // @brief draws the vertex array.
     bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);

@@ -56,7 +56,7 @@ public:
     virtual bool vertexArrayDestroy(handle object) = 0;
         
     // @brief specifies a vertex attribute.
-    virtual bool vertexArraySpecifyAttribute(handle object, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized) = 0;
+    virtual bool vertexArraySpecifyAttribute(handle object, handle buffer, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized) = 0;
     
     // @brief draws the vertex array.
     virtual bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count) = 0;

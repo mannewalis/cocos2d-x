@@ -88,10 +88,11 @@ bool GraphicsOpenGLES20::vertexArrayDestroy(handle object)
 }
 
 // @brief specifies a vertex attribute.
-bool GraphicsOpenGLES20::vertexArraySpecifyAttribute(handle object, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized)
+bool GraphicsOpenGLES20::vertexArraySpecifyAttribute(handle object, handle buffer, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized)
 {
     auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
-    return vao->specifyAttribute(index, offset, type, count, normalized);
+    auto vbo = HANDLE_TOPTR(_handles, buffer, GraphicsOpenGLES2Buffer);
+    return vao->specifyAttribute(vbo, index, offset, type, count, normalized);
 }
 
 // @brief draws the vertex array.

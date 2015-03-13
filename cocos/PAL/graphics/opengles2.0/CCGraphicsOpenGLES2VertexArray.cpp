@@ -55,7 +55,7 @@ bool GraphicsOpenGLES2VertexArray::destroy()
     return true;
 }
 
-bool GraphicsOpenGLES2VertexArray::specifyAttribute(ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized)
+bool GraphicsOpenGLES2VertexArray::specifyAttribute(GraphicsOpenGLES2Buffer* buffer, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized)
 {
     return false;
 }
@@ -91,9 +91,7 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
         {
             const auto vb = element.second._buffer;
             
-            // commit any outstanding client side geometry to the native buffers.
-            // for interleaved data this will happen only the first time through.
-            GLuint vbo = (GLuint)traits_cast<GraphicsOpenGLES2Buffer>(vb)->getBO();
+            GLuint vbo = (GLuint)vb->getBO();
             if (vbo)
                 GL::bindVBO(GL_ARRAY_BUFFER, vbo);
             
@@ -110,7 +108,7 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
         }
         
         if (_indices != nullptr)
-            GL::bindVBO(GL_ELEMENT_ARRAY_BUFFER, (GLuint)traits_cast<GraphicsOpenGLES2Buffer>(_indices)->getBO());
+            GL::bindVBO(GL_ELEMENT_ARRAY_BUFFER, (GLuint)_indices->getBO());
         
         setDirty(false);
     }
@@ -151,7 +149,7 @@ inline
 unsigned GraphicsOpenGLES2VertexArray::GLIndexType()
 {
     CCASSERT(_indices, "no index buffer specified");
-    return traits_cast<GraphicsOpenGLES2Buffer>(_indices)->getElementSize() == sizeof(uint16_t) ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
+    return _indices->getElementSize() == sizeof(uint16_t) ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
 }
 
 NS_PRIVATE_END
