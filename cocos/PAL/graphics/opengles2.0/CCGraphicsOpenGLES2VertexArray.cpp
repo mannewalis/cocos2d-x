@@ -37,14 +37,14 @@ NS_PRIVATE_BEGIN
 
 GraphicsOpenGLES2VertexArray::GraphicsOpenGLES2VertexArray()
 {
+    if (Configuration::getInstance()->supportsShareableVAO())
+    {
+        glGenVertexArrays(1, (GLuint*)&_vao);
+        GL::bindVAO(_vao);
+    }
 }
 
 GraphicsOpenGLES2VertexArray::~GraphicsOpenGLES2VertexArray()
-{
-    destroy();
-}
-
-bool GraphicsOpenGLES2VertexArray::destroy()
 {
     if (_vao && glIsBuffer(_vao))
     {
@@ -52,7 +52,6 @@ bool GraphicsOpenGLES2VertexArray::destroy()
         GL::bindVAO(0);
         _vao = 0;
     }
-    return true;
 }
 
 bool GraphicsOpenGLES2VertexArray::specifyAttribute(GraphicsOpenGLES2Buffer* buffer, int index, ssize_t offset, DataType type, ssize_t count, bool normalized)
@@ -83,7 +82,6 @@ bool GraphicsOpenGLES2VertexArray::specifyAttribute(GraphicsOpenGLES2Buffer* buf
     _interleaved = determineInterleave();
     
     return true;
-
 }
 
 void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
@@ -103,14 +101,8 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
         CHECK_GL_ERROR_DEBUG();
     }
     
-    if (!_vao || isDirty())
+    if (isDirty())
     {
-        if (0 == _vao && Configuration::getInstance()->supportsShareableVAO())
-        {
-            glGenVertexArrays(1, (GLuint*)&_vao);
-            GL::bindVAO(_vao);
-        }
-        
         CHECK_GL_ERROR_DEBUG();
         
         for (auto& element : _vertexStreams)
@@ -127,7 +119,12 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
             auto offset = stream._offset;
             auto stride = vb->getElementSize();
             
+            CHECK_GL_ERROR_DEBUG();
+            
             glEnableVertexAttribArray(GLint(stream._offset));
+
+            CHECK_GL_ERROR_DEBUG();
+            
             glVertexAttribPointer(GLint(stream._index), (GLint)stream._size, DataTypeToGL(stream._type), stream._normalized, (GLsizei)stride, (GLvoid*)(size_t)offset);
             
             CHECK_GL_ERROR_DEBUG();

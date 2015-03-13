@@ -109,6 +109,9 @@ public:
     //        if defer is true, then the native buffer is not updated.
     void moveElements(ssize_t source, ssize_t dest, ssize_t count);
 
+    // @brief commits client buffer to native buffer if both exist.
+    void commit();
+    
     ssize_t getSize() const
     {
         return getElementCount() * getElementSize();

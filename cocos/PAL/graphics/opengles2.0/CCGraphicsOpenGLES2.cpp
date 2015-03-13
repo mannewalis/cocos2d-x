@@ -72,7 +72,6 @@ handle GraphicsOpenGLES20::vertexArrayCreate()
     auto vao = new (std::nothrow) GraphicsOpenGLES2VertexArray;
     if (vao)
     {
-        vao->autorelease();
         return HANDLE_CREATE(_handles, vao);
     }
     return HANDLE_INVALID;
@@ -108,7 +107,6 @@ handle GraphicsOpenGLES20::bufferCreate(ssize_t size, ssize_t count, ArrayMode a
     auto vbo = new (std::nothrow) GraphicsOpenGLES2Buffer;
     if (vbo && vbo->init(size, count, arrayMode, arrayIntent, zero))
     {
-        vbo->autorelease();
         return HANDLE_CREATE(_handles, vbo);
     }
     return HANDLE_INVALID;

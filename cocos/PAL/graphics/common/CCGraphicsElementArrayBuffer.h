@@ -188,7 +188,7 @@ bool GraphicsElementArrayBuffer<T>::commitElements(const void* elements, ssize_t
     // empty elements do not count towards element count, only capacity
     _elementCount = begin + count > _elementCount ? begin + count : _elementCount;
     
-    return traits_cast<T>()->commitElements(elements, count, begin);
+    return traits_cast<T>(this)->commitElements(elements, count, begin);
 }
 
 template <class T>

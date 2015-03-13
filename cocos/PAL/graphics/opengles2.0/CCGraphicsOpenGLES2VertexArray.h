@@ -49,7 +49,6 @@ public:
     GraphicsOpenGLES2VertexArray();
     virtual ~GraphicsOpenGLES2VertexArray();
     
-    bool destroy();
     bool specifyAttribute(GraphicsOpenGLES2Buffer* buffer, int index, ssize_t offset, DataType type, ssize_t count, bool normalized);
     void drawElements(ssize_t start, ssize_t count);
     

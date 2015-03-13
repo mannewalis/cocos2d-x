@@ -156,15 +156,15 @@ ssize_t VertexData::draw(ssize_t start, ssize_t count)
     CCASSERT(start >= 0, "Invalid start value");
     CCASSERT(count >= 0, "Invalid count value");
     
-    auto const gi = Director::getInstance()->getGraphicsInterface();
+    // lazy commit the client to native if they exist.
+    for (auto b : _buffers)
+        b->commit();
     
-    if (0 == count)
-    {
-        // if we are drawing indexed, then use the count of indices to draw
+    // if we are drawing indexed, then use the count of indices to draw
+    if (!count)
         count = _indices ? _indices->getElementCount() : this->getCount();
-    }
     
-    return gi->vertexArrayDrawElements(_vao, start, count);
+    return Director::getInstance()->getGraphicsInterface()->vertexArrayDrawElements(_vao, start, count);
 }
 
 bool VertexData::empty() const

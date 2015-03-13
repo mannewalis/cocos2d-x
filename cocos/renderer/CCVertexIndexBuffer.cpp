@@ -176,6 +176,13 @@ void ElementArrayBuffer::moveElements(ssize_t source, ssize_t dest, ssize_t coun
     updateElements(srcptr, count, dest);
 }
 
+// @brief commits client buffer to native buffer if both exist.
+void ElementArrayBuffer::commit()
+{
+    if (isDirty() && hasClient() && hasNative())
+        commitElements(_elements, _elementCount, 0);
+}
+
 void ElementArrayBuffer::clear()
 {
     _elementCount = 0;
