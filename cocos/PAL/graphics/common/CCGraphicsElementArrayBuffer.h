@@ -167,6 +167,8 @@ bool GraphicsElementArrayBuffer<T>::init(ssize_t elementSize, ssize_t maxElement
     
     setCapacity(maxElements, zero);
     
+    traits_cast<T>(this)->setupBO();
+
     return true;
 }
 

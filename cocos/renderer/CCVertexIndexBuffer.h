@@ -66,6 +66,14 @@ public:
         Dynamic   
     };
     
+    enum class ArrayIntent
+    {
+        Invalid = -1,
+        VertexData,
+        IndexData16,
+        IndexData32
+    };
+    
     virtual ~ElementArrayBuffer();
 
     // @brief sets all the elements of the client and native buffer.
@@ -243,7 +251,7 @@ protected:
 
     ElementArrayBuffer();
 
-    bool init(ssize_t elementSize, ssize_t maxElements, ArrayType arrayType, ArrayMode arrayMode, bool zero);
+    bool init(ssize_t elementSize, ssize_t maxElements, ArrayType arrayType, ArrayMode arrayMode, ArrayIntent arrayIntent, bool zero);
     void setCapacity(ssize_t capacity, bool zero);
     
     // @brief if dirty, copies elements to the client buffer (if any)
@@ -265,6 +273,7 @@ protected:
 
     ArrayType _arrayType;
     ArrayMode _arrayMode;
+    ArrayIntent _arrayIntent;
     
     unsigned _usage;
     bool _dirty;
@@ -280,7 +289,7 @@ public:
     static T* create(ssize_t size, ssize_t count, ArrayType arrayType = ArrayType::Default, ArrayMode arrayMode = ArrayMode::LongLived, bool zero = false)
     {
         auto result = new (std::nothrow) T;
-        if (result && result->init(size, count, arrayType, arrayMode, zero))
+        if (result && result->init(size, count, arrayType, arrayMode, ArrayIntent::VertexData, zero))
         {
             result->autorelease();
             return result;
@@ -336,7 +345,9 @@ protected:
 
     bool init(IndexType type, ssize_t count, ArrayType arrayType, ArrayMode arrayMode, bool zero)
     {
-        if (!ElementArrayBuffer::init(IndexType::INDEX_TYPE_SHORT_16 == type ? 2 : 4, count, arrayType, arrayMode, zero))
+        auto elementSize = IndexType::INDEX_TYPE_SHORT_16 == type ? 2 : 4;
+        auto arrayIntent = IndexType::INDEX_TYPE_SHORT_16 == type ? ArrayIntent::IndexData16 : ArrayIntent::IndexData32;
+        if (!ElementArrayBuffer::init(elementSize, count, arrayType, arrayMode, arrayIntent, zero))
             return false;
         _type = type;
         return true;

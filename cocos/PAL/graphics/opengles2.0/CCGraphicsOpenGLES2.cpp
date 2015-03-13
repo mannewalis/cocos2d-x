@@ -88,7 +88,7 @@ bool GraphicsOpenGLES20::vertexArrayDestroy(handle object)
 }
 
 // @brief specifies a vertex attribute.
-bool GraphicsOpenGLES20::vertexArraySpecifyAttribute(handle object, handle buffer, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized)
+bool GraphicsOpenGLES20::vertexArraySpecifyAttribute(handle object, handle buffer, int index, ssize_t offset, DataType type, ssize_t count, bool normalized)
 {
     auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
     auto vbo = HANDLE_TOPTR(_handles, buffer, GraphicsOpenGLES2Buffer);
@@ -103,10 +103,10 @@ bool GraphicsOpenGLES20::vertexArrayDrawElements(handle object, ssize_t start, s
     return true;
 }
 
-handle GraphicsOpenGLES20::bufferCreate(ssize_t size, ssize_t count, ArrayMode arrayMode, bool zero)
+handle GraphicsOpenGLES20::bufferCreate(ssize_t size, ssize_t count, ArrayMode arrayMode, ArrayIntent arrayIntent, bool zero)
 {
     auto vbo = new (std::nothrow) GraphicsOpenGLES2Buffer;
-    if (vbo)
+    if (vbo && vbo->init(size, count, arrayMode, arrayIntent, zero))
     {
         vbo->autorelease();
         return HANDLE_CREATE(_handles, vbo);

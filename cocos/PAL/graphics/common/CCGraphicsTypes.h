@@ -61,7 +61,15 @@ enum class ArrayIntent
 
 struct VertexAttribute
 {
-    VertexAttribute(int index, int offset, DataType type, int size, bool normalized)
+    VertexAttribute()
+        : _index(0)
+        , _offset(0)
+        , _type(DataType::Invalid)
+        , _size(0)
+        , _normalized(false)
+    {}
+    
+    VertexAttribute(int index, ssize_t offset, DataType type, ssize_t size, bool normalized)
         : _index(index)
         , _offset(offset)
         , _type(type)
@@ -69,11 +77,11 @@ struct VertexAttribute
         , _normalized(normalized)
     {}
     
-    int  _index;
-    int  _offset;
+    int      _index;
+    ssize_t  _offset;
     DataType _type;
-    int  _size;
-    bool _normalized;
+    ssize_t  _size;
+    bool     _normalized;
 };
 
 NS_PRIVATE_END

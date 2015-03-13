@@ -31,6 +31,7 @@
 #include "PAL/CCPALMacros.h"
 #include "PAL/CCPALTypes.h"
 #include "PAL/graphics/common/CCGraphicsVertexArray.h"
+#include "CCGraphicsOpenGLES2Buffer.h"
 
 // remove cocos2d-x dependencies
 #include "base/CCRef.h"
@@ -41,7 +42,7 @@ class GraphicsOpenGLES2ArrayBuffer;
 class GraphicsOpenGLES2Buffer;
 
 class GraphicsOpenGLES2VertexArray
-    : public GraphicsVertexArray<GraphicsOpenGLES2VertexArray>
+    : public GraphicsVertexArray<GraphicsOpenGLES2VertexArray, GraphicsOpenGLES2Buffer>
 {
 public:
     
@@ -49,7 +50,7 @@ public:
     virtual ~GraphicsOpenGLES2VertexArray();
     
     bool destroy();
-    bool specifyAttribute(GraphicsOpenGLES2Buffer* buffer, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized);
+    bool specifyAttribute(GraphicsOpenGLES2Buffer* buffer, int index, ssize_t offset, DataType type, ssize_t count, bool normalized);
     void drawElements(ssize_t start, ssize_t count);
     
 protected:

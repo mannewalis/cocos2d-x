@@ -56,16 +56,22 @@ public:
     virtual bool vertexArrayDestroy(handle object) = 0;
         
     // @brief specifies a vertex attribute.
-    virtual bool vertexArraySpecifyAttribute(handle object, handle buffer, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized) = 0;
+    virtual bool vertexArraySpecifyAttribute(handle object, handle buffer, int index, ssize_t offset, DataType type, ssize_t count, bool normalized) = 0;
     
     // @brief draws the vertex array.
     virtual bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count) = 0;
 
     // MARK: Vertex and Index buffers
     
-    virtual handle bufferCreate(ssize_t size, ssize_t count, ArrayMode arrayMode, bool zero) = 0;
+    // @brief create a native buffer object for vertices/indices.
+    virtual handle bufferCreate(ssize_t size, ssize_t count, ArrayMode arrayMode, ArrayIntent arrayIntent, bool zero) = 0;
+    
+    // @brief destroy a native buffer object.
     virtual bool bufferDestroy(handle object) = 0;
+    
+    // @brief commit elements from a client array to a native buffer object.
     virtual bool bufferCommitElements(handle object, const void* elements, ssize_t count, ssize_t begin) = 0;
+    
     // HACK for backwards compatibility with MeshCommand
     CC_DEPRECATED(v3) virtual unsigned bufferGetBO(handle object) = 0;
 };

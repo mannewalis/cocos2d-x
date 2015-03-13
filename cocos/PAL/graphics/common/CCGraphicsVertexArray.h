@@ -35,15 +35,15 @@
 
 NS_PRIVATE_BEGIN
 
-template <class T>
+template <class T, class B>
 class GraphicsVertexArray
     : public Ref
 {
 public:
     
     typedef T traits;
-    typedef GraphicsElementArrayBuffer<T> vertex_buffer_type;
-    typedef GraphicsElementArrayBuffer<T> index_buffer_type;
+    typedef GraphicsElementArrayBuffer<B> vertex_buffer_type;
+    typedef GraphicsElementArrayBuffer<B> index_buffer_type;
     
     GraphicsVertexArray()
         : _indices(nullptr)

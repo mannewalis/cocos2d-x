@@ -50,49 +50,37 @@ GraphicsOpenGLES2Buffer::~GraphicsOpenGLES2Buffer()
 
 bool GraphicsOpenGLES2Buffer::commitElements(const void* elements, ssize_t count, ssize_t begin)
 {
-    if (_bo)
-        GL::bindVBO(_gltarget, _bo);
+    PAL_ASSERT(_bo, "native buffer object not initialized");
+    PAL_ASSERT(elements != nullptr, "invalid elements array");
+    PAL_ASSERT(count > 0, "invalid element count");
+    
+    GL::bindVBO(_gltarget, _bo);
     
     if (false == isDirty())
         return false;
     
-    // default to all elements
-    if (nullptr == elements)
-        elements = _elements;
+//    // default to all elements
+//    if (nullptr == elements)
+//        elements = _elements;
+//    
+//    // default to all elements
+//    if (0 == count)
+//        count = _elementCount;
     
-    // default to all elements
-    if (0 == count)
-        count = _elementCount;
-    
-    if (!_bo)
+    GL::bindVBO(_gltarget, _bo);
+    const auto size = getCapacityInBytes();
+    CCASSERT(size, "size should not be 0");
+    if (size >= _boSize)
     {
-        glGenBuffers(1, &_bo);
-        _boSize = getCapacityInBytes();
-        CCASSERT(_boSize, "_vboSize should not be 0");
-        _gltarget = arrayIntentToGLTarget(_arrayIntent);
-        _glusage = arrayModeToGLUsage(_arrayMode);
-        GL::bindVBO(_gltarget, _bo);
-        glBufferData(_gltarget, _boSize, nullptr, _glusage);
-        glBufferData(_gltarget, count * getElementSize(), elements, _glusage);
+        _boSize = size;
+        glBufferData(_gltarget, size, elements, _glusage);
         CHECK_GL_ERROR_DEBUG();
     }
     else
     {
-        GL::bindVBO(_gltarget, _bo);
-        const auto size = getCapacityInBytes();
-        CCASSERT(size, "size should not be 0");
-        if (size >= _boSize)
-        {
-            _boSize = size;
-            glBufferData(_gltarget, size, elements, _glusage);
-            CHECK_GL_ERROR_DEBUG();
-        }
-        else
-        {
-            intptr_t p = (intptr_t)elements + begin * _elementSize;
-            glBufferSubData(_gltarget, begin * _elementSize, count * _elementSize, (void*)p);
-            CHECK_GL_ERROR_DEBUG();
-        }
+        intptr_t p = (intptr_t)elements + begin * _elementSize;
+        glBufferSubData(_gltarget, begin * _elementSize, count * _elementSize, (void*)p);
+        CHECK_GL_ERROR_DEBUG();
     }
 
     return glGetError() == 0;
@@ -101,6 +89,15 @@ bool GraphicsOpenGLES2Buffer::commitElements(const void* elements, ssize_t count
 //
 // Protected Methods
 //
+
+void GraphicsOpenGLES2Buffer::setupBO()
+{
+    PAL_ASSERT(!_bo, "native buffer object already created");
+    _gltarget = arrayIntentToGLTarget(_arrayIntent);
+    _glusage = arrayModeToGLUsage(_arrayMode);
+    glGenBuffers(1, &_bo);
+    CHECK_GL_ERROR_DEBUG();
+}
 
 unsigned GraphicsOpenGLES2Buffer::arrayIntentToGLTarget(ArrayIntent intent) const
 {

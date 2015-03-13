@@ -40,11 +40,12 @@ public:
     GraphicsOpenGLES2Buffer();
     virtual ~GraphicsOpenGLES2Buffer();
 
-    bool commitElements(const void* elements, ssize_t count, ssize_t begin);
-
-protected:
-
     // MARK: traits
+
+    bool commitElements(const void* elements, ssize_t count, ssize_t begin);
+    void setupBO();
+    
+protected:
     
     unsigned arrayIntentToGLTarget(ArrayIntent intent) const;
     unsigned arrayModeToGLUsage(ArrayMode mode) const;

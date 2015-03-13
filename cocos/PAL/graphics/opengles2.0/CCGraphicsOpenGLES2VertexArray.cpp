@@ -55,9 +55,35 @@ bool GraphicsOpenGLES2VertexArray::destroy()
     return true;
 }
 
-bool GraphicsOpenGLES2VertexArray::specifyAttribute(GraphicsOpenGLES2Buffer* buffer, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized)
+bool GraphicsOpenGLES2VertexArray::specifyAttribute(GraphicsOpenGLES2Buffer* buffer, int index, ssize_t offset, DataType type, ssize_t count, bool normalized)
 {
-    return false;
+    PAL_ASSERT(buffer, "invalid buffer");
+    
+    setDirty(true);
+    
+    auto iter = _vertexStreams.find(index);
+    if (iter == _vertexStreams.end())
+    {
+        buffer->retain();
+        auto& bufferAttribute = _vertexStreams[index];
+        bufferAttribute._buffer = buffer;
+        bufferAttribute._stream = {index, offset, type, count, normalized};
+    }
+    else
+    {
+        buffer->retain();
+        iter->second._buffer->release();
+        iter->second._stream = {index, offset, type, count, normalized};
+        iter->second._buffer = buffer;
+    }
+    
+    _buffers.insert(tBuffers::value_type(buffer));
+    
+    // flag whether or not this vertex data is interleaved or not.
+    _interleaved = determineInterleave();
+    
+    return true;
+
 }
 
 void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
@@ -102,7 +128,7 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
             auto stride = vb->getElementSize();
             
             glEnableVertexAttribArray(GLint(stream._offset));
-            glVertexAttribPointer(GLint(stream._index), stream._size, DataTypeToGL(stream._type), stream._normalized, (GLsizei)stride, (GLvoid*)(size_t)offset);
+            glVertexAttribPointer(GLint(stream._index), (GLint)stream._size, DataTypeToGL(stream._type), stream._normalized, (GLsizei)stride, (GLvoid*)(size_t)offset);
             
             CHECK_GL_ERROR_DEBUG();
         }

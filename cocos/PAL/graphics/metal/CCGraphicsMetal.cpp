@@ -66,7 +66,7 @@ bool GraphicsMetal::vertexArrayDelete(handle object)
 }
 
 // @brief specifies a vertex attribute.
-bool GraphicsMetal::vertexArraySpecifyAttribute(handle object, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized)
+bool GraphicsMetal::vertexArraySpecifyAttribute(handle object, int index, ssize_t offset, DataType type, ssize_t count, bool normalized)
 {
     return false;
 }

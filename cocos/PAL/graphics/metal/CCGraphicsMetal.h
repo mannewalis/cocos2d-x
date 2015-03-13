@@ -63,12 +63,12 @@ public:
     bool vertexArrayDelete(handle object);
     
     // @brief specifies a vertex attribute.
-    bool vertexArraySpecifyAttribute(handle object, handle buffer, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized);
+    bool vertexArraySpecifyAttribute(handle object, handle buffer, int index, ssize_t offset, DataType type, ssize_t count, bool normalized);
     
     // @brief draws the vertex array.
     bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);
     
-    handle bufferCreate(ssize_t size, ssize_t count, ArrayMode arrayMode, bool zero);
+    handle bufferCreate(ssize_t size, ssize_t count, ArrayMode arrayMode, ArrayIntent arrayIntent, bool zero);
     bool bufferDestroy(handle object);
     bool bufferCommitElements(handle object, void*, ssize_t count, ssize_t begin);
     // HACK for backwards compatibility with MeshCommand
