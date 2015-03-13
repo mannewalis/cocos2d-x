@@ -28,7 +28,9 @@
 
 #include "base/CCRef.h"
 #include "PAL/CCPALMacros.h"
+#include "PAL/CCPALTypes.h"
 #include "PAL/interfaces/CCGraphicsInterface.h"
+#include "PAL/CCPALHandles.h"
 
 NS_CC_BEGIN
 class GLView;
@@ -36,12 +38,15 @@ NS_CC_END
 
 NS_PRIVATE_BEGIN
 
-class GraphicsGeometryState;
-
 class GraphicsOpenGLES20
     : public GraphicsInterface
 {
 public:
+    
+    GraphicsOpenGLES20()
+        : _handles(1000)
+        , _view(nullptr)
+    {}
     
     static GraphicsInterface* create();
     
@@ -51,20 +56,21 @@ public:
     // @brief shuts down this interface.
     void shutdown();
     
-    // @brief returns true or false depending on whether or not geometry state objects are supported.
-    bool supportsGeometryState();
+    // @brief creates a vertex array object.
+    handle vertexArrayCreate();
     
-    // @brief creates a geometry state object
-    handle createGeometryState();
+    // @brief destroy a vertex array object.
+    bool vertexArrayDestroy(handle object);
     
-    // @brief delete a geometry state object.
-    bool deleteGeometryState(handle object);
+    // @brief specifies a vertex attribute.
+    bool vertexArraySpecifyAttribute(handle object, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized);
     
-    // @brief binds a geometry state object.
-    bool bindGeometryState(handle object);
-    
+    // @brief draws the vertex array.
+    bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);
+
 protected:
     
+    Handles _handles;
     NS_CC::GLView* _view;
 };
 

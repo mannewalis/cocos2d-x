@@ -23,9 +23,11 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "CCGraphicsOpenGLES2.0.h"
 #include "PAL/CCPALMacros.h"
 #include "cocos2d.h"
+
+#include "CCGraphicsOpenGLES2.h"
+#include "CCGraphicsOpenGLES2VertexArray.h"
 
 USING_NS_CC;
 NS_PRIVATE_BEGIN
@@ -61,34 +63,40 @@ bool GraphicsOpenGLES20::init()
     return result;
 }
 
-bool GraphicsOpenGLES20::supportsGeometryState()
+// MARK: vertex array
+
+// @brief creates a vertex array object.
+handle GraphicsOpenGLES20::vertexArrayCreate()
 {
-    return Configuration::getInstance()->supportsShareableVAO();
+    auto vao = new (std::nothrow) GraphicsOpenGLES2VertexArray;
+    if (vao)
+    {
+        vao->autorelease();
+        return HANDLE_CREATE(_handles, vao);
+    }
+    return HANDLE_INVALID;
 }
 
-handle GraphicsOpenGLES20::createGeometryState()
+// @brief delete a vertex array object.
+bool GraphicsOpenGLES20::vertexArrayDestroy(handle object)
 {
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    return (handle)vao;
+    auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
+    return vao->destroy();
 }
 
-bool GraphicsOpenGLES20::deleteGeometryState(handle object)
+// @brief specifies a vertex attribute.
+bool GraphicsOpenGLES20::vertexArraySpecifyAttribute(handle object, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized)
 {
-    auto vao = (GLuint)(intptr_t)object;
-    if (!glIsBuffer(vao))
-        return false;
-    glDeleteVertexArrays(1, (GLuint*)&vao);
-    GL::bindVAO(0);
+    auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
+    return vao->specifyAttribute(index, offset, type, count, normalized);
+}
+
+// @brief draws the vertex array.
+bool GraphicsOpenGLES20::vertexArrayDrawElements(handle object, ssize_t start, ssize_t count)
+{
+    auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
+    vao->drawElements(start, count);
     return true;
-}
-
-bool GraphicsOpenGLES20::bindGeometryState(handle object)
-{
-    auto vao = (GLuint)(intptr_t)object;
-    GL::bindVAO(vao);
-    CHECK_GL_ERROR_DEBUG();
-    return glGetError() ? false : true;
 }
 
 NS_PRIVATE_END

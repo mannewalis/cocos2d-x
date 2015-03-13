@@ -31,8 +31,6 @@
 
 NS_PRIVATE_BEGIN
 
-class GraphicsInterface;
-
 class PALManager
     : public Ref
 {

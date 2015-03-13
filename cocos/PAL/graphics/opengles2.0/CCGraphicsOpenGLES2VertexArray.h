@@ -23,58 +23,45 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _CC_GRAPHICS_METAL_H_
-#define _CC_GRAPHICS_METAL_H_
+#ifndef _CC_GRAPHICS_OPENGLES2_VERTEX_ARRAY_
+#define _CC_GRAPHICS_OPENGLES2_VERTEX_ARRAY_
 
-#include "cocos2d.h"
+#include <set>
+
 #include "PAL/CCPALMacros.h"
-#include "PAL/interfaces/CCGraphicsInterface.h"
+#include "PAL/CCPALTypes.h"
+#include "PAL/graphics/common/CCGraphicsVertexArray.h"
+
+// remove cocos2d-x dependencies
+#include "base/CCRef.h"
 
 NS_PRIVATE_BEGIN
 
-#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
-#    import "TargetConditionals.h"
-#    if !TARGET_IPHONE_SIMULATOR
-#        define CC_METAL_AVAILABLE
-#    endif // TARGET_IPHONE_SIMULATOR
-#endif // CC_PLATFORM_IOS
+class GraphicsOpenGLES2ArrayBuffer;
+class GraphicsOpenGLES2IndexBuffer;
 
-#ifdef CC_METAL_AVAILABLE
-
-class GraphicsMetalViewController;
-
-class GraphicsMetal
-    : public GraphicsInterface
+class GraphicsOpenGLES2VertexArray
+    : public GraphicsVertexArray<GraphicsOpenGLES2VertexArray>
 {
 public:
     
-    static GraphicsInterface* create();
+    GraphicsOpenGLES2VertexArray();
+    virtual ~GraphicsOpenGLES2VertexArray();
     
-    // @brief initialize the API
-    bool init();
-
-    // @brief shuts down this interface.
-    void shutdown();
-    
-    // @brief creates a vertex array object.
-    handle vertexArrayCreate();
-    
-    // @brief delete a vertex array object.
-    bool vertexArrayDelete(handle object);
-    
-    // @brief specifies a vertex attribute.
-    bool vertexArraySpecifyAttribute(handle object, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized);
-    
-    // @brief draws the vertex array.
-    bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);
+    bool destroy();
+    bool specifyAttribute(ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized);
+    void drawElements(ssize_t start, ssize_t count);
     
 protected:
     
-    GraphicsMetalViewController* _controller;
-};
+    int DataTypeToGL(DataType type);
+    int IndexTypeToGL(IndexType type);
 
-#endif//CC_METAL_AVAILABLE
+protected:
+    
+    unsigned _vao;
+};
 
 NS_PRIVATE_END
 
-#endif//_CC_GRAPHICS_METAL_H_
+#endif//_CC_GRAPHICS_OPENGLES2_VERTEX_ARRAY_

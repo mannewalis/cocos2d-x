@@ -47,17 +47,19 @@ public:
     // All weak references and cached interfaces are invalidated.
     virtual void shutdown() = 0;
     
-    // @brief returns true or false depending on whether or not geometry state objects are supported.
-    virtual bool supportsGeometryState() = 0;
+    // MARK: vertex array
     
-    // @brief creates a geometry state object.
-    virtual handle createGeometryState() = 0;
+    // @brief creates a vertex array object.
+    virtual handle vertexArrayCreate() = 0;
     
-    // @brief delete a geometry state object.
-    virtual bool deleteGeometryState(handle object) = 0;
+    // @brief destroy a vertex array object.
+    virtual bool vertexArrayDestroy(handle object) = 0;
+        
+    // @brief specifies a vertex attribute.
+    virtual bool vertexArraySpecifyAttribute(handle object, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized) = 0;
     
-    // @brief binds a geometry state object.
-    virtual bool bindGeometryState(handle object) = 0;
+    // @brief draws the vertex array.
+    virtual bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count) = 0;
 };
 
 NS_PRIVATE_END

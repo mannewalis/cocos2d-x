@@ -1,5 +1,4 @@
 
-
 /****************************************************************************
  Copyright (c) 2013-2015 Chukong Technologies Inc.
  
@@ -24,8 +23,38 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "CCGraphicsGeometryState.h"
+#ifndef _CC_GRAPHICS_OPENGLES2_VERTEX_BUFFER_H_
+#define _CC_GRAPHICS_OPENGLES2_VERTEX_BUFFER_H_
+
+#include "PAL/CCPALMacros.h"
+#include "PAL/CCPALTypes.h"
+#include "PAL/graphics/common/CCGraphicsVertexBuffer.h"
 
 NS_PRIVATE_BEGIN
 
+class GraphicsOpenGLES2VertexBuffer
+    : public GraphicsVertexBuffer<GraphicsOpenGLES2VertexBuffer>
+{
+public:
+    
+    GraphicsOpenGLES2VertexBuffer()
+        : _vbo(0)
+    {}
+    
+    unsigned getVBO() const
+    {
+        return _vbo;
+    }
+    
+    // MARK: traits
+    
+    void destroy();
+    
+protected:
+    
+    unsigned _vbo;
+};
+
 NS_PRIVATE_END
+
+#endif//_CC_GRAPHICS_OPENGLES2_VERTEX_BUFFER_H_

@@ -23,11 +23,14 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "PAL/graphics/metal/CCGraphicsMetal.h"
-
-NS_CC_BEGIN
+#include "CCGraphicsMetal.h"
+#include "PAL/CCPALHandles.h"
 
 #ifdef CC_METAL_AVAILABLE
+
+#import "Metal/Metal.h"
+
+NS_PRIVATE_BEGIN
 
 GraphicsInterface* GraphicsMetal::create()
 {
@@ -41,15 +44,39 @@ GraphicsInterface* GraphicsMetal::create()
     return nullptr;
 }
 
-void GraphicsMetal::shutdown()
-{
-}
-
 bool GraphicsMetal::init()
 {
     return true;
 }
 
-#endif // CC_METAL_AVAILABLE
+void GraphicsMetal::shutdown()
+{
+}
 
-NS_CC_END
+// @brief creates a vertex array object.
+handle GraphicsMetal::vertexArrayCreate()
+{
+    return HANDLE_INVALID;
+}
+
+// @brief delete a vertex array object.
+bool GraphicsMetal::vertexArrayDelete(handle object)
+{
+    return false;
+}
+
+// @brief specifies a vertex attribute.
+bool GraphicsMetal::vertexArraySpecifyAttribute(handle object, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized)
+{
+    return false;
+}
+
+// @brief draws the vertex array.
+bool GraphicsMetal::vertexArrayDrawElements(handle object, ssize_t start, ssize_t count)
+{
+    return false;
+}
+
+NS_PRIVATE_END
+
+#endif//CC_METAL_AVAILABLE

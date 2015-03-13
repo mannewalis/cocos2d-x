@@ -23,36 +23,12 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _CC_PAL_MACROS_H_
-#define _CC_PAL_MACROS_H_
+#ifndef _CC_GRAPHICS_METAL_VIEW_CONTROLLER_H_
+#define _CC_GRAPHICS_METAL_VIEW_CONTROLLER_H_
 
-#include "assert.h"
+#import "UIKit/UIViewController.h";
 
-// namespace _private {}
-#ifdef __cplusplus
-    #define NS_PRIVATE_BEGIN  namespace cocos2d { namespace _private {
-    #define NS_PRIVATE_END    }}
-    #define USING_NS_PRIVATE  using namespace cocos2d::_private
-    #define NS_PRIVATE        ::cocos2d::_private
-#else
-    #define NS_PRIVATE_BEGIN
-    #define NS_PRIVATE_END
-    #define USING_NS_PRIVATE
-    #define NS_PRIVATE
-#endif
+@interface MetalViewController : UIViewController
+@end
 
-#define PAL_SAFE_RELEASE_NULL(x) { if (x) { x->release(); x = nullptr; } } 
-
-#define PAL_ASSERT(cond, ...) assert(cond)
-
-template <class T>
-T* traits_cast(void* rhs)
-{
-    return static_cast<T*>(rhs);
-}
-
-#define HANDLE_INVALID 0
-
-#endif//_CC_PAL_MACROS_H_
-
-
+#endif//_CC_GRAPHICS_METAL_VIEW_CONTROLLER_H_

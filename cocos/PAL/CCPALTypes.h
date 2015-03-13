@@ -30,8 +30,10 @@
 
 NS_PRIVATE_BEGIN
 
-typedef intptr_t handle;
+typedef int handle;
 
 NS_PRIVATE_END
+
+#include "graphics/common/CCGraphicsTypes.h"
 
 #endif//_CC_PAL_TYPES_H_

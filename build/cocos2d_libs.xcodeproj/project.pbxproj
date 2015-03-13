@@ -1224,16 +1224,36 @@
 		B63990CD1A490AFE00B07923 /* CCAsyncTaskPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B63990CA1A490AFE00B07923 /* CCAsyncTaskPool.cpp */; };
 		B63990CE1A490AFE00B07923 /* CCAsyncTaskPool.h in Headers */ = {isa = PBXBuildFile; fileRef = B63990CB1A490AFE00B07923 /* CCAsyncTaskPool.h */; };
 		B63990CF1A490AFE00B07923 /* CCAsyncTaskPool.h in Headers */ = {isa = PBXBuildFile; fileRef = B63990CB1A490AFE00B07923 /* CCAsyncTaskPool.h */; };
-		D00FBB591AAF969200196C41 /* CCGraphicsGeometryState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D00FBB571AAF969200196C41 /* CCGraphicsGeometryState.cpp */; };
-		D00FBB5A1AAF969200196C41 /* CCGraphicsGeometryState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D00FBB571AAF969200196C41 /* CCGraphicsGeometryState.cpp */; };
-		D00FBB5B1AAF969200196C41 /* CCGraphicsGeometryState.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB581AAF969200196C41 /* CCGraphicsGeometryState.h */; };
-		D00FBB5C1AAF969200196C41 /* CCGraphicsGeometryState.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB581AAF969200196C41 /* CCGraphicsGeometryState.h */; };
+		D00FBB5B1AAF969200196C41 /* CCGraphicsVertexArray.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB581AAF969200196C41 /* CCGraphicsVertexArray.h */; };
+		D00FBB5C1AAF969200196C41 /* CCGraphicsVertexArray.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB581AAF969200196C41 /* CCGraphicsVertexArray.h */; };
 		D00FBB6A1AAFB1FC00196C41 /* CCGraphicsTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB691AAFB1FC00196C41 /* CCGraphicsTypes.h */; };
 		D00FBB6B1AAFB1FC00196C41 /* CCGraphicsTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB691AAFB1FC00196C41 /* CCGraphicsTypes.h */; };
 		D00FBB6D1AAFB2A900196C41 /* CCPALMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB6C1AAFB2A900196C41 /* CCPALMacros.h */; };
 		D00FBB6E1AAFB2A900196C41 /* CCPALMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB6C1AAFB2A900196C41 /* CCPALMacros.h */; };
 		D00FBB701AAFC17700196C41 /* CCPALTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB6F1AAFC17700196C41 /* CCPALTypes.h */; };
 		D00FBB711AAFC17700196C41 /* CCPALTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB6F1AAFC17700196C41 /* CCPALTypes.h */; };
+		D00FBB731AB0C1CF00196C41 /* CCGraphicsMetalViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = D00FBB721AB0C1CF00196C41 /* CCGraphicsMetalViewController.mm */; };
+		D00FBB751AB0C1F200196C41 /* CCGraphicsMetalViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB741AB0C1F200196C41 /* CCGraphicsMetalViewController.h */; };
+		D00FBB781AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D00FBB761AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.cpp */; };
+		D00FBB791AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D00FBB761AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.cpp */; };
+		D00FBB7A1AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB771AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.h */; };
+		D00FBB7B1AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB771AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.h */; };
+		D00FBB7D1AB2195000196C41 /* CCPALHandles.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB7C1AB2195000196C41 /* CCPALHandles.h */; };
+		D00FBB7E1AB2195000196C41 /* CCPALHandles.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB7C1AB2195000196C41 /* CCPALHandles.h */; };
+		D00FBB831AB2308400196C41 /* CCGraphicsElementArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB801AB2308400196C41 /* CCGraphicsElementArrayBuffer.h */; };
+		D00FBB841AB2308400196C41 /* CCGraphicsElementArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB801AB2308400196C41 /* CCGraphicsElementArrayBuffer.h */; };
+		D00FBB871AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D00FBB851AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.cpp */; };
+		D00FBB881AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D00FBB851AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.cpp */; };
+		D00FBB891AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB861AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.h */; };
+		D00FBB8A1AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB861AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.h */; };
+		D00FBB8F1AB23CD300196C41 /* CCGraphicsVertexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB8C1AB23CD300196C41 /* CCGraphicsVertexBuffer.h */; };
+		D00FBB901AB23CD300196C41 /* CCGraphicsVertexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB8C1AB23CD300196C41 /* CCGraphicsVertexBuffer.h */; };
+		D00FBB951AB23D6900196C41 /* CCGraphicsIndexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB921AB23D6900196C41 /* CCGraphicsIndexBuffer.h */; };
+		D00FBB961AB23D6900196C41 /* CCGraphicsIndexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB921AB23D6900196C41 /* CCGraphicsIndexBuffer.h */; };
+		D00FBB991AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D00FBB971AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.cpp */; };
+		D00FBB9A1AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D00FBB971AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.cpp */; };
+		D00FBB9B1AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB981AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.h */; };
+		D00FBB9C1AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB981AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.h */; };
 		D07525EC1AAF576600830CD1 /* CCPALManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D07525E11AAF576600830CD1 /* CCPALManager.cpp */; };
 		D07525ED1AAF576600830CD1 /* CCPALManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D07525E11AAF576600830CD1 /* CCPALManager.cpp */; };
 		D07525EE1AAF576600830CD1 /* CCPALManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E21AAF576600830CD1 /* CCPALManager.h */; };
@@ -1242,10 +1262,10 @@
 		D07525F11AAF576600830CD1 /* CCGraphicsMetal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D07525E51AAF576600830CD1 /* CCGraphicsMetal.cpp */; };
 		D07525F21AAF576600830CD1 /* CCGraphicsMetal.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E61AAF576600830CD1 /* CCGraphicsMetal.h */; };
 		D07525F31AAF576600830CD1 /* CCGraphicsMetal.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E61AAF576600830CD1 /* CCGraphicsMetal.h */; };
-		D07525F41AAF576600830CD1 /* CCGraphicsOpenGLES2.0.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D07525E81AAF576600830CD1 /* CCGraphicsOpenGLES2.0.cpp */; };
-		D07525F51AAF576600830CD1 /* CCGraphicsOpenGLES2.0.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D07525E81AAF576600830CD1 /* CCGraphicsOpenGLES2.0.cpp */; };
-		D07525F61AAF576600830CD1 /* CCGraphicsOpenGLES2.0.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E91AAF576600830CD1 /* CCGraphicsOpenGLES2.0.h */; };
-		D07525F71AAF576600830CD1 /* CCGraphicsOpenGLES2.0.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E91AAF576600830CD1 /* CCGraphicsOpenGLES2.0.h */; };
+		D07525F41AAF576600830CD1 /* CCGraphicsOpenGLES2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D07525E81AAF576600830CD1 /* CCGraphicsOpenGLES2.cpp */; };
+		D07525F51AAF576600830CD1 /* CCGraphicsOpenGLES2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D07525E81AAF576600830CD1 /* CCGraphicsOpenGLES2.cpp */; };
+		D07525F61AAF576600830CD1 /* CCGraphicsOpenGLES2.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E91AAF576600830CD1 /* CCGraphicsOpenGLES2.h */; };
+		D07525F71AAF576600830CD1 /* CCGraphicsOpenGLES2.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E91AAF576600830CD1 /* CCGraphicsOpenGLES2.h */; };
 		D07525F81AAF576600830CD1 /* CCGraphicsInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525EB1AAF576600830CD1 /* CCGraphicsInterface.h */; };
 		D07525F91AAF576600830CD1 /* CCGraphicsInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525EB1AAF576600830CD1 /* CCGraphicsInterface.h */; };
 		D0FD03491A3B51AA00825BB5 /* CCAllocatorBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D0FD033B1A3B51AA00825BB5 /* CCAllocatorBase.h */; };
@@ -1985,18 +2005,29 @@
 		B67C624319D4186F00F11FC6 /* ccShader_3D_ColorNormal.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ccShader_3D_ColorNormal.frag; sourceTree = "<group>"; };
 		B67C624419D4186F00F11FC6 /* ccShader_3D_ColorNormalTex.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ccShader_3D_ColorNormalTex.frag; sourceTree = "<group>"; };
 		B67C624519D4186F00F11FC6 /* ccShader_3D_PositionNormalTex.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ccShader_3D_PositionNormalTex.vert; sourceTree = "<group>"; };
-		D00FBB571AAF969200196C41 /* CCGraphicsGeometryState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsGeometryState.cpp; sourceTree = "<group>"; };
-		D00FBB581AAF969200196C41 /* CCGraphicsGeometryState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsGeometryState.h; sourceTree = "<group>"; };
+		D00FBB581AAF969200196C41 /* CCGraphicsVertexArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsVertexArray.h; sourceTree = "<group>"; };
 		D00FBB641AAFB0C300196C41 /* CCPAL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCPAL.h; sourceTree = "<group>"; };
 		D00FBB691AAFB1FC00196C41 /* CCGraphicsTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsTypes.h; sourceTree = "<group>"; };
 		D00FBB6C1AAFB2A900196C41 /* CCPALMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPALMacros.h; sourceTree = "<group>"; };
 		D00FBB6F1AAFC17700196C41 /* CCPALTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPALTypes.h; sourceTree = "<group>"; };
+		D00FBB721AB0C1CF00196C41 /* CCGraphicsMetalViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CCGraphicsMetalViewController.mm; sourceTree = "<group>"; };
+		D00FBB741AB0C1F200196C41 /* CCGraphicsMetalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsMetalViewController.h; sourceTree = "<group>"; };
+		D00FBB761AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsOpenGLES2VertexArray.cpp; sourceTree = "<group>"; };
+		D00FBB771AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsOpenGLES2VertexArray.h; sourceTree = "<group>"; };
+		D00FBB7C1AB2195000196C41 /* CCPALHandles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPALHandles.h; sourceTree = "<group>"; };
+		D00FBB801AB2308400196C41 /* CCGraphicsElementArrayBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsElementArrayBuffer.h; sourceTree = "<group>"; };
+		D00FBB851AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsOpenGLES2VertexBuffer.cpp; sourceTree = "<group>"; };
+		D00FBB861AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsOpenGLES2VertexBuffer.h; sourceTree = "<group>"; };
+		D00FBB8C1AB23CD300196C41 /* CCGraphicsVertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsVertexBuffer.h; sourceTree = "<group>"; };
+		D00FBB921AB23D6900196C41 /* CCGraphicsIndexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsIndexBuffer.h; sourceTree = "<group>"; };
+		D00FBB971AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsOpenGLES2IndexBuffer.cpp; sourceTree = "<group>"; };
+		D00FBB981AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsOpenGLES2IndexBuffer.h; sourceTree = "<group>"; };
 		D07525E11AAF576600830CD1 /* CCPALManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCPALManager.cpp; sourceTree = "<group>"; };
 		D07525E21AAF576600830CD1 /* CCPALManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPALManager.h; sourceTree = "<group>"; };
-		D07525E51AAF576600830CD1 /* CCGraphicsMetal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsMetal.cpp; sourceTree = "<group>"; };
+		D07525E51AAF576600830CD1 /* CCGraphicsMetal.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = CCGraphicsMetal.cpp; sourceTree = "<group>"; };
 		D07525E61AAF576600830CD1 /* CCGraphicsMetal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsMetal.h; sourceTree = "<group>"; };
-		D07525E81AAF576600830CD1 /* CCGraphicsOpenGLES2.0.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsOpenGLES2.0.cpp; sourceTree = "<group>"; };
-		D07525E91AAF576600830CD1 /* CCGraphicsOpenGLES2.0.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsOpenGLES2.0.h; sourceTree = "<group>"; };
+		D07525E81AAF576600830CD1 /* CCGraphicsOpenGLES2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsOpenGLES2.cpp; sourceTree = "<group>"; };
+		D07525E91AAF576600830CD1 /* CCGraphicsOpenGLES2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsOpenGLES2.h; sourceTree = "<group>"; };
 		D07525EB1AAF576600830CD1 /* CCGraphicsInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsInterface.h; sourceTree = "<group>"; };
 		D0FD033B1A3B51AA00825BB5 /* CCAllocatorBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAllocatorBase.h; sourceTree = "<group>"; };
 		D0FD033C1A3B51AA00825BB5 /* CCAllocatorDiagnostics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCAllocatorDiagnostics.cpp; sourceTree = "<group>"; };
@@ -3207,8 +3238,10 @@
 			isa = PBXGroup;
 			children = (
 				D00FBB691AAFB1FC00196C41 /* CCGraphicsTypes.h */,
-				D00FBB571AAF969200196C41 /* CCGraphicsGeometryState.cpp */,
-				D00FBB581AAF969200196C41 /* CCGraphicsGeometryState.h */,
+				D00FBB581AAF969200196C41 /* CCGraphicsVertexArray.h */,
+				D00FBB8C1AB23CD300196C41 /* CCGraphicsVertexBuffer.h */,
+				D00FBB921AB23D6900196C41 /* CCGraphicsIndexBuffer.h */,
+				D00FBB801AB2308400196C41 /* CCGraphicsElementArrayBuffer.h */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -3221,6 +3254,7 @@
 				D00FBB6F1AAFC17700196C41 /* CCPALTypes.h */,
 				D07525E11AAF576600830CD1 /* CCPALManager.cpp */,
 				D07525E21AAF576600830CD1 /* CCPALManager.h */,
+				D00FBB7C1AB2195000196C41 /* CCPALHandles.h */,
 				D07525EA1AAF576600830CD1 /* interfaces */,
 				D07525E31AAF576600830CD1 /* graphics */,
 			);
@@ -3243,6 +3277,8 @@
 			children = (
 				D07525E51AAF576600830CD1 /* CCGraphicsMetal.cpp */,
 				D07525E61AAF576600830CD1 /* CCGraphicsMetal.h */,
+				D00FBB721AB0C1CF00196C41 /* CCGraphicsMetalViewController.mm */,
+				D00FBB741AB0C1F200196C41 /* CCGraphicsMetalViewController.h */,
 			);
 			path = metal;
 			sourceTree = "<group>";
@@ -3250,8 +3286,14 @@
 		D07525E71AAF576600830CD1 /* opengles2.0 */ = {
 			isa = PBXGroup;
 			children = (
-				D07525E81AAF576600830CD1 /* CCGraphicsOpenGLES2.0.cpp */,
-				D07525E91AAF576600830CD1 /* CCGraphicsOpenGLES2.0.h */,
+				D07525E81AAF576600830CD1 /* CCGraphicsOpenGLES2.cpp */,
+				D07525E91AAF576600830CD1 /* CCGraphicsOpenGLES2.h */,
+				D00FBB761AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.cpp */,
+				D00FBB771AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.h */,
+				D00FBB851AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.cpp */,
+				D00FBB861AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.h */,
+				D00FBB971AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.cpp */,
+				D00FBB981AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.h */,
 			);
 			path = opengles2.0;
 			sourceTree = "<group>";
@@ -3326,7 +3368,9 @@
 				46A170F01807CECA005B8026 /* CCPhysicsWorld.h in Headers */,
 				DABC9FAB19E7DFA900FA252C /* CCClippingRectangleNode.h in Headers */,
 				50ABBEC11925AB6F00A911A9 /* CCValue.h in Headers */,
+				D00FBB7A1AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.h in Headers */,
 				B276EF631988D1D500CD400F /* CCVertexIndexBuffer.h in Headers */,
+				D00FBB9B1AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.h in Headers */,
 				50ABBE871925AB6F00A911A9 /* ccMacros.h in Headers */,
 				15B3708A19EE414C00ABE682 /* Manifest.h in Headers */,
 				50ABBE731925AB6F00A911A9 /* CCEventListenerMouse.h in Headers */,
@@ -3374,6 +3418,7 @@
 				1A570110180BC8EE0088DEC7 /* CCDrawingPrimitives.h in Headers */,
 				50CB247D19D9C5A100687767 /* AudioPlayer.h in Headers */,
 				1A570114180BC8EE0088DEC7 /* CCDrawNode.h in Headers */,
+				D00FBB8F1AB23CD300196C41 /* CCGraphicsVertexBuffer.h in Headers */,
 				15B3707A19EE414C00ABE682 /* AssetsManagerEx.h in Headers */,
 				15AE1B5819AADA9900C27E9E /* UISlider.h in Headers */,
 				1A57011D180BC90D0088DEC7 /* CCGrabber.h in Headers */,
@@ -3389,7 +3434,7 @@
 				15AE180E19AAD2F700C27E9E /* CCAnimate3D.h in Headers */,
 				1A5701B3180BCB590088DEC7 /* CCFontFNT.h in Headers */,
 				15AE1BD919AAE01E00C27E9E /* CCControlStepper.h in Headers */,
-				D07525F61AAF576600830CD1 /* CCGraphicsOpenGLES2.0.h in Headers */,
+				D07525F61AAF576600830CD1 /* CCGraphicsOpenGLES2.h in Headers */,
 				D07525EE1AAF576600830CD1 /* CCPALManager.h in Headers */,
 				5034CA47191D591100CE6051 /* ccShader_Label_normal.frag in Headers */,
 				15AE182219AAD2F700C27E9E /* CCBundleReader.h in Headers */,
@@ -3408,6 +3453,7 @@
 				50ABBED91925AB6F00A911A9 /* ZipUtils.h in Headers */,
 				50643BDB19BFAF4400EF68ED /* CCStdC.h in Headers */,
 				1A5701C3180BCB5A0088DEC7 /* CCLabelBMFont.h in Headers */,
+				D00FBB7D1AB2195000196C41 /* CCPALHandles.h in Headers */,
 				50ABBE5F1925AB6F00A911A9 /* CCEventListener.h in Headers */,
 				1A5701C9180BCB5A0088DEC7 /* CCLabelTextFormatter.h in Headers */,
 				5034CA37191D591100CE6051 /* ccShader_PositionColorLengthTexture.vert in Headers */,
@@ -3469,7 +3515,7 @@
 				5034CA2B191D591100CE6051 /* ccShader_PositionTextureA8Color.vert in Headers */,
 				15AE1BCE19AAE01E00C27E9E /* CCControlColourPicker.h in Headers */,
 				1A570288180BCC900088DEC7 /* CCSpriteFrame.h in Headers */,
-				D00FBB5B1AAF969200196C41 /* CCGraphicsGeometryState.h in Headers */,
+				D00FBB5B1AAF969200196C41 /* CCGraphicsVertexArray.h in Headers */,
 				1A57028C180BCC900088DEC7 /* CCSpriteFrameCache.h in Headers */,
 				5027253A190BF1B900AAF4ED /* cocos2d.h in Headers */,
 				D07525F21AAF576600830CD1 /* CCGraphicsMetal.h in Headers */,
@@ -3538,6 +3584,7 @@
 				50ABBE9D1925AB6F00A911A9 /* CCRefPtr.h in Headers */,
 				5034CA31191D591100CE6051 /* ccShader_PositionTexture_uColor.vert in Headers */,
 				50ABBE7B1925AB6F00A911A9 /* CCEventMouse.h in Headers */,
+				D00FBB951AB23D6900196C41 /* CCGraphicsIndexBuffer.h in Headers */,
 				503DD8F91926B0DB00CD74DD /* CCIMEDispatcher.h in Headers */,
 				15AE1B6619AADA9900C27E9E /* UIImageView.h in Headers */,
 				15AE1BB419AADFEF00C27E9E /* HttpResponse.h in Headers */,
@@ -3567,6 +3614,7 @@
 				15AE1BDB19AAE01E00C27E9E /* CCControlSwitch.h in Headers */,
 				B24AA987195A675C007B4522 /* CCFastTMXLayer.h in Headers */,
 				D00FBB6D1AAFB2A900196C41 /* CCPALMacros.h in Headers */,
+				D00FBB831AB2308400196C41 /* CCGraphicsElementArrayBuffer.h in Headers */,
 				50ABBEBD1925AB6F00A911A9 /* ccUtils.h in Headers */,
 				50ABC0231926664800A911A9 /* CCGLViewImpl-desktop.h in Headers */,
 				296F160E1A9DDD12000C7D83 /* CCVertexAttribute.h in Headers */,
@@ -3595,6 +3643,7 @@
 				50ABBE2D1925AB6F00A911A9 /* ccCArray.h in Headers */,
 				50ABBD5E1925AB0000A911A9 /* Vec3.h in Headers */,
 				50ABBE211925AB6F00A911A9 /* atitc.h in Headers */,
+				D00FBB891AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.h in Headers */,
 				B24AA98B195A675C007B4522 /* CCFastTMXTiledMap.h in Headers */,
 				B29594B61926D5EC003EEF37 /* CCMeshCommand.h in Headers */,
 				50ABBE371925AB6F00A911A9 /* CCConsole.h in Headers */,
@@ -3637,6 +3686,7 @@
 				3EACC9A319F5014D00EB3C5E /* CCCamera.h in Headers */,
 				50ABBDA21925AB4100A911A9 /* CCGroupCommand.h in Headers */,
 				50643BDA19BFAF4400EF68ED /* CCApplication.h in Headers */,
+				D00FBB8A1AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.h in Headers */,
 				15AE181519AAD2F700C27E9E /* CCAnimationCurve.h in Headers */,
 				503DD8EF1926736A00CD74DD /* CCPlatformDefine-ios.h in Headers */,
 				46A171041807CECB005B8026 /* CCPhysicsShape.h in Headers */,
@@ -3663,7 +3713,7 @@
 				296F187E1A9EC399000C7D83 /* CCStencilCommand.h in Headers */,
 				50ABBE2E1925AB6F00A911A9 /* ccCArray.h in Headers */,
 				15B3707B19EE414C00ABE682 /* AssetsManagerEx.h in Headers */,
-				D00FBB5C1AAF969200196C41 /* CCGraphicsGeometryState.h in Headers */,
+				D00FBB5C1AAF969200196C41 /* CCGraphicsVertexArray.h in Headers */,
 				15AE1B9119AADA9A00C27E9E /* UIWidget.h in Headers */,
 				50ABC0041926664800A911A9 /* CCLock-apple.h in Headers */,
 				ED74D76A1A5B8A2600157FD4 /* CCPhysicsHelper.h in Headers */,
@@ -3711,6 +3761,7 @@
 				50ABBD9E1925AB4100A911A9 /* ccGLStateCache.h in Headers */,
 				15AE1B9619AADA9A00C27E9E /* CocosGUI.h in Headers */,
 				1A57008C180BC5A10088DEC7 /* CCActionProgressTimer.h in Headers */,
+				D00FBB961AB23D6900196C41 /* CCGraphicsIndexBuffer.h in Headers */,
 				1A570090180BC5A10088DEC7 /* CCActionTiledGrid.h in Headers */,
 				1A570094180BC5A10088DEC7 /* CCActionTween.h in Headers */,
 				1A57009B180BC5C10088DEC7 /* CCAtlasNode.h in Headers */,
@@ -3723,7 +3774,7 @@
 				15AE1B7719AADA9A00C27E9E /* UIPageView.h in Headers */,
 				50ABBD8A1925AB4100A911A9 /* CCCustomCommand.h in Headers */,
 				299754F7193EC95400A54AC3 /* ObjectFactory.h in Headers */,
-				D07525F71AAF576600830CD1 /* CCGraphicsOpenGLES2.0.h in Headers */,
+				D07525F71AAF576600830CD1 /* CCGraphicsOpenGLES2.h in Headers */,
 				50ABBE881925AB6F00A911A9 /* ccMacros.h in Headers */,
 				50ABC0101926664800A911A9 /* CCFileUtils.h in Headers */,
 				15AE1B7B19AADA9A00C27E9E /* UIScrollView.h in Headers */,
@@ -3773,6 +3824,7 @@
 				15AE1C1819AAE2C700C27E9E /* CCPhysicsSprite.h in Headers */,
 				15AE1BC819AAE00000C27E9E /* AssetsManager.h in Headers */,
 				52B47A2E1A5349A3004E4C60 /* HttpAsynConnection.h in Headers */,
+				D00FBB9C1AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.h in Headers */,
 				15AE1BBC19AADFF000C27E9E /* HttpResponse.h in Headers */,
 				15AE186019AAD31200C27E9E /* SimpleAudioEngine_objc.h in Headers */,
 				50ABBDA61925AB4100A911A9 /* CCQuadCommand.h in Headers */,
@@ -3807,6 +3859,7 @@
 				5034CA34191D591100CE6051 /* ccShader_PositionTexture_uColor.frag in Headers */,
 				15AE1C0419AAE01E00C27E9E /* CCTableView.h in Headers */,
 				50ABBEA21925AB6F00A911A9 /* CCScheduler.h in Headers */,
+				D00FBB7B1AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.h in Headers */,
 				1A57020B180BCBDF0088DEC7 /* CCMotionStreak.h in Headers */,
 				15B3708B19EE414C00ABE682 /* Manifest.h in Headers */,
 				1A570213180BCBF40088DEC7 /* CCProgressTimer.h in Headers */,
@@ -3841,6 +3894,7 @@
 				1A57028D180BCC900088DEC7 /* CCSpriteFrameCache.h in Headers */,
 				1A570295180BCCAB0088DEC7 /* CCAnimation.h in Headers */,
 				50ABBDB81925AB4100A911A9 /* CCTexture2D.h in Headers */,
+				D00FBB7E1AB2195000196C41 /* CCPALHandles.h in Headers */,
 				15AE180F19AAD2F700C27E9E /* CCAnimate3D.h in Headers */,
 				50ABBE341925AB6F00A911A9 /* CCConfiguration.h in Headers */,
 				1A570299180BCCAB0088DEC7 /* CCAnimationCache.h in Headers */,
@@ -3875,6 +3929,7 @@
 				15AE1BA619AADFDF00C27E9E /* UIHBox.h in Headers */,
 				5034CA48191D591100CE6051 /* ccShader_Label_normal.frag in Headers */,
 				15AE183F19AAD2F700C27E9E /* CCSkeleton3D.h in Headers */,
+				D00FBB901AB23CD300196C41 /* CCGraphicsVertexBuffer.h in Headers */,
 				50ABBD531925AB0000A911A9 /* Quaternion.h in Headers */,
 				503DD8E81926736A00CD74DD /* CCES2Renderer-ios.h in Headers */,
 				50ABBE6C1925AB6F00A911A9 /* CCEventListenerFocus.h in Headers */,
@@ -3892,6 +3947,7 @@
 				50ABBEC81925AB6F00A911A9 /* etc1.h in Headers */,
 				50ABBDB01925AB4100A911A9 /* CCRenderer.h in Headers */,
 				B29594B71926D5EC003EEF37 /* CCMeshCommand.h in Headers */,
+				D00FBB841AB2308400196C41 /* CCGraphicsElementArrayBuffer.h in Headers */,
 				3E6176771960F89B00DE83F5 /* CCEventListenerController.h in Headers */,
 				50ABBD861925AB4100A911A9 /* CCBatchCommand.h in Headers */,
 				50ABBE481925AB6F00A911A9 /* CCEvent.h in Headers */,
@@ -3974,6 +4030,7 @@
 				15AE1BC319AADFFB00C27E9E /* cocos-ext.h in Headers */,
 				15AE1B8B19AADA9A00C27E9E /* UIImageView.h in Headers */,
 				50ABBE601925AB6F00A911A9 /* CCEventListener.h in Headers */,
+				D00FBB751AB0C1F200196C41 /* CCGraphicsMetalViewController.h in Headers */,
 				50ABBEB21925AB6F00A911A9 /* CCUserDefault.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4071,6 +4128,7 @@
 				46A170E61807CECA005B8026 /* CCPhysicsBody.cpp in Sources */,
 				50ABBDA71925AB4100A911A9 /* CCRenderCommand.cpp in Sources */,
 				15AE1B9B19AADFDF00C27E9E /* UIRelativeBox.cpp in Sources */,
+				D00FBB781AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.cpp in Sources */,
 				50ABBD501925AB0000A911A9 /* Quaternion.cpp in Sources */,
 				15AE1BE619AAE01E00C27E9E /* CCTableViewCell.cpp in Sources */,
 				50ABBEBB1925AB6F00A911A9 /* ccUtils.cpp in Sources */,
@@ -4227,6 +4285,7 @@
 				15AE1BC519AAE00000C27E9E /* AssetsManager.cpp in Sources */,
 				50ABBD5C1925AB0000A911A9 /* Vec3.cpp in Sources */,
 				1A570300180BCE890088DEC7 /* CCParallaxNode.cpp in Sources */,
+				D00FBB871AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.cpp in Sources */,
 				1A57030C180BCF190088DEC7 /* CCComponent.cpp in Sources */,
 				1A570310180BCF190088DEC7 /* CCComponentContainer.cpp in Sources */,
 				1A01C69C18F57BE800EFE3A6 /* CCString.cpp in Sources */,
@@ -4244,10 +4303,11 @@
 				15AE1B7019AADA9900C27E9E /* CocosGUI.cpp in Sources */,
 				50CB247719D9C5A100687767 /* AudioCache.mm in Sources */,
 				50ABBEA71925AB6F00A911A9 /* CCTouch.cpp in Sources */,
+				D00FBB991AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.cpp in Sources */,
 				15AE186819AAD31D00C27E9E /* CDXMacOSXSupport.mm in Sources */,
 				50ABBD8B1925AB4100A911A9 /* CCGLProgram.cpp in Sources */,
 				464AD6E5197EBB1400E502D8 /* pvr.cpp in Sources */,
-				D07525F41AAF576600830CD1 /* CCGraphicsOpenGLES2.0.cpp in Sources */,
+				D07525F41AAF576600830CD1 /* CCGraphicsOpenGLES2.cpp in Sources */,
 				50ABBDA31925AB4100A911A9 /* CCQuadCommand.cpp in Sources */,
 				50ABC01D1926664800A911A9 /* CCThread.cpp in Sources */,
 				15AE180C19AAD2F700C27E9E /* CCAnimate3D.cpp in Sources */,
@@ -4256,7 +4316,6 @@
 				50ABBD481925AB0000A911A9 /* Mat4.cpp in Sources */,
 				50ABBD8F1925AB4100A911A9 /* CCGLProgramCache.cpp in Sources */,
 				50ABBD441925AB0000A911A9 /* CCVertex.cpp in Sources */,
-				D00FBB591AAF969200196C41 /* CCGraphicsGeometryState.cpp in Sources */,
 				B276EF611988D1D500CD400F /* CCVertexIndexData.cpp in Sources */,
 				503DD8F71926B0DB00CD74DD /* CCIMEDispatcher.cpp in Sources */,
 				50ABBE751925AB6F00A911A9 /* CCEventListenerTouch.cpp in Sources */,
@@ -4418,6 +4477,7 @@
 				50ABBE3E1925AB6F00A911A9 /* CCDataVisitor.cpp in Sources */,
 				1A57009F180BC5D20088DEC7 /* CCNode.cpp in Sources */,
 				1A57010F180BC8EE0088DEC7 /* CCDrawingPrimitives.cpp in Sources */,
+				D00FBB791AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.cpp in Sources */,
 				1A570113180BC8EE0088DEC7 /* CCDrawNode.cpp in Sources */,
 				1A57011C180BC90D0088DEC7 /* CCGrabber.cpp in Sources */,
 				1A570120180BC90D0088DEC7 /* CCGrid.cpp in Sources */,
@@ -4433,11 +4493,11 @@
 				299CF1FC19A434BC00C378C1 /* ccRandom.cpp in Sources */,
 				50ABBE241925AB6F00A911A9 /* base64.cpp in Sources */,
 				1A5701A6180BCB590088DEC7 /* CCFontAtlasCache.cpp in Sources */,
+				D00FBB881AB2360B00196C41 /* CCGraphicsOpenGLES2VertexBuffer.cpp in Sources */,
 				1A5701B2180BCB590088DEC7 /* CCFontFNT.cpp in Sources */,
 				1A5701B6180BCB590088DEC7 /* CCFontFreeType.cpp in Sources */,
 				292DB16019B461CA00A80320 /* ExtensionDeprecated.cpp in Sources */,
 				50ABBEAC1925AB6F00A911A9 /* ccTypes.cpp in Sources */,
-				D00FBB5A1AAF969200196C41 /* CCGraphicsGeometryState.cpp in Sources */,
 				1A5701BA180BCB5A0088DEC7 /* CCLabel.cpp in Sources */,
 				D07525F11AAF576600830CD1 /* CCGraphicsMetal.cpp in Sources */,
 				15AE1B7219AADA9A00C27E9E /* UIListView.cpp in Sources */,
@@ -4469,7 +4529,7 @@
 				15AE1B8619AADA9A00C27E9E /* UIButton.cpp in Sources */,
 				1A570209180BCBDF0088DEC7 /* CCMotionStreak.cpp in Sources */,
 				1A570211180BCBF40088DEC7 /* CCProgressTimer.cpp in Sources */,
-				D07525F51AAF576600830CD1 /* CCGraphicsOpenGLES2.0.cpp in Sources */,
+				D07525F51AAF576600830CD1 /* CCGraphicsOpenGLES2.cpp in Sources */,
 				503DD8ED1926736A00CD74DD /* CCGLViewImpl-ios.mm in Sources */,
 				1A570215180BCBF40088DEC7 /* CCRenderTexture.cpp in Sources */,
 				1A570222180BCC1A0088DEC7 /* CCParticleBatchNode.cpp in Sources */,
@@ -4484,6 +4544,7 @@
 				15AE1BFD19AAE01E00C27E9E /* CCInvocation.cpp in Sources */,
 				B24AA98A195A675C007B4522 /* CCFastTMXTiledMap.cpp in Sources */,
 				29394CF719B01DBA00D2DE1A /* UIWebViewImpl-ios.mm in Sources */,
+				D00FBB731AB0C1CF00196C41 /* CCGraphicsMetalViewController.mm in Sources */,
 				B24AA986195A675C007B4522 /* CCFastTMXLayer.cpp in Sources */,
 				1A57022E180BCC1A0088DEC7 /* CCParticleSystemQuad.cpp in Sources */,
 				50ABBD901925AB4100A911A9 /* CCGLProgramCache.cpp in Sources */,
@@ -4548,6 +4609,7 @@
 				50ABBD451925AB0000A911A9 /* CCVertex.cpp in Sources */,
 				50ABBEB01925AB6F00A911A9 /* CCUserDefault.cpp in Sources */,
 				50ABBE521925AB6F00A911A9 /* CCEventDispatcher.cpp in Sources */,
+				D00FBB9A1AB2416500196C41 /* CCGraphicsOpenGLES2IndexBuffer.cpp in Sources */,
 				52B47A2F1A5349A3004E4C60 /* HttpAsynConnection.m in Sources */,
 				15AE1B8019AADA9A00C27E9E /* UITextAtlas.cpp in Sources */,
 				1A01C68B18F57BE800EFE3A6 /* CCDeprecated.cpp in Sources */,

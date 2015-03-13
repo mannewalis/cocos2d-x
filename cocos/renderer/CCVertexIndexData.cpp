@@ -26,6 +26,7 @@
 #include "platform/CCGL.h"
 #include "renderer/ccGLStateCache.h"
 #include "renderer/CCVertexIndexBuffer.h"
+#include "renderer/CCGLProgram.h"
 #include "base/CCConfiguration.h"
 #include "base/CCDirector.h"
 
@@ -48,6 +49,8 @@ VertexData::VertexData(Primitive primitive)
     , _vao(0)
     , _drawingPrimitive(primitive)
 {
+    _vao = Director::getInstance()->getGraphicsInterface()->vertexArrayCreate();
+    
 #ifdef SUPPORT_EVENT_RENDERER_RECREATED
     _recreateEventListener = Director::getInstance()->getEventDispatcher()->addCustomEventListener(EVENT_RENDERER_RECREATED, [this](EventCustom* event){this->recreate();});
 #endif
@@ -60,7 +63,7 @@ VertexData::~VertexData()
     _vertexStreams.clear();
     CC_SAFE_RELEASE(_indices);
     
-    Director::getInstance()->getGraphicsInterface()->deleteGeometryState(_vao);
+    Director::getInstance()->getGraphicsInterface()->vertexArrayDelete(_vao);
     _vao = 0;
     
 #ifdef SUPPORT_EVENT_RENDERER_RECREATED
@@ -72,6 +75,8 @@ bool VertexData::addStream(GLArrayBuffer* buffer, const VertexAttribute& stream)
 {
     if (nullptr == buffer)
         return false;
+    
+    Director::getInstance()->getGraphicsInterface()->vertexArraySpecifyAttribute(_vao, stream._semantic, stream._offset, (NS_PRIVATE::DataType)stream._type, stream._size, stream._normalize);
     
     setDirty(true);
     
@@ -159,66 +164,7 @@ ssize_t VertexData::draw(ssize_t start, ssize_t count)
         count = _indices ? _indices->getElementCount() : this->getCount();
     }
     
-    if (_vao)
-    {
-        gi->bindGeometryState(_vao);
-    }
-
-    if (0 == _vao || isDirty())
-    {
-        if (0 == _vao && gi->supportsGeometryState())
-        {
-            _vao = gi->createGeometryState();
-            gi->bindGeometryState(_vao);
-        }
-
-        CHECK_GL_ERROR_DEBUG();
-        
-        for (auto& element : _vertexStreams)
-        {
-            auto vb = element.second._buffer;
-            
-            // commit any outstanding client side geometry to the native buffers.
-            // for interleaved data this will happen only the first time through.
-            vb->bindAndCommit();
-            
-            auto& attrib  = element.second;
-            auto& stream  = attrib._stream;
-            
-            auto offset = stream._offset;
-            auto stride = vb->getElementSize();
-            
-            glEnableVertexAttribArray(GLint(stream._semantic));
-            glVertexAttribPointer(GLint(stream._semantic), stream._size, DataTypeToGL(stream._type), stream._normalize, (GLsizei)stride, (GLvoid*)(size_t)offset);
-            
-            CHECK_GL_ERROR_DEBUG();
-        }
-
-        if (_indices != nullptr)
-            _indices->bindAndCommit();
-
-        setDirty(false);
-    }
-    
-    if (_indices != nullptr)
-    {
-        intptr_t offset = start * _indices->getElementSize();
-        GLenum type = (_indices->getType() == IndexBuffer::IndexType::INDEX_TYPE_SHORT_16) ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
-        glDrawElements((GLenum)_drawingPrimitive, (GLsizei)count, type, (GLvoid*)offset);
-    }
-    else
-    {
-        glDrawArrays((GLenum)_drawingPrimitive, (GLsizei)start, (GLsizei)count);
-    }
-    
-    CHECK_GL_ERROR_DEBUG();
-    
-    if (_vao)
-        GL::bindVAO(0);
-    GL::bindVBO(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    return count;
+    return gi->vertexArrayDrawElements(_vao, start, count);
 }
 
 bool VertexData::empty() const

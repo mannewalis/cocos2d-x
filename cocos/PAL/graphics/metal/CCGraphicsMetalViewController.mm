@@ -23,58 +23,45 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _CC_GRAPHICS_METAL_H_
-#define _CC_GRAPHICS_METAL_H_
-
-#include "cocos2d.h"
-#include "PAL/CCPALMacros.h"
-#include "PAL/interfaces/CCGraphicsInterface.h"
-
-NS_PRIVATE_BEGIN
-
-#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
-#    import "TargetConditionals.h"
-#    if !TARGET_IPHONE_SIMULATOR
-#        define CC_METAL_AVAILABLE
-#    endif // TARGET_IPHONE_SIMULATOR
-#endif // CC_PLATFORM_IOS
+#include "CCGraphicsMetalViewController.h"
 
 #ifdef CC_METAL_AVAILABLE
 
-class GraphicsMetalViewController;
+#import "Metal/Metal.h"
+#import "simd/simd.h"
+#import "QuartzCore/CAMetalLayer.h"
 
-class GraphicsMetal
-    : public GraphicsInterface
+@implementation MetalViewController
 {
-public:
+    // layer
+    CAMetalLayer *_metalLayer;
+    id <CAMetalDrawable> _currentDrawable;
+    BOOL _layerSizeDidUpdate;
+    MTLRenderPassDescriptor *_renderPassDescriptor;
     
-    static GraphicsInterface* create();
+    // controller
+    CADisplayLink *_timer;
+    BOOL _gameLoopPaused;
+    dispatch_semaphore_t _inflight_semaphore;
+    id <MTLBuffer> _dynamicConstantBuffer;
+    uint8_t _constantDataBufferIndex;
     
-    // @brief initialize the API
-    bool init();
-
-    // @brief shuts down this interface.
-    void shutdown();
+    // renderer
+    id <MTLDevice> _device;
+    id <MTLCommandQueue> _commandQueue;
+    id <MTLLibrary> _defaultLibrary;
+    id <MTLRenderPipelineState> _pipelineState;
+    id <MTLBuffer> _vertexBuffer;
+    id <MTLDepthStencilState> _depthState;
+    id <MTLTexture> _depthTex;
+    id <MTLTexture> _msaaTex;
     
-    // @brief creates a vertex array object.
-    handle vertexArrayCreate();
-    
-    // @brief delete a vertex array object.
-    bool vertexArrayDelete(handle object);
-    
-    // @brief specifies a vertex attribute.
-    bool vertexArraySpecifyAttribute(handle object, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized);
-    
-    // @brief draws the vertex array.
-    bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);
-    
-protected:
-    
-    GraphicsMetalViewController* _controller;
-};
+    // uniforms
+    matrix_float4x4 _projectionMatrix;
+    matrix_float4x4 _viewMatrix;
+    //uniforms_t _uniform_buffer;
+    float _rotation;
+}
+@end
 
 #endif//CC_METAL_AVAILABLE
-
-NS_PRIVATE_END
-
-#endif//_CC_GRAPHICS_METAL_H_

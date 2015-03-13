@@ -23,22 +23,45 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _CC_GRAPHICS_GEOMETRY_STATE_H_
-#define _CC_GRAPHICS_GEOMETRY_STATE_H_
+#ifndef _CC_GRAPHICS_OPENGLES2_INDEX_BUFFER_H_
+#define _CC_GRAPHICS_OPENGLES2_INDEX_BUFFER_H_
 
 #include "PAL/CCPALMacros.h"
-#include "base/CCRef.h"
+#include "PAL/CCPALTypes.h"
+#include "PAL/graphics/common/CCGraphicsIndexBuffer.h"
 
 NS_PRIVATE_BEGIN
 
-class GraphicsGeometryState
-    : public Ref
+class GraphicsOpenGLES2IndexBuffer
+    : public GraphicsIndexBuffer<GraphicsOpenGLES2IndexBuffer>
 {
 public:
     
+    GraphicsOpenGLES2IndexBuffer()
+        : _ibo(0)
+        , _type(IndexType::INDEX_TYPE_NONE)
+    {}
     
+    unsigned getIBO() const
+    {
+        return _ibo;
+    }
+    
+    IndexType getType() const
+    {
+        return _type;
+    }
+    
+    // MARK: traits
+    
+    void destroy();
+
+protected:
+    
+    unsigned _ibo;
+    IndexType _type;
 };
 
 NS_PRIVATE_END
 
-#endif//_CC_GRAPHICS_GEOMETRY_STATE_H_
+#endif//_CC_GRAPHICS_OPENGLES2_INDEX_BUFFER_H_

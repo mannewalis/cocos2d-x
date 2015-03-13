@@ -23,58 +23,26 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _CC_GRAPHICS_METAL_H_
-#define _CC_GRAPHICS_METAL_H_
+#ifndef _CC_GRAPHICS_INDEX_BUFFER_H_
+#define _CC_GRAPHICS_INDEX_BUFFER_H_
 
-#include "cocos2d.h"
 #include "PAL/CCPALMacros.h"
-#include "PAL/interfaces/CCGraphicsInterface.h"
+#include "CCGraphicsElementArrayBuffer.h"
+
+// remove cocos2d-x dependencies
+#include "base/CCRef.h"
 
 NS_PRIVATE_BEGIN
 
-#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
-#    import "TargetConditionals.h"
-#    if !TARGET_IPHONE_SIMULATOR
-#        define CC_METAL_AVAILABLE
-#    endif // TARGET_IPHONE_SIMULATOR
-#endif // CC_PLATFORM_IOS
-
-#ifdef CC_METAL_AVAILABLE
-
-class GraphicsMetalViewController;
-
-class GraphicsMetal
-    : public GraphicsInterface
+template <class T>
+class GraphicsIndexBuffer
+    : public GraphicsElementArrayBuffer<T>
 {
 public:
     
-    static GraphicsInterface* create();
-    
-    // @brief initialize the API
-    bool init();
-
-    // @brief shuts down this interface.
-    void shutdown();
-    
-    // @brief creates a vertex array object.
-    handle vertexArrayCreate();
-    
-    // @brief delete a vertex array object.
-    bool vertexArrayDelete(handle object);
-    
-    // @brief specifies a vertex attribute.
-    bool vertexArraySpecifyAttribute(handle object, ssize_t index, ssize_t offset, DataType type, ssize_t count, bool normalized);
-    
-    // @brief draws the vertex array.
-    bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);
-    
-protected:
-    
-    GraphicsMetalViewController* _controller;
+    typedef T traits;
 };
-
-#endif//CC_METAL_AVAILABLE
 
 NS_PRIVATE_END
 
-#endif//_CC_GRAPHICS_METAL_H_
+#endif//_CC_GRAPHICS_INDEX_BUFFER_H_

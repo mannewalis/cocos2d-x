@@ -25,7 +25,7 @@
 
 #include "PAL/CCPALManager.h"
 #include "PAL/CCPALMacros.h"
-#include "PAL/graphics/opengles2.0/CCGraphicsOpenGLES2.0.h"
+#include "PAL/graphics/opengles2.0/CCGraphicsOpenGLES2.h"
 #include "PAL/graphics/metal/CCGraphicsMetal.h"
 
 NS_PRIVATE_BEGIN

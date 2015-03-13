@@ -43,29 +43,36 @@ enum class DataType
     Fixed
 };
 
-struct CC_DLL VertexAttribute
+enum class ArrayMode
 {
-    VertexAttribute()
-    : _normalize(false)
-    , _offset(0)
-    , _semantic(0)
-    , _type(DataType::Invalid)
-    , _size(0)
-    {}
-    
-    VertexAttribute(int offset, int semantic, DataType type, int size, bool normalize = false)
-    : _normalize(normalize)
+    Invalid,
+    Immutable, // GL_STATIC_DRAW
+    LongLived, // GL_DYNAMIC_DRAW
+    Dynamic    // GL_STREAMED_DRAW
+};
+
+struct VertexAttribute
+{
+    VertexAttribute(int index, int offset, DataType type, int size, bool normalized)
+    : _index(index)
     , _offset(offset)
-    , _semantic(semantic)
     , _type(type)
     , _size(size)
+    , _normalized(normalized)
     {}
     
-    bool _normalize;
+    int  _index;
     int  _offset;
-    int  _semantic;
     DataType _type;
     int  _size;
+    bool _normalized;
+};
+
+enum class IndexType
+{
+    INDEX_TYPE_NONE = -1,
+    INDEX_TYPE_SHORT_16,
+    INDEX_TYPE_UINT_32
 };
 
 NS_PRIVATE_END
