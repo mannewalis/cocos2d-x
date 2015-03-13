@@ -25,8 +25,7 @@
 
 #include "PAL/CCPALTypes.h"
 #include "CCGraphicsOpenGLES2VertexArray.h"
-#include "CCGraphicsOpenGLES2VertexBuffer.h"
-#include "CCGraphicsOpenGLES2IndexBuffer.h"
+#include "CCGraphicsOpenGLES2Buffer.h"
 
 // remove cocos2d-x dependencies
 #include "platform/CCGL.h"
@@ -94,7 +93,7 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
             
             // commit any outstanding client side geometry to the native buffers.
             // for interleaved data this will happen only the first time through.
-            GLuint vbo = (GLuint)traits_cast<GraphicsOpenGLES2VertexBuffer>(vb)->getVBO();
+            GLuint vbo = (GLuint)traits_cast<GraphicsOpenGLES2Buffer>(vb)->getBO();
             if (vbo)
                 GL::bindVBO(GL_ARRAY_BUFFER, vbo);
             
@@ -111,7 +110,7 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
         }
         
         if (_indices != nullptr)
-            GL::bindVBO(GL_ELEMENT_ARRAY_BUFFER, (GLuint)traits_cast<GraphicsOpenGLES2IndexBuffer>(_indices)->getIBO());
+            GL::bindVBO(GL_ELEMENT_ARRAY_BUFFER, (GLuint)traits_cast<GraphicsOpenGLES2Buffer>(_indices)->getBO());
         
         setDirty(false);
     }
@@ -119,8 +118,7 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
     if (_indices != nullptr)
     {
         intptr_t offset = start * _indices->getElementSize();
-        auto type = traits_cast<GraphicsOpenGLES2IndexBuffer>(_indices)->getType();
-        glDrawElements((GLenum)_drawingPrimitive, (GLsizei)count, IndexTypeToGL(type), (GLvoid*)offset);
+        glDrawElements((GLenum)_drawingPrimitive, (GLsizei)count, GLIndexType(), (GLvoid*)offset);
     }
     else
     {
@@ -141,7 +139,7 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
 //
 
 inline
-int GraphicsOpenGLES2VertexArray::DataTypeToGL(DataType type)
+unsigned GraphicsOpenGLES2VertexArray::DataTypeToGL(DataType type)
 {
     const static int gltypes[] = {GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT, GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, /*GL_FIXED*/};
     unsigned t = (int)type;
@@ -150,9 +148,10 @@ int GraphicsOpenGLES2VertexArray::DataTypeToGL(DataType type)
 }
 
 inline
-int GraphicsOpenGLES2VertexArray::IndexTypeToGL(IndexType type)
+unsigned GraphicsOpenGLES2VertexArray::GLIndexType()
 {
-    return type == IndexType::INDEX_TYPE_SHORT_16 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
+    CCASSERT(_indices, "no index buffer specified");
+    return traits_cast<GraphicsOpenGLES2Buffer>(_indices)->getElementSize() == sizeof(uint16_t) ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
 }
 
 NS_PRIVATE_END

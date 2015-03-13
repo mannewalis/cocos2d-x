@@ -46,7 +46,7 @@ public:
     // @brief shuts down this interface, releasing all resources.
     // All weak references and cached interfaces are invalidated.
     virtual void shutdown() = 0;
-    
+
     // MARK: vertex array
     
     // @brief creates a vertex array object.
@@ -60,6 +60,14 @@ public:
     
     // @brief draws the vertex array.
     virtual bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count) = 0;
+
+    // MARK: Vertex and Index buffers
+    
+    virtual handle bufferCreate(ssize_t size, ssize_t count, ArrayMode arrayMode, bool zero) = 0;
+    virtual bool bufferDestroy(handle object) = 0;
+    virtual bool bufferCommitElements(handle object, const void* elements, ssize_t count, ssize_t begin) = 0;
+    // HACK for backwards compatibility with MeshCommand
+    CC_DEPRECATED(v3) virtual unsigned bufferGetBO(handle object) = 0;
 };
 
 NS_PRIVATE_END

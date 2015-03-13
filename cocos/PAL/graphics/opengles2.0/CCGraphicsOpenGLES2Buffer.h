@@ -28,31 +28,32 @@
 
 #include "PAL/CCPALMacros.h"
 #include "PAL/CCPALTypes.h"
-#include "PAL/graphics/common/CCGraphicsVertexBuffer.h"
+#include "PAL/graphics/common/CCGraphicsElementArrayBuffer.h"
 
 NS_PRIVATE_BEGIN
 
-class GraphicsOpenGLES2VertexBuffer
-    : public GraphicsVertexBuffer<GraphicsOpenGLES2VertexBuffer>
+class GraphicsOpenGLES2Buffer
+    : public GraphicsElementArrayBuffer<GraphicsOpenGLES2Buffer>
 {
 public:
     
-    GraphicsOpenGLES2VertexBuffer()
-        : _vbo(0)
-    {}
-    
-    unsigned getVBO() const
-    {
-        return _vbo;
-    }
-    
+    GraphicsOpenGLES2Buffer();
+    virtual ~GraphicsOpenGLES2Buffer();
+
+    bool commitElements(const void* elements, ssize_t count, ssize_t begin);
+
+protected:
+
     // MARK: traits
     
-    void destroy();
+    unsigned arrayIntentToGLTarget(ArrayIntent intent) const;
+    unsigned arrayModeToGLUsage(ArrayMode mode) const;
     
 protected:
     
-    unsigned _vbo;
+    unsigned _gltarget;
+    unsigned _glusage;
+    size_t   _boSize;
 };
 
 NS_PRIVATE_END

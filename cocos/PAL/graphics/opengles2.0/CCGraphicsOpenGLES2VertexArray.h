@@ -54,8 +54,8 @@ public:
     
 protected:
     
-    int DataTypeToGL(DataType type);
-    int IndexTypeToGL(IndexType type);
+    unsigned DataTypeToGL(DataType type);
+    unsigned GLIndexType();
 
 protected:
     

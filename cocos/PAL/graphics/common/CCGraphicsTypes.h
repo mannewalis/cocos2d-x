@@ -45,20 +45,28 @@ enum class DataType
 
 enum class ArrayMode
 {
-    Invalid,
-    Immutable, // GL_STATIC_DRAW
-    LongLived, // GL_DYNAMIC_DRAW
-    Dynamic    // GL_STREAMED_DRAW
+    Invalid = -1,
+    Immutable,
+    LongLived,
+    Dynamic
+};
+
+enum class ArrayIntent
+{
+    Invalid = -1,
+    VertexData,
+    IndexData16,
+    IndexData32
 };
 
 struct VertexAttribute
 {
     VertexAttribute(int index, int offset, DataType type, int size, bool normalized)
-    : _index(index)
-    , _offset(offset)
-    , _type(type)
-    , _size(size)
-    , _normalized(normalized)
+        : _index(index)
+        , _offset(offset)
+        , _type(type)
+        , _size(size)
+        , _normalized(normalized)
     {}
     
     int  _index;
@@ -66,13 +74,6 @@ struct VertexAttribute
     DataType _type;
     int  _size;
     bool _normalized;
-};
-
-enum class IndexType
-{
-    INDEX_TYPE_NONE = -1,
-    INDEX_TYPE_SHORT_16,
-    INDEX_TYPE_UINT_32
 };
 
 NS_PRIVATE_END

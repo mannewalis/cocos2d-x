@@ -68,6 +68,12 @@ public:
     // @brief draws the vertex array.
     bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);
     
+    handle bufferCreate(ssize_t size, ssize_t count, ArrayMode arrayMode, bool zero);
+    bool bufferDestroy(handle object);
+    bool bufferCommitElements(handle object, void*, ssize_t count, ssize_t begin);
+    // HACK for backwards compatibility with MeshCommand
+    CC_DEPRECATED(v3) unsigned bufferGetBO(handle object);
+
 protected:
     
     GraphicsMetalViewController* _controller;

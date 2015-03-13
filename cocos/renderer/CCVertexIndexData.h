@@ -35,7 +35,7 @@
 
 NS_CC_BEGIN
 
-class GLArrayBuffer;
+class ElementArrayBuffer;
 class IndexBuffer;
 class EventListenerCustom;
 
@@ -73,8 +73,8 @@ public:
     ssize_t getVertexStreamCount() const;
     
     // @brief add vertex stream descriptors to a buffer 
-    CC_DEPRECATED(v3) bool setStream(GLArrayBuffer* buffer, const VertexAttribute& stream) { return addStream(buffer, stream); }
-    bool addStream(GLArrayBuffer* vertices, const VertexAttribute& stream);
+    CC_DEPRECATED(v3) bool setStream(ElementArrayBuffer* buffer, const VertexAttribute& stream) { return addStream(buffer, stream); }
+    bool addStream(ElementArrayBuffer* vertices, const VertexAttribute& stream);
     void removeStream(int semantic);
     
     // @brief specify indexed drawing for vertex data
@@ -128,21 +128,21 @@ public:
         }
     }
 
-    void recreate() const;
+    void recreate();
 
 protected:
 
     VertexData(Primitive primitive);
     
     bool determineInterleave() const;
-    void append(GLArrayBuffer* buffer, void* source, ssize_t count = 1);
+    void append(ElementArrayBuffer* buffer, void* source, ssize_t count = 1);
     int DataTypeToGL(DataType type);
 
 protected:
     
     struct BufferAttribute
     {
-        GLArrayBuffer* _buffer;
+        ElementArrayBuffer* _buffer;
         VertexAttribute _stream;
     };
     std::map<int, BufferAttribute> _vertexStreams;
@@ -150,7 +150,7 @@ protected:
     // unique set of buffers. For interleaved data there should be only one
     // in theory you may be able to have two sets of interleaved data but I
     // think in that case, using two separate VertexData instances is best.
-    typedef std::set<GLArrayBuffer*> tBuffers;
+    typedef std::set<ElementArrayBuffer*> tBuffers;
     tBuffers _buffers;
     
     IndexBuffer* _indices;

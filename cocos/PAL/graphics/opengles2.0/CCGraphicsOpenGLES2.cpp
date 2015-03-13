@@ -28,6 +28,7 @@
 
 #include "CCGraphicsOpenGLES2.h"
 #include "CCGraphicsOpenGLES2VertexArray.h"
+#include "CCGraphicsOpenGLES2Buffer.h"
 
 USING_NS_CC;
 NS_PRIVATE_BEGIN
@@ -81,7 +82,9 @@ handle GraphicsOpenGLES20::vertexArrayCreate()
 bool GraphicsOpenGLES20::vertexArrayDestroy(handle object)
 {
     auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
-    return vao->destroy();
+    HANDLE_DESTROY(_handles, object);
+    vao->release();
+    return true;
 }
 
 // @brief specifies a vertex attribute.
@@ -98,5 +101,38 @@ bool GraphicsOpenGLES20::vertexArrayDrawElements(handle object, ssize_t start, s
     vao->drawElements(start, count);
     return true;
 }
+
+handle GraphicsOpenGLES20::bufferCreate(ssize_t size, ssize_t count, ArrayMode arrayMode, bool zero)
+{
+    auto vbo = new (std::nothrow) GraphicsOpenGLES2Buffer;
+    if (vbo)
+    {
+        vbo->autorelease();
+        return HANDLE_CREATE(_handles, vbo);
+    }
+    return HANDLE_INVALID;
+}
+
+bool GraphicsOpenGLES20::bufferDestroy(handle object)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    HANDLE_DESTROY(_handles, object);
+    bo->release();
+    return true;
+}
+
+bool GraphicsOpenGLES20::bufferCommitElements(handle object, const void* elements, ssize_t count, ssize_t begin)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    return bo->commitElements(elements, count, begin);
+}
+
+// HACK for backwards compatibility with MeshCommand
+CC_DEPRECATED(v3) unsigned GraphicsOpenGLES20::bufferGetBO(handle object)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    return bo->getBO();
+}
+
 
 NS_PRIVATE_END

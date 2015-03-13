@@ -40,56 +40,56 @@ public:
         grow(initialHandleCount);
     }
     
-    int allocate(const intptr_t& reference)
+    handle allocate(const intptr_t& reference)
     {
         if (_free.empty())
             grow(_handles.size());
-        int handle = _free.back();
+        auto h = _free.back();
         _free.pop_back();
-        PAL_ASSERT(handle >= 0 && handle < _handles.size());
-        _handles[handle] = reference;
-        return handle;
+        PAL_ASSERT(h >= 0 && h < _handles.size());
+        _handles[h] = reference;
+        return h;
     }
     
-    intptr_t free(int handle)
+    intptr_t free(handle h)
     {
-        PAL_ASSERT(handle >= 0 && handle < _handles.size());
-        auto reference = _handles[handle];
-        _free.push_back(handle);
+        PAL_ASSERT(h >= 0 && h < _handles.size());
+        auto reference = _handles[h];
+        _free.push_back(h);
         return reference;
     }
     
-    void set(int handle, const intptr_t& reference)
+    void set(handle h, const intptr_t& reference)
     {
-        PAL_ASSERT(handle >= 0 && handle < _handles.size());
-        _handles[handle] = reference;
+        PAL_ASSERT(h >= 0 && h < _handles.size());
+        _handles[h] = reference;
     }
     
     template <class C>
-    C* getPtr(int handle)
+    C* getPtr(handle h)
     {
-        PAL_ASSERT(handle >= 0 && handle < _handles.size());
-        return static_cast<C*>((void*)_handles[handle]);
+        PAL_ASSERT(h >= 0 && h < _handles.size());
+        return static_cast<C*>((void*)_handles[h]);
     }
 
     template <class T>
-    const T& getVal(int handle)
+    const T& getVal(handle h)
     {
-        PAL_ASSERT(handle >= 0 && handle < _handles.size());
-        return (T&)_handles[handle];
+        PAL_ASSERT(h >= 0 && h < _handles.size());
+        return (T&)_handles[h];
     }
 
 protected:
     
-    void grow(int amount)
+    void grow(size_t amount)
     {
-        int start = (int)_handles.size();
-        int size = start + amount;
+        auto start = _handles.size();
+        auto size = start + amount;
 
         _handles.reserve(size);
         _free.reserve(size);
         
-        for (int i = size; i > start; --i)
+        for (auto i = size; i > start; --i)
         {
             _handles.push_back(0);
             _free.push_back(i);
@@ -99,12 +99,13 @@ protected:
 protected:
     
     std::vector<intptr_t> _handles;
-    std::vector<int> _free;
+    std::vector<ssize_t> _free;
 };
 
 #define HANDLE_CREATE(_h, ptr) (_h).allocate((intptr_t)ptr)
 #define HANDLE_TOVAL(_h, h, c) (_h).getVal<c>(h)
 #define HANDLE_TOPTR(_h, h, c) (_h).getPtr<c>(h)
+#define HANDLE_DESTROY(_h, h)  (_h).free(h)
 
 NS_PRIVATE_END
 

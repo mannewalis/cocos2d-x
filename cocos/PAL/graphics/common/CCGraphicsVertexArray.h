@@ -28,8 +28,7 @@
 
 #include "PAL/CCPALMacros.h"
 #include "CCGraphicsTypes.h"
-#include "CCGraphicsVertexBuffer.h"
-#include "CCGraphicsIndexBuffer.h"
+#include "CCGraphicsElementArrayBuffer.h"
 
 // remove cocos2d-x dependencies
 #include "base/CCRef.h"
@@ -43,8 +42,8 @@ class GraphicsVertexArray
 public:
     
     typedef T traits;
-    typedef GraphicsVertexBuffer<T> vertex_buffer_type;
-    typedef GraphicsIndexBuffer<T> index_buffer_type;
+    typedef GraphicsElementArrayBuffer<T> vertex_buffer_type;
+    typedef GraphicsElementArrayBuffer<T> index_buffer_type;
     
     GraphicsVertexArray()
         : _indices(nullptr)

@@ -63,7 +63,7 @@ VertexData::~VertexData()
     _vertexStreams.clear();
     CC_SAFE_RELEASE(_indices);
     
-    Director::getInstance()->getGraphicsInterface()->vertexArrayDelete(_vao);
+    Director::getInstance()->getGraphicsInterface()->vertexArrayDestroy(_vao);
     _vao = 0;
     
 #ifdef SUPPORT_EVENT_RENDERER_RECREATED
@@ -71,7 +71,7 @@ VertexData::~VertexData()
 #endif
 }
 
-bool VertexData::addStream(GLArrayBuffer* buffer, const VertexAttribute& stream)
+bool VertexData::addStream(ElementArrayBuffer* buffer, const VertexAttribute& stream)
 {
     if (nullptr == buffer)
         return false;
@@ -231,20 +231,16 @@ bool VertexData::determineInterleave() const
     return _buffers.size() == 1;
 }
 
-void VertexData::append(GLArrayBuffer* buffer, void* source, ssize_t count)
+void VertexData::append(ElementArrayBuffer* buffer, void* source, ssize_t count)
 {
     _dirty = true;
     buffer->appendElements(source, count);
 }
     
-void VertexData::recreate() const
+void VertexData::recreate()
 {
-    if (Configuration::getInstance()->supportsShareableVAO())
-    {
-        if (glIsBuffer(_vao))
-            glDeleteVertexArrays(1, (GLuint*)&_vao);
-        glGenVertexArrays(1, (GLuint*)&_vao);
-    }
+    Director::getInstance()->getGraphicsInterface()->vertexArrayDestroy(_vao);
+    _vao = Director::getInstance()->getGraphicsInterface()->vertexArrayCreate();
 
     for (auto b : _buffers)
         b->recreate();

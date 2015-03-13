@@ -30,7 +30,7 @@
 
 NS_PRIVATE_BEGIN
 
-typedef int handle;
+typedef ssize_t handle;
 
 NS_PRIVATE_END
 

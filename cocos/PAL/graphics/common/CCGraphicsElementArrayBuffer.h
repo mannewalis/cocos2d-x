@@ -44,8 +44,7 @@ public:
     typedef T traits;
 
     GraphicsElementArrayBuffer()
-        : _vbo(0)
-        , _vboSize(0)
+        : _bo(0)
         , _elementCount(0)
         , _elementSize(0)
         , _capacity(0)
@@ -55,19 +54,13 @@ public:
     {}
     
     virtual ~GraphicsElementArrayBuffer()
-    {
-        traits_cast<traits>(this)->destroy();
-    }
+    {}
     
     // @brief initialize the element array buffer.
-    bool init(ssize_t elementSize, ssize_t maxElements, ArrayMode arrayMode, bool zero);
-
-    // @brief sets all the elements of the client and native buffer.
-    //        element count is updated to reflect the new count.
-    void setElements(const void* elements, ssize_t count);
+    bool init(ssize_t elementSize, ssize_t maxElements, ArrayMode arrayMode, ArrayIntent arrayIntent, bool zero);
     
     // @brief updates a region of the client and native buffer
-    void updateElements(const void* elements, ssize_t count, ssize_t begin);
+    bool commitElements(const void* elements, ssize_t count, ssize_t begin);
     
     // @brief increases the capacity of the buffer by count elements
     //        optionally zeroes out the elements.
@@ -126,9 +119,14 @@ public:
     
     void recreate()
     {
-        traits::recreate();
+         traits_cast<traits>()->recreate();
     }
-        
+    
+    unsigned getBO() const
+    {
+        return _bo;
+    }
+    
 protected:
     
     // @brief sets the capacity for the buffer.
@@ -140,8 +138,7 @@ protected:
 protected:
     
     // native only
-    uint32_t _vbo;
-    ssize_t _vboSize;
+    uint32_t _bo;
     
     // client buffer only
     ssize_t _elementCount;
@@ -151,17 +148,19 @@ protected:
     ssize_t _capacity;
     
     ArrayMode _arrayMode;
+    ArrayIntent _arrayIntent;
     
     unsigned _usage;
     bool _dirty;
 };
 
 template <class T>
-bool GraphicsElementArrayBuffer<T>::init(ssize_t elementSize, ssize_t maxElements, ArrayMode arrayMode, bool zero)
+bool GraphicsElementArrayBuffer<T>::init(ssize_t elementSize, ssize_t maxElements, ArrayMode arrayMode, ArrayIntent arrayIntent, bool zero)
 {
     CCASSERT(elementSize > 0 && elementSize < 512, "0 < maxElements size < 512");
     
-    _arrayMode = traits::nativeArrayMode(arrayMode);
+    _arrayMode = arrayMode;
+    _arrayIntent = arrayIntent;
     
     _elementSize  = elementSize;
     _elementCount = 0;
@@ -172,23 +171,14 @@ bool GraphicsElementArrayBuffer<T>::init(ssize_t elementSize, ssize_t maxElement
 }
 
 template <class T>
-void GraphicsElementArrayBuffer<T>::setElements(const void* elements, ssize_t count)
-{
-    setElementCount(count);
-    updateElements(elements, count, 0);
-}
-
-template <class T>
-void GraphicsElementArrayBuffer<T>::updateElements(const void* elements, ssize_t count, ssize_t begin)
+bool GraphicsElementArrayBuffer<T>::commitElements(const void* elements, ssize_t count, ssize_t begin)
 {
     CCASSERT(begin >= 0, "Invalid being value");
     CCASSERT(count >= 0, "Invalid count value");
     CCASSERT(elements != nullptr, "Invalid elements value");
     
     if (0 == count)
-        return;
-    
-    setDirty(true);
+        return false;
     
     auto needed = count + begin;
     setCapacity(needed, false);
@@ -196,9 +186,7 @@ void GraphicsElementArrayBuffer<T>::updateElements(const void* elements, ssize_t
     // empty elements do not count towards element count, only capacity
     _elementCount = begin + count > _elementCount ? begin + count : _elementCount;
     
-    traits::commitElements(elements, count, begin);
-    
-    setDirty(false);
+    return traits_cast<T>()->commitElements(elements, count, begin);
 }
 
 template <class T>
