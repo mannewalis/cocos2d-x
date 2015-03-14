@@ -28,12 +28,12 @@
 
 #include "PAL/CCPALMacros.h"
 #include "PAL/CCPALTypes.h"
-#include "PAL/graphics/common/CCGraphicsElementArrayBuffer.h"
+#include "PAL/graphics/common/CCGraphicsAttributeBuffer.h"
 
 NS_PRIVATE_BEGIN
 
 class GraphicsOpenGLES2Buffer
-    : public GraphicsElementArrayBuffer<GraphicsOpenGLES2Buffer>
+    : public GraphicsAttributeBuffer<GraphicsOpenGLES2Buffer>
 {
 public:
     
@@ -47,8 +47,8 @@ public:
     
 protected:
     
-    unsigned arrayIntentToGLTarget(ArrayIntent intent) const;
-    unsigned arrayModeToGLUsage(ArrayMode mode) const;
+    unsigned bufferIntentToGLTarget(BufferIntent intent) const;
+    unsigned bufferModeToGLUsage(BufferMode mode) const;
     
 protected:
     

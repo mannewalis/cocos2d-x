@@ -66,15 +66,14 @@ bool GraphicsMetal::vertexArrayDelete(handle object)
 }
 
 // @brief specifies a vertex attribute.
-bool GraphicsMetal::vertexArraySpecifyAttribute(handle object, int index, ssize_t offset, DataType type, ssize_t count, bool normalized)
+bool GraphicsMetal::vertexArraySpecifyVertexAttribute(handle object, int index, ssize_t offset, AttributeDataType type, ssize_t count, bool normalized)
 {
     return false;
 }
 
 // @brief draws the vertex array.
-bool GraphicsMetal::vertexArrayDrawElements(handle object, ssize_t start, ssize_t count)
+void GraphicsMetal::vertexArrayDrawElements(handle object, ssize_t start, ssize_t count)
 {
-    return false;
 }
 
 NS_PRIVATE_END

@@ -42,7 +42,7 @@ enum class Primitive
     TriangleFan
 };
 
-enum class DataType
+enum class AttributeDataType
 {
     Invalid = -1,
     Byte,
@@ -55,7 +55,7 @@ enum class DataType
     Fixed
 };
 
-enum class ArrayMode
+enum class BufferMode
 {
     Invalid = -1,
     Immutable,
@@ -63,7 +63,7 @@ enum class ArrayMode
     Dynamic
 };
 
-enum class ArrayIntent
+enum class BufferIntent
 {
     Invalid = -1,
     VertexData,
@@ -76,12 +76,12 @@ struct VertexAttribute
     VertexAttribute()
         : _index(0)
         , _offset(0)
-        , _type(DataType::Invalid)
+        , _type(AttributeDataType::Invalid)
         , _size(0)
         , _normalized(false)
     {}
     
-    VertexAttribute(int index, ssize_t offset, DataType type, ssize_t size, bool normalized)
+    VertexAttribute(int index, ssize_t offset, AttributeDataType type, ssize_t size, bool normalized)
         : _index(index)
         , _offset(offset)
         , _type(type)
@@ -91,7 +91,7 @@ struct VertexAttribute
     
     int      _index;
     ssize_t  _offset;
-    DataType _type;
+    AttributeDataType _type;
     ssize_t  _size;
     bool     _normalized;
 };

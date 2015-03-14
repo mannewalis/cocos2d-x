@@ -53,21 +53,21 @@ public:
     virtual handle vertexArrayCreate(Primitive drawPrimitive) = 0;
     
     // @brief destroy a vertex array object.
-    virtual bool vertexArrayDestroy(handle object) = 0;
+    virtual void vertexArrayDestroy(handle object) = 0;
         
     // @brief specifies a vertex attribute.
-    virtual bool vertexArraySpecifyAttribute(handle object, handle buffer, int index, ssize_t offset, DataType type, ssize_t count, bool normalized) = 0;
+    virtual bool vertexArraySpecifyVertexAttribute(handle object, handle buffer, int index, ssize_t offset, AttributeDataType type, ssize_t count, bool normalized) = 0;
     
     // @brief specifies an index buffer to use with a vertex array.
     virtual bool vertexArraySpecifyIndexBuffer(handle object, handle buffer) = 0;
     
     // @brief draws the vertex array.
-    virtual bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count) = 0;
+    virtual void vertexArrayDrawElements(handle object, ssize_t start, ssize_t count) = 0;
 
     // MARK: Vertex and Index buffers
     
     // @brief create a native buffer object for vertices/indices.
-    virtual handle bufferCreate(ssize_t size, ssize_t count, ArrayMode arrayMode, ArrayIntent arrayIntent, bool zero) = 0;
+    virtual handle bufferCreate(ssize_t size, ssize_t count, BufferMode bufferMode, BufferIntent bufferIntent, bool zero) = 0;
     
     // @brief destroy a native buffer object.
     virtual bool bufferDestroy(handle object) = 0;

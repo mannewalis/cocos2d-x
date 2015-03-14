@@ -70,28 +70,25 @@ bool GraphicsOpenGLES20::init()
 handle GraphicsOpenGLES20::vertexArrayCreate(Primitive drawPrimitive)
 {
     auto vao = new (std::nothrow) GraphicsOpenGLES2VertexArray(drawPrimitive);
-    if (vao)
-    {
-        return HANDLE_CREATE(_handles, vao);
-    }
-    return HANDLE_INVALID;
+    return vao ? HANDLE_CREATE(_handles, vao) : HANDLE_INVALID;
 }
 
 // @brief delete a vertex array object.
-bool GraphicsOpenGLES20::vertexArrayDestroy(handle object)
+void GraphicsOpenGLES20::vertexArrayDestroy(handle object)
 {
     auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
+    PAL_ASSERT(vao != nullptr, "invalid handle");
     HANDLE_DESTROY(_handles, object);
     vao->release();
-    return true;
 }
 
 // @brief specifies a vertex attribute.
-bool GraphicsOpenGLES20::vertexArraySpecifyAttribute(handle object, handle buffer, int index, ssize_t offset, DataType type, ssize_t count, bool normalized)
+bool GraphicsOpenGLES20::vertexArraySpecifyVertexAttribute(handle object, handle buffer, int index, ssize_t offset, AttributeDataType type, ssize_t count, bool normalized)
 {
     auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
     auto vbo = HANDLE_TOPTR(_handles, buffer, GraphicsOpenGLES2Buffer);
-    return vao->addStream(vbo, {index, offset, type, count, normalized});
+    PAL_ASSERT(vao && vbo, "invalid handle");
+    return vao->specifyVertexAttribute(vbo, {index, offset, type, count, normalized});
 }
 
 // @brief specifies an index buffer to use with a vertex array.
@@ -99,22 +96,23 @@ bool GraphicsOpenGLES20::vertexArraySpecifyIndexBuffer(handle object, handle buf
 {
     auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
     auto ibo = HANDLE_TOPTR(_handles, buffer, GraphicsOpenGLES2Buffer);
-    vao->setIndexBuffer(ibo);
+    PAL_ASSERT(vao && ibo, "invalid handle");
+    vao->specifyIndexBuffer(ibo);
     return true;
 }
 
 // @brief draws the vertex array.
-bool GraphicsOpenGLES20::vertexArrayDrawElements(handle object, ssize_t start, ssize_t count)
+void GraphicsOpenGLES20::vertexArrayDrawElements(handle object, ssize_t start, ssize_t count)
 {
     auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
+    PAL_ASSERT(vao, "invalid handle");
     vao->drawElements(start, count);
-    return true;
 }
 
-handle GraphicsOpenGLES20::bufferCreate(ssize_t size, ssize_t count, ArrayMode arrayMode, ArrayIntent arrayIntent, bool zero)
+handle GraphicsOpenGLES20::bufferCreate(ssize_t size, ssize_t count, BufferMode bufferMode, BufferIntent bufferIntent, bool zero)
 {
     auto vbo = new (std::nothrow) GraphicsOpenGLES2Buffer;
-    if (vbo && vbo->init(size, count, arrayMode, arrayIntent, zero))
+    if (vbo && vbo->init(size, count, bufferMode, bufferIntent, zero))
     {
         return HANDLE_CREATE(_handles, vbo);
     }

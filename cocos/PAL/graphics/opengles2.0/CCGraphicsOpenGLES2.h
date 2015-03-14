@@ -60,18 +60,18 @@ public:
     handle vertexArrayCreate(Primitive drawPrimitive);
     
     // @brief destroy a vertex array object.
-    bool vertexArrayDestroy(handle object);
+    void vertexArrayDestroy(handle object);
     
     // @brief specifies a vertex attribute.
-    bool vertexArraySpecifyAttribute(handle object, handle buffer, int index, ssize_t offset, DataType type, ssize_t count, bool normalized);
+    bool vertexArraySpecifyVertexAttribute(handle object, handle buffer, int index, ssize_t offset, AttributeDataType type, ssize_t count, bool normalized);
     
     // @brief specifies an index buffer to use with a vertex array.
     bool vertexArraySpecifyIndexBuffer(handle object, handle buffer);
 
     // @brief draws the vertex array.
-    bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);
+    void vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);
 
-    handle bufferCreate(ssize_t size, ssize_t count, ArrayMode arrayMode, ArrayIntent arrayIntent, bool zero);
+    handle bufferCreate(ssize_t size, ssize_t count, BufferMode bufferMode, BufferIntent bufferIntent, bool zero);
     bool bufferDestroy(handle object);
     bool bufferCommitElements(handle object, const void* elements, ssize_t count, ssize_t begin);
     // HACK for backwards compatibility with MeshCommand

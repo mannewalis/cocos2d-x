@@ -1240,8 +1240,8 @@
 		D00FBB7B1AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB771AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.h */; };
 		D00FBB7D1AB2195000196C41 /* CCPALHandles.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB7C1AB2195000196C41 /* CCPALHandles.h */; };
 		D00FBB7E1AB2195000196C41 /* CCPALHandles.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB7C1AB2195000196C41 /* CCPALHandles.h */; };
-		D00FBB831AB2308400196C41 /* CCGraphicsElementArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB801AB2308400196C41 /* CCGraphicsElementArrayBuffer.h */; };
-		D00FBB841AB2308400196C41 /* CCGraphicsElementArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB801AB2308400196C41 /* CCGraphicsElementArrayBuffer.h */; };
+		D00FBB831AB2308400196C41 /* CCGraphicsAttributeBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB801AB2308400196C41 /* CCGraphicsAttributeBuffer.h */; };
+		D00FBB841AB2308400196C41 /* CCGraphicsAttributeBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB801AB2308400196C41 /* CCGraphicsAttributeBuffer.h */; };
 		D00FBB871AB2360B00196C41 /* CCGraphicsOpenGLES2Buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D00FBB851AB2360B00196C41 /* CCGraphicsOpenGLES2Buffer.cpp */; };
 		D00FBB881AB2360B00196C41 /* CCGraphicsOpenGLES2Buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D00FBB851AB2360B00196C41 /* CCGraphicsOpenGLES2Buffer.cpp */; };
 		D00FBB891AB2360B00196C41 /* CCGraphicsOpenGLES2Buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00FBB861AB2360B00196C41 /* CCGraphicsOpenGLES2Buffer.h */; };
@@ -2007,7 +2007,7 @@
 		D00FBB761AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsOpenGLES2VertexArray.cpp; sourceTree = "<group>"; };
 		D00FBB771AB1056700196C41 /* CCGraphicsOpenGLES2VertexArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsOpenGLES2VertexArray.h; sourceTree = "<group>"; };
 		D00FBB7C1AB2195000196C41 /* CCPALHandles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPALHandles.h; sourceTree = "<group>"; };
-		D00FBB801AB2308400196C41 /* CCGraphicsElementArrayBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsElementArrayBuffer.h; sourceTree = "<group>"; };
+		D00FBB801AB2308400196C41 /* CCGraphicsAttributeBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsAttributeBuffer.h; sourceTree = "<group>"; };
 		D00FBB851AB2360B00196C41 /* CCGraphicsOpenGLES2Buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsOpenGLES2Buffer.cpp; sourceTree = "<group>"; };
 		D00FBB861AB2360B00196C41 /* CCGraphicsOpenGLES2Buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsOpenGLES2Buffer.h; sourceTree = "<group>"; };
 		D07525E11AAF576600830CD1 /* CCPALManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCPALManager.cpp; sourceTree = "<group>"; };
@@ -3227,7 +3227,7 @@
 			children = (
 				D00FBB691AAFB1FC00196C41 /* CCGraphicsTypes.h */,
 				D00FBB581AAF969200196C41 /* CCGraphicsVertexArray.h */,
-				D00FBB801AB2308400196C41 /* CCGraphicsElementArrayBuffer.h */,
+				D00FBB801AB2308400196C41 /* CCGraphicsAttributeBuffer.h */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -3595,7 +3595,7 @@
 				15AE1BDB19AAE01E00C27E9E /* CCControlSwitch.h in Headers */,
 				B24AA987195A675C007B4522 /* CCFastTMXLayer.h in Headers */,
 				D00FBB6D1AAFB2A900196C41 /* CCPALMacros.h in Headers */,
-				D00FBB831AB2308400196C41 /* CCGraphicsElementArrayBuffer.h in Headers */,
+				D00FBB831AB2308400196C41 /* CCGraphicsAttributeBuffer.h in Headers */,
 				50ABBEBD1925AB6F00A911A9 /* ccUtils.h in Headers */,
 				50ABC0231926664800A911A9 /* CCGLViewImpl-desktop.h in Headers */,
 				296F160E1A9DDD12000C7D83 /* CCVertexAttribute.h in Headers */,
@@ -3925,7 +3925,7 @@
 				50ABBEC81925AB6F00A911A9 /* etc1.h in Headers */,
 				50ABBDB01925AB4100A911A9 /* CCRenderer.h in Headers */,
 				B29594B71926D5EC003EEF37 /* CCMeshCommand.h in Headers */,
-				D00FBB841AB2308400196C41 /* CCGraphicsElementArrayBuffer.h in Headers */,
+				D00FBB841AB2308400196C41 /* CCGraphicsAttributeBuffer.h in Headers */,
 				3E6176771960F89B00DE83F5 /* CCEventListenerController.h in Headers */,
 				50ABBD861925AB4100A911A9 /* CCBatchCommand.h in Headers */,
 				50ABBE481925AB6F00A911A9 /* CCEvent.h in Headers */,

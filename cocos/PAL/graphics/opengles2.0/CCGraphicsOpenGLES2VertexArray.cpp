@@ -74,22 +74,20 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
     {
         CHECK_GL_ERROR_DEBUG();
         
-        for (auto& element : _vertexStreams)
+        for (auto& element : _vertexAttributes)
         {
-            const auto vb = element.second._buffer;
+            const auto& b = element.second;
+            const auto& attributeBuffer = b._buffer;
+            const auto& attribute = b._attribute;
             
-            GLuint vbo = (GLuint)vb->getBO();
-            if (vbo)
-                GL::bindVBO(GL_ARRAY_BUFFER, vbo);
+            GLuint vbo = (GLuint)attributeBuffer->getBO();
+            GL::bindVBO(GL_ARRAY_BUFFER, vbo);
             
-            auto& attrib  = element.second;
-            auto& stream  = attrib._stream;
+            auto offset = attribute._offset;
+            auto stride = attributeBuffer->getElementSize();
             
-            auto offset = stream._offset;
-            auto stride = vb->getElementSize();
-            
-            glEnableVertexAttribArray(GLint(stream._index));
-            glVertexAttribPointer(GLint(stream._index), (GLint)stream._size, DataTypeToGL(stream._type), stream._normalized, (GLsizei)stride, (GLvoid*)(size_t)offset);
+            glEnableVertexAttribArray(GLint(attribute._index));
+            glVertexAttribPointer(GLint(attribute._index), (GLint)attribute._size, AttributeDataTypeToGL(attribute._type), attribute._normalized, (GLsizei)stride, (GLvoid*)(size_t)offset);
             
             CHECK_GL_ERROR_DEBUG();
         }
@@ -124,11 +122,11 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
 //
 
 inline
-unsigned GraphicsOpenGLES2VertexArray::DataTypeToGL(DataType type)
+unsigned GraphicsOpenGLES2VertexArray::AttributeDataTypeToGL(AttributeDataType type)
 {
     const static int gltypes[] = {GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT, GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, /*GL_FIXED*/};
     auto t = (unsigned)type;
-    PAL_ASSERT(t < sizeof(gltypes) / sizeof(gltypes[0]), "Invalid GL DataType index");
+    PAL_ASSERT(t < sizeof(gltypes) / sizeof(gltypes[0]), "Invalid GL AttributeDataType index");
     return gltypes[t];
 }
 

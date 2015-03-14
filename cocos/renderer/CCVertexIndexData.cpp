@@ -76,7 +76,7 @@ bool VertexData::addStream(ElementArrayBuffer* buffer, const VertexAttribute& st
     if (nullptr == buffer)
         return false;
     
-    Director::getInstance()->getGraphicsInterface()->vertexArraySpecifyAttribute(_vao, buffer->getBO(), stream._semantic, stream._offset, (NS_PRIVATE::DataType)stream._type, stream._size, stream._normalize);
+    Director::getInstance()->getGraphicsInterface()->vertexArraySpecifyVertexAttribute(_vao, buffer->getBO(), stream._semantic, stream._offset, (NS_PRIVATE::AttributeDataType)stream._type, stream._size, stream._normalize);
     
     setDirty(true);
     
@@ -174,7 +174,9 @@ ssize_t VertexData::draw(ssize_t start, ssize_t count)
     if (!count)
         count = _indices ? _indices->getElementCount() : this->getCount();
     
-    return Director::getInstance()->getGraphicsInterface()->vertexArrayDrawElements(_vao, start, count);
+    Director::getInstance()->getGraphicsInterface()->vertexArrayDrawElements(_vao, start, count);
+    
+    return count;
 }
 
 bool VertexData::empty() const

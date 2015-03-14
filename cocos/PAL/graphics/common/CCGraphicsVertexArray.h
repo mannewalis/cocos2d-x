@@ -28,22 +28,27 @@
 
 #include "PAL/CCPALMacros.h"
 #include "CCGraphicsTypes.h"
-#include "CCGraphicsElementArrayBuffer.h"
+#include "CCGraphicsAttributeBuffer.h"
 
 // remove cocos2d-x dependencies
 #include "base/CCRef.h"
 
 NS_PRIVATE_BEGIN
 
-template <class T, class B>
+// @brief GraphicsVertexArray
+// Template class that encapsulates a set of one for more attribute buffers.
+// APITraits provides the graphics API specific implementations.
+// BufferType specifies the graphics API specific implementation of an GraphicsAttributeBuffer.
+template <class APITraits, class BufferType>
 class GraphicsVertexArray
     : public Ref
 {
 public:
     
-    typedef T traits;
-    typedef GraphicsElementArrayBuffer<B> vertex_buffer_type;
-    typedef GraphicsElementArrayBuffer<B> index_buffer_type;
+    typedef APITraits traits_type;
+    
+    typedef GraphicsAttributeBuffer<BufferType> vertex_buffer_type;
+    typedef GraphicsAttributeBuffer<BufferType> index_buffer_type;
     
     GraphicsVertexArray(Primitive drawPrimitive)
         : _indices(nullptr)
@@ -58,41 +63,35 @@ public:
     // @brief Return the number of vertex streams
     ssize_t getVertexStreamCount() const
     {
-        return _vertexStreams.size();
+        return _vertexAttributes.size();
     }
     
-    // @brief add a vertex attribute stream
-    bool addStream(vertex_buffer_type* buffer, const VertexAttribute& stream)
+    // @brief add a vertex attribute
+    bool specifyVertexAttribute(vertex_buffer_type* buffer, const VertexAttribute& attribute)
     {
-        PAL_ASSERT(buffer, "invalid buffer");
+        PAL_ASSERT(buffer, "invalid vertex attribute buffer");
         
         setDirty(true);
         
-        auto iter = _vertexStreams.find(stream._index);
-        if (iter == _vertexStreams.end())
-        {
-            buffer->retain();
-            auto& bufferAttribute = _vertexStreams[stream._index];
-            bufferAttribute._buffer = buffer;
-            bufferAttribute._stream = stream;
-        }
-        else
-        {
-            buffer->retain();
-            iter->second._buffer->release();
-            iter->second._stream = stream;
-            iter->second._buffer = buffer;
-        }
+        auto iter = _vertexAttributes.find(attribute._index);
+        auto& attributeEntry = (iter == _vertexAttributes.end()) ? _vertexAttributes[attribute._index] : iter->second;
+
+        CC_SAFE_RELEASE(attributeEntry._buffer);
+
+        buffer->retain();
+        attributeEntry._buffer = buffer;
+        attributeEntry._attribute = attribute;
         
         _buffers.insert(buffer);
         
         return true;
     }
     
-    void removeStream(int index)
+    // @brief remove a vertex attribute
+    void removeVertexAttribute(int index)
     {
-        auto iter = _vertexStreams.find(index);
-        if (iter != _vertexStreams.end())
+        auto iter = _vertexAttributes.find(index);
+        if (iter != _vertexAttributes.end())
         {
             auto buffer = iter->second._buffer;
             auto bi = _buffers.find(buffer);
@@ -100,43 +99,18 @@ public:
                 _buffers.erase(bi);
             
             iter->second._buffer->release();
-            _vertexStreams.erase(iter);
+            _vertexAttributes.erase(iter);
         }
         
         setDirty(true);
     }
     
     // @brief specify indexed drawing for vertex data
-    void setIndexBuffer(index_buffer_type* indices)
+    void specifyIndexBuffer(index_buffer_type* indices)
     {
         CC_SAFE_RELEASE(_indices);
         _indices = indices;
         CC_SAFE_RETAIN(_indices);
-    }
-    
-    void removeIndexBuffer()
-    {
-        CC_SAFE_RELEASE(_indices);
-        _indices = nullptr;
-    }
-    
-    const VertexAttribute* getStreamAttribute(int semantic) const
-    {
-        auto iter = _vertexStreams.find(semantic);
-        if(iter == _vertexStreams.end()) return nullptr;
-        else return &iter->second._stream;
-    }
-    
-    VertexAttribute* getStreamAttribute(int semantic)
-    {
-        auto iter = _vertexStreams.find(semantic);
-        if(iter == _vertexStreams.end()) return nullptr;
-        else return &iter->second._stream;
-    }
-    
-    // @brief update and draw the buffer.
-    ssize_t draw(ssize_t start = 0, ssize_t count = 0)
-    {
     }
     
     // @brief true/false if all vertex buffers are empty
@@ -205,15 +179,15 @@ public:
     
 protected:
     
-    struct BufferAttribute
+    struct Attributes
     {
         vertex_buffer_type* _buffer;
-        VertexAttribute _stream;
+        VertexAttribute _attribute;
     };
-    std::map<int, BufferAttribute> _vertexStreams;
+    std::map<int, Attributes> _vertexAttributes;
     
-    typedef std::set<vertex_buffer_type*> tBuffers;
-    tBuffers _buffers;
+    typedef std::set<vertex_buffer_type*> tBufferSet;
+    tBufferSet _buffers;
     
     index_buffer_type* _indices;
     

@@ -65,7 +65,7 @@ bool ElementArrayBuffer::init(ssize_t elementSize, ssize_t maxElements, ArrayTyp
     
     setCapacity(maxElements, zero);
     
-    _bo = Director::getInstance()->getGraphicsInterface()->bufferCreate(elementSize, maxElements, (NS_PRIVATE::ArrayMode)arrayMode, (NS_PRIVATE::ArrayIntent)arrayIntent, zero);
+    _bo = Director::getInstance()->getGraphicsInterface()->bufferCreate(elementSize, maxElements, (NS_PRIVATE::BufferMode)arrayMode, (NS_PRIVATE::BufferIntent)arrayIntent, zero);
 
     return _bo != HANDLE_INVALID;
 }
@@ -226,7 +226,7 @@ bool ElementArrayBuffer::commitElements(const void* elements, ssize_t count, ssi
 void ElementArrayBuffer::recreate()
 {
     Director::getInstance()->getGraphicsInterface()->bufferDestroy(_bo);
-    _bo = Director::getInstance()->getGraphicsInterface()->bufferCreate(_elementSize, _elementCount, (NS_PRIVATE::ArrayMode)_arrayMode, (NS_PRIVATE::ArrayIntent)_arrayIntent, false);
+    _bo = Director::getInstance()->getGraphicsInterface()->bufferCreate(_elementSize, _elementCount, (NS_PRIVATE::BufferMode)_arrayMode, (NS_PRIVATE::BufferIntent)_arrayIntent, false);
     if (_elements)
         Director::getInstance()->getGraphicsInterface()->bufferCommitElements(_bo, _elements, _elementCount, 0);
 }

@@ -56,10 +56,6 @@ bool GraphicsOpenGLES2Buffer::commitElements(const void* elements, ssize_t count
     
     GL::bindVBO(_gltarget, _bo);
     
-    if (false == isDirty())
-        return false;
-    
-    GL::bindVBO(_gltarget, _bo);
     const auto size = getCapacityInBytes();
     CCASSERT(size, "size should not be 0");
     if (size >= _boSize)
@@ -85,38 +81,38 @@ bool GraphicsOpenGLES2Buffer::commitElements(const void* elements, ssize_t count
 void GraphicsOpenGLES2Buffer::setupBO()
 {
     PAL_ASSERT(!_bo, "native buffer object already created");
-    _gltarget = arrayIntentToGLTarget(_arrayIntent);
-    _glusage = arrayModeToGLUsage(_arrayMode);
+    _gltarget = bufferIntentToGLTarget(_bufferIntent);
+    _glusage = bufferModeToGLUsage(_bufferMode);
     glGenBuffers(1, &_bo);
     CHECK_GL_ERROR_DEBUG();
 }
 
-unsigned GraphicsOpenGLES2Buffer::arrayIntentToGLTarget(ArrayIntent intent) const
+unsigned GraphicsOpenGLES2Buffer::bufferIntentToGLTarget(BufferIntent intent) const
 {
     switch (intent)
     {
-        case ArrayIntent::VertexData:
+        case BufferIntent::VertexData:
             return GL_ARRAY_BUFFER;
-        case ArrayIntent::IndexData16:
-        case ArrayIntent::IndexData32:
+        case BufferIntent::IndexData16:
+        case BufferIntent::IndexData32:
             return GL_ELEMENT_ARRAY_BUFFER;
         default:
             PAL_ASSERT(false, "Invalid array intent");
     }
 }
 
-unsigned GraphicsOpenGLES2Buffer::arrayModeToGLUsage(ArrayMode mode) const
+unsigned GraphicsOpenGLES2Buffer::bufferModeToGLUsage(BufferMode mode) const
 {
     switch (mode)
     {
-        case ArrayMode::Immutable:
+        case BufferMode::Immutable:
             return GL_STATIC_DRAW;
-        case ArrayMode::LongLived:
+        case BufferMode::LongLived:
             return GL_DYNAMIC_DRAW;
-        case ArrayMode::Dynamic:
+        case BufferMode::Dynamic:
             return GL_STREAM_DRAW;
         default:
-            PAL_ASSERT(false, "invalid ArrayMode");
+            PAL_ASSERT(false, "invalid BufferMode");
     }
 }
 

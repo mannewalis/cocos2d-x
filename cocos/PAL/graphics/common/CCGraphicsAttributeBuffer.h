@@ -23,8 +23,8 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _CC_GRAPHICS_VERTEX_ARRAY_BUFFER_H_
-#define _CC_GRAPHICS_VERTEX_ARRAY_BUFFER_H_
+#ifndef _CC_GRAPHICS_ATTRIBUTE_BUFFER_H_
+#define _CC_GRAPHICS_ATTRIBUTE_BUFFER_H_
 
 #include "PAL/CCPALMacros.h"
 #include "PAL/CCPALTypes.h"
@@ -35,37 +35,52 @@
 
 NS_PRIVATE_BEGIN
 
-template <class T>
-class GraphicsElementArrayBuffer
+template <class APITraits>
+class GraphicsAttributeBuffer
     : public Ref
 {
 public:
     
-    typedef T traits;
+    typedef APITraits traits_type;
 
-    GraphicsElementArrayBuffer()
+    GraphicsAttributeBuffer()
         : _bo(0)
         , _elementCount(0)
         , _elementSize(0)
         , _capacity(0)
-        , _arrayMode(ArrayMode::Invalid)
+        , _bufferMode(BufferMode::Invalid)
         , _usage(0)
         , _dirty(true)
     {}
     
-    virtual ~GraphicsElementArrayBuffer()
+    virtual ~GraphicsAttributeBuffer()
     {}
     
     // @brief initialize the element array buffer.
-    bool init(ssize_t elementSize, ssize_t maxElements, ArrayMode arrayMode, ArrayIntent arrayIntent, bool zero);
-    
-    // @brief updates a region of the client and native buffer
-    bool commitElements(const void* elements, ssize_t count, ssize_t begin);
+    bool init(ssize_t elementSize, ssize_t maxElements, BufferMode bufferMode, BufferIntent bufferIntent, bool zero)
+    {
+        CCASSERT(elementSize > 0 && elementSize < 512, "0 < maxElements size < 512");
+        
+        _bufferMode = bufferMode;
+        _bufferIntent = bufferIntent;
+        
+        _elementSize  = elementSize;
+        _elementCount = 0;
+        
+        setCapacity(maxElements, zero);
+        
+        traits_cast<traits_type>(this)->setupBO();
+        
+        return true;
+    }
     
     // @brief increases the capacity of the buffer by count elements
     //        optionally zeroes out the elements.
-    void addCapacity(ssize_t count, bool zero = false);
-        
+    void addCapacity(ssize_t count, bool zero = false)
+    {
+        setCapacity(count + getCapacity(), zero);
+    }
+    
     ssize_t getSize() const
     {
         return getElementCount() * getElementSize();
@@ -117,16 +132,11 @@ public:
         _dirty = true;
     }
     
-    void recreate()
-    {
-         traits_cast<traits>()->recreate();
-    }
-    
     unsigned getBO() const
     {
         return _bo;
     }
-    
+
 protected:
     
     // @brief sets the capacity for the buffer.
@@ -147,56 +157,13 @@ protected:
     ssize_t _elementSize;
     ssize_t _capacity;
     
-    ArrayMode _arrayMode;
-    ArrayIntent _arrayIntent;
+    BufferMode _bufferMode;
+    BufferIntent _bufferIntent;
     
     unsigned _usage;
     bool _dirty;
 };
 
-template <class T>
-bool GraphicsElementArrayBuffer<T>::init(ssize_t elementSize, ssize_t maxElements, ArrayMode arrayMode, ArrayIntent arrayIntent, bool zero)
-{
-    CCASSERT(elementSize > 0 && elementSize < 512, "0 < maxElements size < 512");
-    
-    _arrayMode = arrayMode;
-    _arrayIntent = arrayIntent;
-    
-    _elementSize  = elementSize;
-    _elementCount = 0;
-    
-    setCapacity(maxElements, zero);
-    
-    traits_cast<T>(this)->setupBO();
-
-    return true;
-}
-
-template <class T>
-bool GraphicsElementArrayBuffer<T>::commitElements(const void* elements, ssize_t count, ssize_t begin)
-{
-    CCASSERT(begin >= 0, "Invalid being value");
-    CCASSERT(count >= 0, "Invalid count value");
-    CCASSERT(elements != nullptr, "Invalid elements value");
-    
-    if (0 == count)
-        return false;
-    
-    auto needed = count + begin;
-    setCapacity(needed, false);
-    
-    // empty elements do not count towards element count, only capacity
-    _elementCount = begin + count > _elementCount ? begin + count : _elementCount;
-    
-    return traits_cast<T>(this)->commitElements(elements, count, begin);
-}
-
-template <class T>
-void GraphicsElementArrayBuffer<T>::addCapacity(ssize_t count, bool zero)
-{
-    setCapacity(count + getCapacity(), zero);
-}
-
 NS_PRIVATE_END
 
-#endif//_CC_GRAPHICS_VERTEX_ARRAY_BUFFER_H_
+#endif//_CC_GRAPHICS_ATTRIBUTE_BUFFER_H_
