@@ -50,13 +50,16 @@ public:
     // MARK: vertex array
     
     // @brief creates a vertex array object.
-    virtual handle vertexArrayCreate() = 0;
+    virtual handle vertexArrayCreate(Primitive drawPrimitive) = 0;
     
     // @brief destroy a vertex array object.
     virtual bool vertexArrayDestroy(handle object) = 0;
         
     // @brief specifies a vertex attribute.
     virtual bool vertexArraySpecifyAttribute(handle object, handle buffer, int index, ssize_t offset, DataType type, ssize_t count, bool normalized) = 0;
+    
+    // @brief specifies an index buffer to use with a vertex array.
+    virtual bool vertexArraySpecifyIndexBuffer(handle object, handle buffer) = 0;
     
     // @brief draws the vertex array.
     virtual bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count) = 0;

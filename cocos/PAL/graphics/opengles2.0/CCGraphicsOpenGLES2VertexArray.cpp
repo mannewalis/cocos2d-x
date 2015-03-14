@@ -35,7 +35,8 @@
 
 NS_PRIVATE_BEGIN
 
-GraphicsOpenGLES2VertexArray::GraphicsOpenGLES2VertexArray()
+GraphicsOpenGLES2VertexArray::GraphicsOpenGLES2VertexArray(Primitive drawPrimitive)
+    : super(drawPrimitive)
 {
     if (Configuration::getInstance()->supportsShareableVAO())
     {
@@ -54,46 +55,14 @@ GraphicsOpenGLES2VertexArray::~GraphicsOpenGLES2VertexArray()
     }
 }
 
-bool GraphicsOpenGLES2VertexArray::specifyAttribute(GraphicsOpenGLES2Buffer* buffer, int index, ssize_t offset, DataType type, ssize_t count, bool normalized)
-{
-    PAL_ASSERT(buffer, "invalid buffer");
-    
-    setDirty(true);
-    
-    auto iter = _vertexStreams.find(index);
-    if (iter == _vertexStreams.end())
-    {
-        buffer->retain();
-        auto& bufferAttribute = _vertexStreams[index];
-        bufferAttribute._buffer = buffer;
-        bufferAttribute._stream = {index, offset, type, count, normalized};
-    }
-    else
-    {
-        buffer->retain();
-        iter->second._buffer->release();
-        iter->second._stream = {index, offset, type, count, normalized};
-        iter->second._buffer = buffer;
-    }
-    
-    _buffers.insert(tBuffers::value_type(buffer));
-    
-    // flag whether or not this vertex data is interleaved or not.
-    _interleaved = determineInterleave();
-    
-    return true;
-}
-
 void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
 {
     PAL_ASSERT(start >= 0, "Invalid start value");
     PAL_ASSERT(count >= 0, "Invalid count value");
     
+    // if we are drawing indexed, then use the count of indices to draw
     if (!count)
-    {
-        // if we are drawing indexed, then use the count of indices to draw
         count = _indices ? _indices->getElementCount() : this->getCount();
-    }
     
     if (_vao)
     {
@@ -119,12 +88,7 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
             auto offset = stream._offset;
             auto stride = vb->getElementSize();
             
-            CHECK_GL_ERROR_DEBUG();
-            
-            glEnableVertexAttribArray(GLint(stream._offset));
-
-            CHECK_GL_ERROR_DEBUG();
-            
+            glEnableVertexAttribArray(GLint(stream._index));
             glVertexAttribPointer(GLint(stream._index), (GLint)stream._size, DataTypeToGL(stream._type), stream._normalized, (GLsizei)stride, (GLvoid*)(size_t)offset);
             
             CHECK_GL_ERROR_DEBUG();
@@ -163,8 +127,8 @@ inline
 unsigned GraphicsOpenGLES2VertexArray::DataTypeToGL(DataType type)
 {
     const static int gltypes[] = {GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT, GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, /*GL_FIXED*/};
-    unsigned t = (int)type;
-    CCASSERT(t < sizeof(gltypes) / sizeof(gltypes[0]), "Invalid GL DataType index");
+    auto t = (unsigned)type;
+    PAL_ASSERT(t < sizeof(gltypes) / sizeof(gltypes[0]), "Invalid GL DataType index");
     return gltypes[t];
 }
 

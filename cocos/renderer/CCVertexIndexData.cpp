@@ -49,7 +49,7 @@ VertexData::VertexData(Primitive primitive)
     , _vao(0)
     , _drawingPrimitive(primitive)
 {
-    _vao = Director::getInstance()->getGraphicsInterface()->vertexArrayCreate();
+    _vao = Director::getInstance()->getGraphicsInterface()->vertexArrayCreate((NS_PRIVATE::Primitive)primitive);
     
 #ifdef SUPPORT_EVENT_RENDERER_RECREATED
     _recreateEventListener = Director::getInstance()->getEventDispatcher()->addCustomEventListener(EVENT_RENDERER_RECREATED, [this](EventCustom* event){this->recreate();});
@@ -129,12 +129,20 @@ void VertexData::setIndexBuffer(IndexBuffer* indices)
     CC_SAFE_RELEASE(_indices);
     _indices = indices;
     CC_SAFE_RETAIN(_indices);
+
+    if (_indices)
+    {
+        auto bo = _indices->getBO();
+        Director::getInstance()->getGraphicsInterface()->vertexArraySpecifyIndexBuffer(_vao, bo);
+    }
 }
 
 void VertexData::removeIndexBuffer()
 {
     CC_SAFE_RELEASE(_indices);
     _indices = nullptr;
+    
+    // TODO add remove index buffer to PAL
 }
 
 const VertexAttribute* VertexData::getStreamAttribute(int semantic) const
@@ -157,6 +165,8 @@ ssize_t VertexData::draw(ssize_t start, ssize_t count)
     CCASSERT(count >= 0, "Invalid count value");
     
     // lazy commit the client to native if they exist.
+    if (_indices)
+        _indices->commit();
     for (auto b : _buffers)
         b->commit();
     
@@ -240,7 +250,7 @@ void VertexData::append(ElementArrayBuffer* buffer, void* source, ssize_t count)
 void VertexData::recreate()
 {
     Director::getInstance()->getGraphicsInterface()->vertexArrayDestroy(_vao);
-    _vao = Director::getInstance()->getGraphicsInterface()->vertexArrayCreate();
+    _vao = Director::getInstance()->getGraphicsInterface()->vertexArrayCreate((NS_PRIVATE::Primitive)_drawingPrimitive);
 
     for (auto b : _buffers)
         b->recreate();

@@ -30,6 +30,18 @@
 
 NS_PRIVATE_BEGIN
 
+enum class Primitive
+{
+    Invalid = -1,
+    Points,
+    Lines,
+    LineLoop,
+    LineStrip,
+    Triangles,
+    TriangleStrip,
+    TriangleFan
+};
+
 enum class DataType
 {
     Invalid = -1,

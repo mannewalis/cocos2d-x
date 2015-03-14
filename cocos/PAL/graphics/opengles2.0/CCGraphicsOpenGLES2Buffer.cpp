@@ -59,14 +59,6 @@ bool GraphicsOpenGLES2Buffer::commitElements(const void* elements, ssize_t count
     if (false == isDirty())
         return false;
     
-//    // default to all elements
-//    if (nullptr == elements)
-//        elements = _elements;
-//    
-//    // default to all elements
-//    if (0 == count)
-//        count = _elementCount;
-    
     GL::bindVBO(_gltarget, _bo);
     const auto size = getCapacityInBytes();
     CCASSERT(size, "size should not be 0");

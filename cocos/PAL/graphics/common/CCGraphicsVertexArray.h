@@ -45,12 +45,11 @@ public:
     typedef GraphicsElementArrayBuffer<B> vertex_buffer_type;
     typedef GraphicsElementArrayBuffer<B> index_buffer_type;
     
-    GraphicsVertexArray()
+    GraphicsVertexArray(Primitive drawPrimitive)
         : _indices(nullptr)
-        , _interleaved(false)
         , _dirty(true)
         , _vao(0)
-        , _drawingPrimitive(0)
+        , _drawingPrimitive(drawPrimitive)
     {}
     
     virtual ~GraphicsVertexArray()
@@ -65,12 +64,9 @@ public:
     // @brief add a vertex attribute stream
     bool addStream(vertex_buffer_type* buffer, const VertexAttribute& stream)
     {
-        if (buffer == nullptr)
-            return false;
+        PAL_ASSERT(buffer, "invalid buffer");
         
         setDirty(true);
-
-        traits::addStream(buffer, stream);
         
         auto iter = _vertexStreams.find(stream._index);
         if (iter == _vertexStreams.end())
@@ -88,10 +84,7 @@ public:
             iter->second._buffer = buffer;
         }
         
-        _buffers.insert(tBuffers::value_type(buffer));
-        
-        // flag whether or not this vertex data is interleaved or not.
-        _interleaved = determineInterleave();
+        _buffers.insert(buffer);
         
         return true;
     }
@@ -109,8 +102,6 @@ public:
             iter->second._buffer->release();
             _vertexStreams.erase(iter);
         }
-        
-        _interleaved = determineInterleave();
         
         setDirty(true);
     }
@@ -214,14 +205,6 @@ public:
     
 protected:
     
-    // @brief If all streams use the same buffer, then the data is interleaved.
-    bool determineInterleave() const
-    {
-        return _buffers.size() == 1;
-    }
-    
-protected:
-    
     struct BufferAttribute
     {
         vertex_buffer_type* _buffer;
@@ -229,18 +212,14 @@ protected:
     };
     std::map<int, BufferAttribute> _vertexStreams;
     
-    // unique set of buffers. For interleaved data there should be only one
-    // in theory you may be able to have two sets of interleaved data but I
-    // think in that case, using two separate VertexData instances is best.
     typedef std::set<vertex_buffer_type*> tBuffers;
     tBuffers _buffers;
     
     index_buffer_type* _indices;
     
-    bool _interleaved;
     bool _dirty;
     unsigned _vao;
-    unsigned _drawingPrimitive;
+    Primitive _drawingPrimitive;
 };
 
 NS_PRIVATE_END

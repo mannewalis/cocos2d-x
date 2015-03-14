@@ -57,7 +57,7 @@ public:
     void shutdown();
     
     // @brief creates a vertex array object.
-    handle vertexArrayCreate();
+    handle vertexArrayCreate(Primitive drawPrimitive);
     
     // @brief delete a vertex array object.
     bool vertexArrayDelete(handle object);
@@ -65,6 +65,9 @@ public:
     // @brief specifies a vertex attribute.
     bool vertexArraySpecifyAttribute(handle object, handle buffer, int index, ssize_t offset, DataType type, ssize_t count, bool normalized);
     
+    // @brief specifies an index buffer to use with a vertex array.
+    bool vertexArraySpecifyIndexBuffer(handle object, handle buffer);
+
     // @brief draws the vertex array.
     bool vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);
     

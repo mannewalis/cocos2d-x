@@ -67,9 +67,9 @@ bool GraphicsOpenGLES20::init()
 // MARK: vertex array
 
 // @brief creates a vertex array object.
-handle GraphicsOpenGLES20::vertexArrayCreate()
+handle GraphicsOpenGLES20::vertexArrayCreate(Primitive drawPrimitive)
 {
-    auto vao = new (std::nothrow) GraphicsOpenGLES2VertexArray;
+    auto vao = new (std::nothrow) GraphicsOpenGLES2VertexArray(drawPrimitive);
     if (vao)
     {
         return HANDLE_CREATE(_handles, vao);
@@ -91,7 +91,16 @@ bool GraphicsOpenGLES20::vertexArraySpecifyAttribute(handle object, handle buffe
 {
     auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
     auto vbo = HANDLE_TOPTR(_handles, buffer, GraphicsOpenGLES2Buffer);
-    return vao->specifyAttribute(vbo, index, offset, type, count, normalized);
+    return vao->addStream(vbo, {index, offset, type, count, normalized});
+}
+
+// @brief specifies an index buffer to use with a vertex array.
+bool GraphicsOpenGLES20::vertexArraySpecifyIndexBuffer(handle object, handle buffer)
+{
+    auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
+    auto ibo = HANDLE_TOPTR(_handles, buffer, GraphicsOpenGLES2Buffer);
+    vao->setIndexBuffer(ibo);
+    return true;
 }
 
 // @brief draws the vertex array.

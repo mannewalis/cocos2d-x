@@ -46,10 +46,13 @@ class GraphicsOpenGLES2VertexArray
 {
 public:
     
-    GraphicsOpenGLES2VertexArray();
+    typedef GraphicsVertexArray<GraphicsOpenGLES2VertexArray, GraphicsOpenGLES2Buffer> super;
+    
+    GraphicsOpenGLES2VertexArray(Primitive drawPrimitive);
     virtual ~GraphicsOpenGLES2VertexArray();
     
     bool specifyAttribute(GraphicsOpenGLES2Buffer* buffer, int index, ssize_t offset, DataType type, ssize_t count, bool normalized);
+    bool specifyIndexBuffer(GraphicsOpenGLES2Buffer* buffer);
     void drawElements(ssize_t start, ssize_t count);
     
 protected:
