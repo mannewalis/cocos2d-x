@@ -47,6 +47,8 @@ public:
     // All weak references and cached interfaces are invalidated.
     virtual void shutdown() = 0;
 
+    
+    //////////////////////////////////////////////////////////////////
     // MARK: vertex array
     
     // @brief creates a vertex array object.
@@ -64,9 +66,11 @@ public:
     // @brief draws the vertex array.
     virtual void vertexArrayDrawElements(handle object, ssize_t start, ssize_t count) = 0;
 
+    
+    //////////////////////////////////////////////////////////////////
     // MARK: Vertex and Index buffers
     
-    // @brief create a native buffer object for vertices/indices.
+    // @brief create a native buffer object for vertices/attributes/indices.
     virtual handle bufferCreate(ssize_t size, ssize_t count, BufferMode bufferMode, BufferIntent bufferIntent, bool zero) = 0;
     
     // @brief destroy a native buffer object.
