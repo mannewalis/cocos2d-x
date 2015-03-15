@@ -34,60 +34,57 @@
 NS_PRIVATE_BEGIN
 
 GraphicsOpenGLES2Buffer::GraphicsOpenGLES2Buffer()
-    : _gltarget(-1)
-    , _glusage(-1)
-    , _boSize(0)
-{}
+    : _glbo(-1)
+    , _glboSize(0)
+{
+    glGenBuffers(1, &_glbo);
+}
 
 GraphicsOpenGLES2Buffer::~GraphicsOpenGLES2Buffer()
 {
-    if (glIsBuffer(_bo))
+    if (glIsBuffer(_glbo))
     {
-        glDeleteBuffers(1, &_bo);
-        GL::bindVBO(_gltarget, 0);
+        glDeleteBuffers(1, &_glbo);
+        GL::bindVBO(_bufferIntentToGLTarget(_bufferIntent), 0);
     }    
 }
 
 bool GraphicsOpenGLES2Buffer::commitElements(const void* elements, ssize_t count, ssize_t begin)
 {
-    PAL_ASSERT(_bo, "native buffer object not initialized");
+    PAL_ASSERT(_glbo, "native buffer object not initialized");
     PAL_ASSERT(elements != nullptr, "invalid elements array");
     PAL_ASSERT(count > 0, "invalid element count");
     
-    GL::bindVBO(_gltarget, _bo);
+    GL::bindVBO(_bufferIntentToGLTarget(_bufferIntent), _glbo);
     
     const auto size = getCapacityInBytes();
     CCASSERT(size, "size should not be 0");
-    if (size >= _boSize)
+    if (size >= _glboSize)
     {
-        _boSize = size;
-        glBufferData(_gltarget, size, elements, _glusage);
+        _glboSize = size;
+        glBufferData(_bufferIntentToGLTarget(_bufferIntent), size, elements, _bufferModeToGLUsage(_bufferMode));
         CHECK_GL_ERROR_DEBUG();
     }
     else
     {
         intptr_t p = (intptr_t)elements + begin * _elementSize;
-        glBufferSubData(_gltarget, begin * _elementSize, count * _elementSize, (void*)p);
+        glBufferSubData(_bufferIntentToGLTarget(_bufferIntent), begin * _elementSize, count * _elementSize, (void*)p);
         CHECK_GL_ERROR_DEBUG();
     }
 
     return glGetError() == 0;
 }
 
+unsigned GraphicsOpenGLES2Buffer::getBO() const
+{
+    return _glbo;
+}
+
 //
 // Protected Methods
 //
 
-void GraphicsOpenGLES2Buffer::setupBO()
-{
-    PAL_ASSERT(!_bo, "native buffer object already created");
-    _gltarget = bufferIntentToGLTarget(_bufferIntent);
-    _glusage = bufferModeToGLUsage(_bufferMode);
-    glGenBuffers(1, &_bo);
-    CHECK_GL_ERROR_DEBUG();
-}
-
-unsigned GraphicsOpenGLES2Buffer::bufferIntentToGLTarget(BufferIntent intent) const
+unsigned GraphicsOpenGLES2Buffer::_bufferIntentToGLTarget(BufferIntent intent) const
 {
     switch (intent)
     {
@@ -101,7 +98,7 @@ unsigned GraphicsOpenGLES2Buffer::bufferIntentToGLTarget(BufferIntent intent) co
     }
 }
 
-unsigned GraphicsOpenGLES2Buffer::bufferModeToGLUsage(BufferMode mode) const
+unsigned GraphicsOpenGLES2Buffer::_bufferModeToGLUsage(BufferMode mode) const
 {
     switch (mode)
     {

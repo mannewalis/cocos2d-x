@@ -26,6 +26,8 @@
 #ifndef _CC_GRAPHICS_VERTEX_ARRAY_H_
 #define _CC_GRAPHICS_VERTEX_ARRAY_H_
 
+#include <vector>
+#include <map>
 #include "PAL/CCPALMacros.h"
 #include "CCGraphicsTypes.h"
 #include "CCGraphicsAttributeBuffer.h"
@@ -46,9 +48,7 @@ class GraphicsVertexArray
 public:
     
     typedef APITraits traits_type;
-    
-    typedef GraphicsAttributeBuffer<BufferType> vertex_buffer_type;
-    typedef GraphicsAttributeBuffer<BufferType> index_buffer_type;
+    typedef BufferType buffer_type;
     
     GraphicsVertexArray(Primitive drawPrimitive)
         : _indices(nullptr)
@@ -67,7 +67,7 @@ public:
     }
     
     // @brief add a vertex attribute
-    bool specifyVertexAttribute(vertex_buffer_type* buffer, const VertexAttribute& attribute)
+    bool specifyVertexAttribute(buffer_type* buffer, const VertexAttribute& attribute)
     {
         PAL_ASSERT(buffer, "invalid vertex attribute buffer");
         
@@ -106,11 +106,31 @@ public:
     }
     
     // @brief specify indexed drawing for vertex data
-    void specifyIndexBuffer(index_buffer_type* indices)
+    void specifyIndexBuffer(buffer_type* indices)
     {
         CC_SAFE_RELEASE(_indices);
         _indices = indices;
         CC_SAFE_RETAIN(_indices);
+    }
+    
+    // @brief stage elements for copying on draw.
+    void stageElements(buffer_type* buffer, void* elements, ssize_t start, ssize_t count)
+    {
+        setDirty(true);
+        _stagedElements.emplace_back(StagedElements{buffer, elements, start, count});
+    }
+    
+    // @brief copy stage elements and draw
+    void drawElements(ssize_t start, ssize_t count)
+    {
+        if (!_stagedElements.empty())
+        {
+            for (const auto& e : _stagedElements)
+            {
+                traits_cast<buffer_type>(e._buffer)->commitElements(e._elements, e._start, e._count);
+            }
+        }
+        traits_cast<traits_type>(this)->_drawElements(start, count);
     }
     
     // @brief true/false if all vertex buffers are empty
@@ -170,26 +190,38 @@ public:
     }
     
     // @brief sets the dirty state of all vertex data
-    void setDirty(bool dirty)
+    void setDirty(bool dirty, bool cascade = false)
     {
         _dirty = dirty;
-        for (auto b : _buffers)
-            b->setDirty(dirty);
+        if (cascade)
+        {
+            for (auto b : _buffers)
+                b->setDirty(dirty);
+        }
     }
     
 protected:
     
     struct Attributes
     {
-        vertex_buffer_type* _buffer;
+        buffer_type* _buffer;
         VertexAttribute _attribute;
     };
     std::map<int, Attributes> _vertexAttributes;
     
-    typedef std::set<vertex_buffer_type*> tBufferSet;
+    struct StagedElements
+    {
+        buffer_type* _buffer;
+        void* _elements;
+        ssize_t _start;
+        ssize_t _count;
+    };
+    std::vector<StagedElements> _stagedElements;
+    
+    typedef std::set<buffer_type*> tBufferSet;
     tBufferSet _buffers;
     
-    index_buffer_type* _indices;
+    buffer_type* _indices;
     
     bool _dirty;
     unsigned _vao;

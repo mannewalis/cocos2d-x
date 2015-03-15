@@ -76,7 +76,7 @@ handle GraphicsOpenGLES20::vertexArrayCreate(Primitive drawPrimitive)
 // @brief delete a vertex array object.
 void GraphicsOpenGLES20::vertexArrayDestroy(handle object)
 {
-    auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
+    auto vao = HANDLE_TOPTR(_handles, object, Ref);
     PAL_ASSERT(vao != nullptr, "invalid handle");
     HANDLE_DESTROY(_handles, object);
     vao->release();
@@ -91,6 +91,14 @@ bool GraphicsOpenGLES20::vertexArraySpecifyVertexAttribute(handle object, handle
     return vao->specifyVertexAttribute(vbo, {index, offset, type, count, normalized});
 }
 
+// @brief removes a previously specified vertex attribute
+void GraphicsOpenGLES20::vertexArrayRemoveVertexAttribute(handle object, int index)
+{
+    auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
+    PAL_ASSERT(vao, "invalid handle");
+    vao->removeVertexAttribute(index);
+}
+
 // @brief specifies an index buffer to use with a vertex array.
 bool GraphicsOpenGLES20::vertexArraySpecifyIndexBuffer(handle object, handle buffer)
 {
@@ -99,6 +107,14 @@ bool GraphicsOpenGLES20::vertexArraySpecifyIndexBuffer(handle object, handle buf
     PAL_ASSERT(vao && ibo, "invalid handle");
     vao->specifyIndexBuffer(ibo);
     return true;
+}
+
+void GraphicsOpenGLES20::vertexArrayStageElements(handle object, handle buffer, void* elements, ssize_t start, ssize_t count)
+{
+    auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
+    auto bo  = HANDLE_TOPTR(_handles, buffer, GraphicsOpenGLES2Buffer);
+    PAL_ASSERT(vao && bo, "invalid handle");
+    vao->stageElements(bo, elements, start, count);
 }
 
 // @brief draws the vertex array.
@@ -121,7 +137,7 @@ handle GraphicsOpenGLES20::bufferCreate(ssize_t size, ssize_t count, BufferMode 
 
 bool GraphicsOpenGLES20::bufferDestroy(handle object)
 {
-    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    auto bo = HANDLE_TOPTR(_handles, object, Ref);
     HANDLE_DESTROY(_handles, object);
     bo->release();
     return true;
@@ -139,6 +155,5 @@ CC_DEPRECATED(v3) unsigned GraphicsOpenGLES20::bufferGetBO(handle object)
     auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
     return bo->getBO();
 }
-
 
 NS_PRIVATE_END

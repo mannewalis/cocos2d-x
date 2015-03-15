@@ -55,7 +55,11 @@ GraphicsOpenGLES2VertexArray::~GraphicsOpenGLES2VertexArray()
     }
 }
 
-void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
+//
+// Protected Methods
+//
+
+void GraphicsOpenGLES2VertexArray::_drawElements(ssize_t start, ssize_t count)
 {
     PAL_ASSERT(start >= 0, "Invalid start value");
     PAL_ASSERT(count >= 0, "Invalid count value");
@@ -87,7 +91,7 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
             auto stride = attributeBuffer->getElementSize();
             
             glEnableVertexAttribArray(GLint(attribute._index));
-            glVertexAttribPointer(GLint(attribute._index), (GLint)attribute._size, AttributeDataTypeToGL(attribute._type), attribute._normalized, (GLsizei)stride, (GLvoid*)(size_t)offset);
+            glVertexAttribPointer(GLint(attribute._index), (GLint)attribute._size, _attributeDataTypeToGL(attribute._type), attribute._normalized, (GLsizei)stride, (GLvoid*)(size_t)offset);
             
             CHECK_GL_ERROR_DEBUG();
         }
@@ -101,7 +105,7 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
     if (_indices != nullptr)
     {
         intptr_t offset = start * _indices->getElementSize();
-        glDrawElements((GLenum)_drawingPrimitive, (GLsizei)count, GLIndexType(), (GLvoid*)offset);
+        glDrawElements((GLenum)_drawingPrimitive, (GLsizei)count, _glIndexType(), (GLvoid*)offset);
     }
     else
     {
@@ -117,12 +121,8 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-//
-// Protected Methods
-//
-
 inline
-unsigned GraphicsOpenGLES2VertexArray::AttributeDataTypeToGL(AttributeDataType type)
+unsigned GraphicsOpenGLES2VertexArray::_attributeDataTypeToGL(AttributeDataType type)
 {
     const static int gltypes[] = {GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT, GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, /*GL_FIXED*/};
     auto t = (unsigned)type;
@@ -131,7 +131,7 @@ unsigned GraphicsOpenGLES2VertexArray::AttributeDataTypeToGL(AttributeDataType t
 }
 
 inline
-unsigned GraphicsOpenGLES2VertexArray::GLIndexType()
+unsigned GraphicsOpenGLES2VertexArray::_glIndexType()
 {
     CCASSERT(_indices, "no index buffer specified");
     return _indices->getElementSize() == sizeof(uint16_t) ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;

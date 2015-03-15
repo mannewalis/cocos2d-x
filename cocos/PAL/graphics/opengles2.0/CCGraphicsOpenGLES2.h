@@ -65,8 +65,17 @@ public:
     // @brief specifies a vertex attribute.
     bool vertexArraySpecifyVertexAttribute(handle object, handle buffer, int index, ssize_t offset, AttributeDataType type, ssize_t count, bool normalized);
     
+    // @brief removes a previously specified vertex attribute
+    void vertexArrayRemoveVertexAttribute(handle vao, int index);
+
     // @brief specifies an index buffer to use with a vertex array.
     bool vertexArraySpecifyIndexBuffer(handle object, handle buffer);
+
+    // @brief stage client side geometry that is to be copied to native buffers when drawn.
+    // this is better than bufferCommitElements because it doesn't have to bind the buffer twice,
+    // but the elements need to live unmodified until vertexArrayDrawElements is called.
+    // works with vertex and index buffers. Overlapping ranges will be copied multiple times.
+    void vertexArrayStageElements(handle vao, handle buffer, void* elements, ssize_t start, ssize_t count);
 
     // @brief draws the vertex array.
     void vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);

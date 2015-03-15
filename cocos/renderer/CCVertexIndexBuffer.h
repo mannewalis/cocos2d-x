@@ -124,11 +124,8 @@ public:
     
     CC_DEPRECATED(v3) uint32_t getVBO() const;
     
-    NS_PRIVATE::handle getBO() const
-    {
-        return _bo;
-    }
-
+    NS_PRIVATE::handle getBO() const;
+    
     void setElementCount(ssize_t count)
     {
         CCASSERT(count <= _capacity, "element count cannot exceed capacity");

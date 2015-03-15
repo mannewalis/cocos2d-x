@@ -55,13 +55,22 @@ public:
     virtual handle vertexArrayCreate(Primitive drawPrimitive) = 0;
     
     // @brief destroy a vertex array object.
-    virtual void vertexArrayDestroy(handle object) = 0;
+    virtual void vertexArrayDestroy(handle vao) = 0;
         
     // @brief specifies a vertex attribute.
-    virtual bool vertexArraySpecifyVertexAttribute(handle object, handle buffer, int index, ssize_t offset, AttributeDataType type, ssize_t count, bool normalized) = 0;
+    virtual bool vertexArraySpecifyVertexAttribute(handle vao, handle buffer, int index, ssize_t offset, AttributeDataType type, ssize_t count, bool normalized) = 0;
+    
+    // @brief removes a previously specified vertex attribute
+    virtual void vertexArrayRemoveVertexAttribute(handle vao, int index) = 0;
     
     // @brief specifies an index buffer to use with a vertex array.
-    virtual bool vertexArraySpecifyIndexBuffer(handle object, handle buffer) = 0;
+    virtual bool vertexArraySpecifyIndexBuffer(handle vao, handle buffer) = 0;
+    
+    // @brief stage client side geometry that is to be copied to native buffers when drawn.
+    // this is better than bufferCommitElements because it doesn't have to bind the buffer twice,
+    // but the elements need to live unmodified until vertexArrayDrawElements is called.
+    // works with vertex and index buffers. Overlapping ranges will be copied multiple times.
+    virtual void vertexArrayStageElements(handle vao, handle buffer, void* elements, ssize_t start, ssize_t count) = 0;
     
     // @brief draws the vertex array.
     virtual void vertexArrayDrawElements(handle object, ssize_t start, ssize_t count) = 0;

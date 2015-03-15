@@ -215,6 +215,11 @@ CC_DEPRECATED(v3) unsigned ElementArrayBuffer::getVBO() const
     return Director::getInstance()->getGraphicsInterface()->bufferGetBO(_bo);
 }
 
+handle ElementArrayBuffer::getBO() const
+{
+    return _bo;
+}
+
 bool ElementArrayBuffer::commitElements(const void* elements, ssize_t count, ssize_t begin)
 {
     CCASSERT(true == hasNative(), "ElementArrayBuffer::bindAndCommit : array has no native buffer");

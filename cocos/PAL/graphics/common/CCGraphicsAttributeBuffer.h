@@ -44,8 +44,7 @@ public:
     typedef APITraits traits_type;
 
     GraphicsAttributeBuffer()
-        : _bo(0)
-        , _elementCount(0)
+        : _elementCount(0)
         , _elementSize(0)
         , _capacity(0)
         , _bufferMode(BufferMode::Invalid)
@@ -67,9 +66,7 @@ public:
         _elementSize  = elementSize;
         _elementCount = 0;
         
-        setCapacity(maxElements, zero);
-        
-        traits_cast<traits_type>(this)->setupBO();
+        _setCapacity(maxElements, zero);
         
         return true;
     }
@@ -132,25 +129,16 @@ public:
         _dirty = true;
     }
     
-    unsigned getBO() const
-    {
-        return _bo;
-    }
-
 protected:
     
     // @brief sets the capacity for the buffer.
-    void setCapacity(ssize_t capacity, bool zero)
+    void _setCapacity(ssize_t capacity, bool zero)
     {
         _capacity = capacity;
     }
 
 protected:
     
-    // native only
-    uint32_t _bo;
-    
-    // client buffer only
     ssize_t _elementCount;
     void* _elements;
     

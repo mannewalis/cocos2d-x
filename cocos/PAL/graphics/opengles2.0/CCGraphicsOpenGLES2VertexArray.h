@@ -51,13 +51,15 @@ public:
     GraphicsOpenGLES2VertexArray(Primitive drawPrimitive);
     virtual ~GraphicsOpenGLES2VertexArray();
     
-    bool specifyAttribute(GraphicsOpenGLES2Buffer* buffer, int index, ssize_t offset, AttributeDataType type, ssize_t count, bool normalized);
-    void drawElements(ssize_t start, ssize_t count);
+    //bool specifyAttribute(GraphicsOpenGLES2Buffer* buffer, int index, ssize_t offset, AttributeDataType type, ssize_t count, bool normalized);
     
 protected:
     
-    unsigned AttributeDataTypeToGL(AttributeDataType type);
-    unsigned GLIndexType();
+    friend class GraphicsVertexArray;
+    
+    void _drawElements(ssize_t start, ssize_t count);
+    unsigned _attributeDataTypeToGL(AttributeDataType type);
+    unsigned _glIndexType();
 
 protected:
     

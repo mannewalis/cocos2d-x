@@ -43,18 +43,18 @@ public:
     // MARK: traits
 
     bool commitElements(const void* elements, ssize_t count, ssize_t begin);
-    void setupBO();
+
+    unsigned getBO() const;
+
+protected:
+    
+    unsigned _bufferIntentToGLTarget(BufferIntent intent) const;
+    unsigned _bufferModeToGLUsage(BufferMode mode) const;
     
 protected:
     
-    unsigned bufferIntentToGLTarget(BufferIntent intent) const;
-    unsigned bufferModeToGLUsage(BufferMode mode) const;
-    
-protected:
-    
-    unsigned _gltarget;
-    unsigned _glusage;
-    size_t   _boSize;
+    unsigned _glbo;
+    size_t   _glboSize;
 };
 
 NS_PRIVATE_END
