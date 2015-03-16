@@ -145,6 +145,18 @@ void VertexData::removeIndexBuffer()
     // TODO add remove index buffer to PAL
 }
 
+// @brief if dirty, and has native buffer, stages the elements so that
+// when the native buffer is drawn, the elements are copied at that time
+// which means the buffer only needs to be bound once.
+bool VertexData::stageElements(const void* elements, ssize_t count, ssize_t begin)
+{
+    CCASSERT(true == hasNative(), "ElementArrayBuffer::bindAndCommit : array has no native buffer");
+    CCASSERT(isDirty() == true, "redundant call to commit elements");
+    setDirty(false);
+    return Director::getInstance()->getGraphicsInterface()->vertexArrayStageElements(<#handle vao#>, <#handle buffer#>, <#int index#>, <#void *elements#>, <#ssize_t start#>, <#ssize_t count#>)(_bo, elements, count, begin);
+}
+
+
 const VertexAttribute* VertexData::getStreamAttribute(int semantic) const
 {
     auto iter = _vertexStreams.find(semantic);
@@ -164,17 +176,15 @@ ssize_t VertexData::draw(ssize_t start, ssize_t count)
     CCASSERT(start >= 0, "Invalid start value");
     CCASSERT(count >= 0, "Invalid count value");
     
-    // lazy commit the client to native if they exist.
-    if (_indices)
-        _indices->commit();
-    for (auto b : _buffers)
-        b->commit();
-    
-    // if we are drawing indexed, then use the count of indices to draw
     if (!count)
-        count = _indices ? _indices->getElementCount() : this->getCount();
+        count = getCount();
     
-    Director::getInstance()->getGraphicsInterface()->vertexArrayDrawElements(_vao, start, count);
+    auto const gi = Director::getInstance()->getGraphicsInterface();
+    
+    if (_indices && _indices->isDirty())
+        gi->bufferCommitElements(_indices->getBO(), _indices->getElementsOfType<void*>(), 0, _indices->getSize());
+    
+    Director::getInstance()->getGraphicsInterface()->vertexArrayDrawElements(_vao, start, _indices ? _indices->getElementCount() : this->getCount());
     
     return count;
 }

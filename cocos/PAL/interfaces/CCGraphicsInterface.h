@@ -70,7 +70,7 @@ public:
     // this is better than bufferCommitElements because it doesn't have to bind the buffer twice,
     // but the elements need to live unmodified until vertexArrayDrawElements is called.
     // works with vertex and index buffers. Overlapping ranges will be copied multiple times.
-    virtual void vertexArrayStageElements(handle vao, handle buffer, void* elements, ssize_t start, ssize_t count) = 0;
+    virtual void vertexArrayStageElements(handle vao, handle buffer, int index, void* elements, ssize_t start, ssize_t count) = 0;
     
     // @brief draws the vertex array.
     virtual void vertexArrayDrawElements(handle object, ssize_t start, ssize_t count) = 0;
@@ -86,7 +86,7 @@ public:
     virtual bool bufferDestroy(handle object) = 0;
     
     // @brief commit elements from a client array to a native buffer object.
-    virtual bool bufferCommitElements(handle object, const void* elements, ssize_t count, ssize_t begin) = 0;
+    virtual bool bufferCommitElements(handle object, const void* elements, ssize_t start, ssize_t count) = 0;
     
     // HACK for backwards compatibility with MeshCommand
     CC_DEPRECATED(v3) virtual unsigned bufferGetBO(handle object) = 0;

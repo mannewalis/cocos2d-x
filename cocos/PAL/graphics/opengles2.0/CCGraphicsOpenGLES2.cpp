@@ -109,12 +109,12 @@ bool GraphicsOpenGLES20::vertexArraySpecifyIndexBuffer(handle object, handle buf
     return true;
 }
 
-void GraphicsOpenGLES20::vertexArrayStageElements(handle object, handle buffer, void* elements, ssize_t start, ssize_t count)
+void GraphicsOpenGLES20::vertexArrayStageElements(handle object, handle buffer, int index, void* elements, ssize_t start, ssize_t count)
 {
     auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
     auto bo  = HANDLE_TOPTR(_handles, buffer, GraphicsOpenGLES2Buffer);
     PAL_ASSERT(vao && bo, "invalid handle");
-    vao->stageElements(bo, elements, start, count);
+    vao->stageElements(bo, index, elements, start, count);
 }
 
 // @brief draws the vertex array.
@@ -143,10 +143,10 @@ bool GraphicsOpenGLES20::bufferDestroy(handle object)
     return true;
 }
 
-bool GraphicsOpenGLES20::bufferCommitElements(handle object, const void* elements, ssize_t count, ssize_t begin)
+bool GraphicsOpenGLES20::bufferCommitElements(handle object, const void* elements, ssize_t start, ssize_t count)
 {
     auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
-    return bo->commitElements(elements, count, begin);
+    return bo->commitElements(elements, start, count);
 }
 
 // HACK for backwards compatibility with MeshCommand

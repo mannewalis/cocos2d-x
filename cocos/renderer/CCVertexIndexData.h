@@ -81,6 +81,11 @@ public:
     void setIndexBuffer(IndexBuffer* indices);
     void removeIndexBuffer();
     
+    // @brief stages the elements so that
+    // when the native buffer is drawn, the elements are copied at that time
+    // which means the buffer only needs to be bound once.
+    bool stageElements(int index, const void* elements, ssize_t count, ssize_t begin);
+    
     const VertexAttribute* getStreamAttribute(int semantic) const;
     VertexAttribute* getStreamAttribute(int semantic);
         

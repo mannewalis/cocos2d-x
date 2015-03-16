@@ -107,9 +107,6 @@ void ElementArrayBuffer::updateElements(const void* elements, ssize_t count, ssi
     // empty elements do not count towards element count, only capacity
     if (elements)
         _elementCount = begin + count > _elementCount ? begin + count : _elementCount;
-    
-    if (false == defer && elements && hasNative())
-        commitElements(elements, count, begin);
 }
 
 void ElementArrayBuffer::insertElements(const void* elements, ssize_t count, ssize_t begin, bool defer)
@@ -177,11 +174,11 @@ void ElementArrayBuffer::moveElements(ssize_t source, ssize_t dest, ssize_t coun
 }
 
 // @brief commits client buffer to native buffer if both exist.
-void ElementArrayBuffer::commit()
-{
-    if (isDirty() && hasClient() && hasNative())
-        commitElements(_elements, _elementCount, 0);
-}
+//void ElementArrayBuffer::commit()
+//{
+//    if (isDirty() && hasClient() && hasNative())
+//        commitElements(_elements, _elementCount, 0);
+//}
 
 void ElementArrayBuffer::clear()
 {

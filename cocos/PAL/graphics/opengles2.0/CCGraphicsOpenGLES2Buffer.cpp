@@ -49,13 +49,16 @@ GraphicsOpenGLES2Buffer::~GraphicsOpenGLES2Buffer()
     }    
 }
 
-bool GraphicsOpenGLES2Buffer::commitElements(const void* elements, ssize_t count, ssize_t begin)
+bool GraphicsOpenGLES2Buffer::commitElements(const void* elements, ssize_t begin, ssize_t count)
 {
     PAL_ASSERT(_glbo, "native buffer object not initialized");
     PAL_ASSERT(elements != nullptr, "invalid elements array");
     PAL_ASSERT(count > 0, "invalid element count");
     
     GL::bindVBO(_bufferIntentToGLTarget(_bufferIntent), _glbo);
+    
+    if (!isDirty())
+        return false;
     
     const auto size = getCapacityInBytes();
     CCASSERT(size, "size should not be 0");
@@ -72,6 +75,8 @@ bool GraphicsOpenGLES2Buffer::commitElements(const void* elements, ssize_t count
         CHECK_GL_ERROR_DEBUG();
     }
 
+    setDirty(false);
+    
     return glGetError() == 0;
 }
 

@@ -114,25 +114,17 @@ public:
     }
     
     // @brief stage elements for copying on draw.
-    void stageElements(buffer_type* buffer, void* elements, ssize_t start, ssize_t count)
+    void stageElements(buffer_type* buffer, int index, void* elements, ssize_t start, ssize_t count)
     {
-        setDirty(true);
-        _stagedElements.emplace_back(StagedElements{buffer, elements, start, count});
-    }
-    
-    // @brief copy stage elements and draw
-    void drawElements(ssize_t start, ssize_t count)
-    {
-        if (!_stagedElements.empty())
+        auto it = _vertexAttributes.find(index);
+        if (it != _vertexAttributes.end())
         {
-            for (const auto& e : _stagedElements)
-            {
-                traits_cast<buffer_type>(e._buffer)->commitElements(e._elements, e._start, e._count);
-            }
+            setDirty(true);
+            auto& ba = (*it).second;
+            ba._regions.emplace_back(Region{elements, start, count});
         }
-        traits_cast<traits_type>(this)->_drawElements(start, count);
     }
-    
+        
     // @brief true/false if all vertex buffers are empty
     bool empty() const
     {
@@ -201,22 +193,22 @@ public:
     }
     
 protected:
-    
-    struct Attributes
+
+    struct Region
     {
-        buffer_type* _buffer;
-        VertexAttribute _attribute;
-    };
-    std::map<int, Attributes> _vertexAttributes;
-    
-    struct StagedElements
-    {
-        buffer_type* _buffer;
         void* _elements;
         ssize_t _start;
         ssize_t _count;
     };
-    std::vector<StagedElements> _stagedElements;
+
+    struct Attributes
+    {
+        buffer_type* _buffer;
+        VertexAttribute _attribute;
+        std::vector<Region> _regions;
+    };
+    
+    std::map<int, Attributes> _vertexAttributes;
     
     typedef std::set<buffer_type*> tBufferSet;
     tBufferSet _buffers;

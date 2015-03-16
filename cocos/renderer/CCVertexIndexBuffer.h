@@ -110,7 +110,7 @@ public:
     void moveElements(ssize_t source, ssize_t dest, ssize_t count);
 
     // @brief commits client buffer to native buffer if both exist.
-    void commit();
+    //void commit();
     
     ssize_t getSize() const
     {
@@ -254,9 +254,10 @@ protected:
     bool init(ssize_t elementSize, ssize_t maxElements, ArrayType arrayType, ArrayMode arrayMode, ArrayIntent arrayIntent, bool zero);
     void setCapacity(ssize_t capacity, bool zero);
     
-    // @brief if dirty, copies elements to the client buffer (if any)
+    // @brief copies elements to the client buffer (if any)
     // and optionally submits the elements to the native buffer (if any)
     // if elements is null, then the entire client is commited to native.
+    // must have a native buffer, and must be dirty.
     bool commitElements(const void* elements, ssize_t count, ssize_t begin);
 
 protected:
