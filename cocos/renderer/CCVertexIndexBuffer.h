@@ -83,11 +83,11 @@ public:
 
     // @brief updates a region of the client and native buffer
     //        if defer is true, then the native buffer will not be updated.
-    void updateElements(const void* elements, ssize_t count, ssize_t begin = 0, bool defer = true);
+    void updateElements(const void* elements, ssize_t start, ssize_t count = 0, bool defer = true);
     
     // @brief inserts elements into the client and native buffer.
     //        if defer is true, then the native buffer will not be updated.
-    void insertElements(const void* elements, ssize_t count, ssize_t begin, bool defer = true);
+    void insertElements(const void* elements, ssize_t start, ssize_t count, bool defer = true);
 
     // @brief appends elements into the client and native buffer.
     //        if defer is true, then the native buffer will not be updated.
@@ -95,7 +95,7 @@ public:
 
     // @brief removes elements from the client and native buffer.
     //        if defer is true, then the native buffer is not updated.
-    void removeElements(ssize_t count, ssize_t begin, bool defer = true);
+    void removeElements(ssize_t start, ssize_t count, bool defer = true);
     
     // @brief increases the capacity of the buffer by count elements
     //        optionally zeroes out the elements.
@@ -109,9 +109,6 @@ public:
     //        if defer is true, then the native buffer is not updated.
     void moveElements(ssize_t source, ssize_t dest, ssize_t count);
 
-    // @brief commits client buffer to native buffer if both exist.
-    void commit();
-    
     ssize_t getSize() const
     {
         return getElementCount() * getElementSize();
@@ -125,6 +122,9 @@ public:
     CC_DEPRECATED(v3) uint32_t getVBO() const;
     
     NS_PRIVATE::handle getBO() const;
+    
+    // @brief access the element buffer directly.
+    void* getElements();
     
     void setElementCount(ssize_t count)
     {
@@ -200,27 +200,27 @@ public:
     }
     
     template <typename T>
-    void updateElementsOfType(const T* element, ssize_t count, ssize_t begin, bool defer = true)
+    void updateElementsOfType(const T* element, ssize_t start, ssize_t count, bool defer = true)
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
-        updateElements((const void*)element, mult * count, mult * begin, defer);
+        updateElements((const void*)element, mult * count, mult * start, defer);
     }
     
     template <typename T>
-    void insertElementsOfType(const T* element, ssize_t count, ssize_t begin, bool defer = true)
+    void insertElementsOfType(const T* element, ssize_t start, ssize_t count, bool defer = true)
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
-        insertElements((const void*)element, mult * count, mult * begin, defer);
+        insertElements((const void*)element, mult * count, mult * start, defer);
     }
     
     template <typename T>
-    void removeElementsOfType(ssize_t count, ssize_t begin, bool defer = true)
+    void removeElementsOfType(ssize_t start, ssize_t count, bool defer = true)
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
-        removeElements(mult * count, mult * begin, defer);
+        removeElements(mult * count, mult * start, defer);
     }
     
     template <typename T>
@@ -257,7 +257,7 @@ protected:
     // @brief if dirty, copies elements to the client buffer (if any)
     // and optionally submits the elements to the native buffer (if any)
     // if elements is null, then the entire client is commited to native.
-    bool commitElements(const void* elements, ssize_t count, ssize_t begin);
+    bool commitElements(const void* elements, ssize_t start, ssize_t count);
 
 protected:
 

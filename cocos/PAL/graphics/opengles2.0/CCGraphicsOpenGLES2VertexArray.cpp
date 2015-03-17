@@ -55,11 +55,7 @@ GraphicsOpenGLES2VertexArray::~GraphicsOpenGLES2VertexArray()
     }
 }
 
-//
-// Protected Methods
-//
-
-void GraphicsOpenGLES2VertexArray::_drawElements(ssize_t start, ssize_t count)
+void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
 {
     PAL_ASSERT(start >= 0, "Invalid start value");
     PAL_ASSERT(count >= 0, "Invalid count value");
@@ -84,8 +80,12 @@ void GraphicsOpenGLES2VertexArray::_drawElements(ssize_t start, ssize_t count)
             const auto& attributeBuffer = b._buffer;
             const auto& attribute = b._attribute;
             
-            GLuint vbo = (GLuint)attributeBuffer->getBO();
-            GL::bindVBO(GL_ARRAY_BUFFER, vbo);
+            for (auto& e : _stagedElements)
+            {
+                PAL_ASSERT(e._buffer == attributeBuffer);
+                attributeBuffer->commitElements(e._elements, e._start, e._count);
+            }
+            _stagedElements.clear();
             
             auto offset = attribute._offset;
             auto stride = attributeBuffer->getElementSize();
@@ -120,6 +120,10 @@ void GraphicsOpenGLES2VertexArray::_drawElements(ssize_t start, ssize_t count)
     GL::bindVBO(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
+
+//
+// Protected Methods
+//
 
 inline
 unsigned GraphicsOpenGLES2VertexArray::_attributeDataTypeToGL(AttributeDataType type)

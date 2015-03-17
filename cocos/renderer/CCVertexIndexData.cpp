@@ -164,17 +164,19 @@ ssize_t VertexData::draw(ssize_t start, ssize_t count)
     CCASSERT(start >= 0, "Invalid start value");
     CCASSERT(count >= 0, "Invalid count value");
     
-    // lazy commit the client to native if they exist.
+    auto const gi = Director::getInstance()->getGraphicsInterface();
+    
     if (_indices)
-        _indices->commit();
+        gi->vertexArrayStageElements(_vao, _indices->getBO(), _indices->getElementsOfType<void*>(), 0, _indices->getSize());
+    
     for (auto b : _buffers)
-        b->commit();
+        gi->vertexArrayStageElements(_vao, b->getBO(), b->getElementsOfType<void*>(), 0, b->getSize());
     
     // if we are drawing indexed, then use the count of indices to draw
     if (!count)
         count = _indices ? _indices->getElementCount() : this->getCount();
     
-    Director::getInstance()->getGraphicsInterface()->vertexArrayDrawElements(_vao, start, count);
+    gi->vertexArrayDrawElements(_vao, start, count);
     
     return count;
 }

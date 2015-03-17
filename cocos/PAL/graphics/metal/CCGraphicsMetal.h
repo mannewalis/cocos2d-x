@@ -81,10 +81,17 @@ public:
     void vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);
     
     handle bufferCreate(ssize_t size, ssize_t count, BufferMode bufferMode, BufferIntent bufferIntent, bool zero);
+    
     bool bufferDestroy(handle object);
-    bool bufferCommitElements(handle object, void*, ssize_t count, ssize_t begin);
+    
+    // @brief gain access to the element buffer.
+    // if none exists, then one will be allocated. if present, commit elements copies into this buffer.
+    virtual void* bufferMapElements(handle object) = 0;
+
+    bool bufferCommitElements(handle object, void*, ssize_t start, ssize_t count);
+    
     // HACK for backwards compatibility with MeshCommand
-    CC_DEPRECATED(v3) unsigned bufferGetBO(handle object);
+    CC_DEPRECATED(v3) unsigned bufferGetNativeBO(handle object);
 
 protected:
     

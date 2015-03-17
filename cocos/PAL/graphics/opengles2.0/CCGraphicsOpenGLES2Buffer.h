@@ -42,7 +42,8 @@ public:
 
     // MARK: traits
 
-    bool commitElements(const void* elements, ssize_t count, ssize_t begin);
+    void* mapElements();
+    bool commitElements(const void* elements, ssize_t start, ssize_t count);
 
     unsigned getBO() const;
 

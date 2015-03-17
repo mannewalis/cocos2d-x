@@ -85,11 +85,15 @@ public:
     // @brief destroy a native buffer object.
     virtual bool bufferDestroy(handle object) = 0;
     
+    // @brief gain access to the element buffer.
+    // if none exists, then one will be allocated. if present, commit elements copies into this buffer.
+    virtual void* bufferMapElements(handle object) = 0;
+    
     // @brief commit elements from a client array to a native buffer object.
-    virtual bool bufferCommitElements(handle object, const void* elements, ssize_t count, ssize_t begin) = 0;
+    virtual bool bufferCommitElements(handle object, const void* elements, ssize_t start, ssize_t count) = 0;
     
     // HACK for backwards compatibility with MeshCommand
-    CC_DEPRECATED(v3) virtual unsigned bufferGetBO(handle object) = 0;
+    CC_DEPRECATED(v3) virtual unsigned bufferGetNativeBO(handle object) = 0;
 };
 
 NS_PRIVATE_END

@@ -98,6 +98,16 @@ public:
         }
     }
     
+    void* getElements()
+    {
+        if (!_buffer || getSize() != _bufferSize)
+        {
+            _bufferSize = getSize();
+            _buffer = realloc(_buffer, _bufferSize);
+        }
+        return _buffer;
+    }
+    
     ssize_t getElementCount() const
     {
         return _elementCount;
@@ -108,6 +118,28 @@ public:
         return _elementSize;
     }
     
+    // @brief sets the capacity for the buffer.
+    void setCapacity(ssize_t capacity, bool zero)
+    {
+        if (capacity > _capacity)
+        {
+            if (_buffer)
+            {
+                auto capacityInBytes = capacity * _elementSize;
+                _buffer = realloc(_buffer, capacityInBytes);
+                
+                if (zero)
+                {
+                    intptr_t start = (intptr_t)_buffer + _capacity * _elementSize;
+                    size_t count = _elementSize * (capacity - _capacity);
+                    memset((void*)start, 0, count);
+                }
+                setDirty(true);
+            }
+            _capacity = capacity;
+        }
+    }
+
     ssize_t getCapacity() const
     {
         return _capacity;
@@ -126,22 +158,15 @@ public:
     void clear()
     {
         _elementCount = 0;
-        _dirty = true;
-    }
-    
-protected:
-    
-    // @brief sets the capacity for the buffer.
-    void _setCapacity(ssize_t capacity, bool zero)
-    {
-        _capacity = capacity;
+        setDirty(true);
     }
 
 protected:
     
-    ssize_t _elementCount;
-    void* _elements;
+    void* _buffer;
+    ssize_t _bufferSize;
     
+    ssize_t _elementCount;
     ssize_t _elementSize;
     ssize_t _capacity;
     

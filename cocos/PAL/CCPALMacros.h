@@ -45,12 +45,6 @@
 
 #define PAL_ASSERT(cond, ...) assert(cond)
 
-template <class T>
-T* traits_cast(void* rhs)
-{
-    return static_cast<T*>(rhs);
-}
-
 #define HANDLE_INVALID 0
 
 #endif//_CC_PAL_MACROS_H_

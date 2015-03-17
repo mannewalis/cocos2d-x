@@ -143,14 +143,20 @@ bool GraphicsOpenGLES20::bufferDestroy(handle object)
     return true;
 }
 
-bool GraphicsOpenGLES20::bufferCommitElements(handle object, const void* elements, ssize_t count, ssize_t begin)
+void* GraphicsOpenGLES20::bufferMapElements(handle object)
 {
     auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
-    return bo->commitElements(elements, count, begin);
+    return bo->mapElements();
+}
+
+bool GraphicsOpenGLES20::bufferCommitElements(handle object, const void* elements, ssize_t start, ssize_t count)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    return bo->commitElements(elements, start, count);
 }
 
 // HACK for backwards compatibility with MeshCommand
-CC_DEPRECATED(v3) unsigned GraphicsOpenGLES20::bufferGetBO(handle object)
+CC_DEPRECATED(v3) unsigned GraphicsOpenGLES20::bufferGetNativeBO(handle object)
 {
     auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
     return bo->getBO();

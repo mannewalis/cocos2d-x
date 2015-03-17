@@ -120,19 +120,6 @@ public:
         _stagedElements.emplace_back(StagedElements{buffer, elements, start, count});
     }
     
-    // @brief copy stage elements and draw
-    void drawElements(ssize_t start, ssize_t count)
-    {
-        if (!_stagedElements.empty())
-        {
-            for (const auto& e : _stagedElements)
-            {
-                traits_cast<buffer_type>(e._buffer)->commitElements(e._elements, e._start, e._count);
-            }
-        }
-        traits_cast<traits_type>(this)->_drawElements(start, count);
-    }
-    
     // @brief true/false if all vertex buffers are empty
     bool empty() const
     {

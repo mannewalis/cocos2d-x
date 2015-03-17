@@ -76,9 +76,9 @@ void ElementArrayBuffer::setElements(const void* elements, ssize_t count, bool d
     updateElements(elements, count, 0, defer);
 }
 
-void ElementArrayBuffer::updateElements(const void* elements, ssize_t count, ssize_t begin, bool defer)
+void ElementArrayBuffer::updateElements(const void* elements, ssize_t start, ssize_t count, bool defer)
 {
-    CCASSERT(begin >= 0, "Invalid being value");
+    CCASSERT(start >= 0, "Invalid being value");
     CCASSERT(count >= 0, "Invalid count value");
 
     CCASSERT(hasClient() || hasNative(), "Can only update elements if there is an attached buffer");
@@ -92,12 +92,12 @@ void ElementArrayBuffer::updateElements(const void* elements, ssize_t count, ssi
     if (false == hasClient())
         defer = false;
 
-    auto needed = count + begin;
+    auto needed = count + start;
     setCapacity(needed, false);
     
     if (hasClient())
     {
-        intptr_t p = (intptr_t)_elements + begin * _elementSize;
+        intptr_t p = (intptr_t)_elements + start * _elementSize;
         if (elements)
             memmove((void*)p, elements, count * _elementSize);
         else
@@ -106,22 +106,22 @@ void ElementArrayBuffer::updateElements(const void* elements, ssize_t count, ssi
 
     // empty elements do not count towards element count, only capacity
     if (elements)
-        _elementCount = begin + count > _elementCount ? begin + count : _elementCount;
+        _elementCount = start + count > _elementCount ? start + count : _elementCount;
     
     if (false == defer && elements && hasNative())
-        commitElements(elements, count, begin);
+        commitElements(elements, start, count);
 }
 
-void ElementArrayBuffer::insertElements(const void* elements, ssize_t count, ssize_t begin, bool defer)
+void ElementArrayBuffer::insertElements(const void* elements, ssize_t start, ssize_t count, bool defer)
 {
     CCASSERT(hasClient(), "can only insert into a client buffer");
     // first see if we need to move any elements
-    if (begin < getElementCount())
+    if (start < getElementCount())
     {
-        intptr_t dst = (intptr_t)_elements + begin + count;
-        updateElements((void*)dst, count, begin, defer);
+        intptr_t dst = (intptr_t)_elements + start + count;
+        updateElements((void*)dst, count, start, defer);
     }
-    updateElements(elements, count, begin, defer);
+    updateElements(elements, count, start, defer);
 }
 
 void ElementArrayBuffer::appendElements(const void* elements, ssize_t count, bool defer)
@@ -130,15 +130,15 @@ void ElementArrayBuffer::appendElements(const void* elements, ssize_t count, boo
     updateElements(elements, count, _elementCount, defer);
 }
 
-void ElementArrayBuffer::removeElements(ssize_t count, ssize_t begin, bool defer)
+void ElementArrayBuffer::removeElements(ssize_t start, ssize_t count, bool defer)
 {
     const auto ec = getElementCount();
     CCASSERT(hasClient(),         "can only remove from a client buffer");
-    CCASSERT(begin < ec,          "removeElements begin must be within range");
-    CCASSERT(begin + count <= ec, "removeElements count must be within range");
+    CCASSERT(start < ec,          "removeElements start must be within range");
+    CCASSERT(start + count <= ec, "removeElements count must be within range");
     _elementCount -= count;
-    const intptr_t src = (intptr_t)_elements + (begin + count) * getElementSize();
-    updateElements((void*)src, _elementCount - begin, begin, defer);
+    const intptr_t src = (intptr_t)_elements + (start + count) * getElementSize();
+    updateElements((void*)src, _elementCount - start, start, defer);
 }
 
 void ElementArrayBuffer::addCapacity(ssize_t count, bool zero)
@@ -176,13 +176,6 @@ void ElementArrayBuffer::moveElements(ssize_t source, ssize_t dest, ssize_t coun
     updateElements(srcptr, count, dest);
 }
 
-// @brief commits client buffer to native buffer if both exist.
-void ElementArrayBuffer::commit()
-{
-    if (isDirty() && hasClient() && hasNative())
-        commitElements(_elements, _elementCount, 0);
-}
-
 void ElementArrayBuffer::clear()
 {
     _elementCount = 0;
@@ -212,7 +205,7 @@ void ElementArrayBuffer::setCapacity(ssize_t capacity, bool zero)
 
 CC_DEPRECATED(v3) unsigned ElementArrayBuffer::getVBO() const
 {
-    return Director::getInstance()->getGraphicsInterface()->bufferGetBO(_bo);
+    return Director::getInstance()->getGraphicsInterface()->bufferGetNativeBO(_bo);
 }
 
 handle ElementArrayBuffer::getBO() const
@@ -220,12 +213,19 @@ handle ElementArrayBuffer::getBO() const
     return _bo;
 }
 
-bool ElementArrayBuffer::commitElements(const void* elements, ssize_t count, ssize_t begin)
+// @brief access the element buffer directly.
+void* ElementArrayBuffer::getElements()
+{
+    return Director::getInstance()->getGraphicsInterface()->bufferMapElements(_bo);
+}
+
+
+bool ElementArrayBuffer::commitElements(const void* elements, ssize_t start, ssize_t count)
 {
     CCASSERT(true == hasNative(), "ElementArrayBuffer::bindAndCommit : array has no native buffer");
     CCASSERT(isDirty() == true, "redundant call to commit elements");
     setDirty(false);
-    return Director::getInstance()->getGraphicsInterface()->bufferCommitElements(_bo, elements, count, begin);
+    return Director::getInstance()->getGraphicsInterface()->bufferCommitElements(_bo, elements, start, count);
 }
 
 void ElementArrayBuffer::recreate()
