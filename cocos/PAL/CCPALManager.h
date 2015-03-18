@@ -36,8 +36,11 @@ class PALManager
 {
 public:
     
-    PALManager();
-    virtual ~PALManager();
+    PAL_DECLARE_SINGLETON(PALManager);
+    
+    using tConstructor = std::function<void*()>;
+
+    virtual ~PALManager() {}
     
     template <class T = PALManager>
     static T* create()
@@ -50,6 +53,13 @@ public:
         }
         delete result;
         return nullptr;
+    }
+    
+    template <class T>
+    void registerFactory(const char* impl, tConstructor constructor)
+    {
+        auto fact = tFactoryType{constructor, impl};
+        _factories.insert(tRegisteredFactories::value_type(typeHash<T>(), fact));
     }
     
     template <class T>
@@ -89,20 +99,7 @@ protected:
         return size_t{hash(typeName<T>())};
     }
     
-    using tConstructor = std::function<void* ()>;
-
-    template <class T>
-    void registerFactory(const char* impl, tConstructor constructor)
-    {
-        auto fact = tFactoryType{constructor, impl};
-        _factories.insert(tRegisteredFactories::value_type(typeHash<T>(), fact));
-    }
-    
-    void registerFactories();
-    
 protected:
-    
-    static int _instances;
     
     struct tFactoryType
     {

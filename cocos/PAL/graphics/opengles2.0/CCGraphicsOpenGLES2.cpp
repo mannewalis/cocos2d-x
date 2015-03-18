@@ -24,19 +24,23 @@
  ****************************************************************************/
 
 #include "PAL/CCPALMacros.h"
-#include "cocos2d.h"
+#include "PAL/CCPALManager.h"
 
 #include "CCGraphicsOpenGLES2.h"
 #include "CCGraphicsOpenGLES2VertexArray.h"
 #include "CCGraphicsOpenGLES2Buffer.h"
 
+#include "cocos2d.h"
+
 USING_NS_CC;
 NS_PRIVATE_BEGIN
+
+PAL_REGISTER_FACTORY(GraphicsInterface, opengles2, GraphicsOpenGLES20);
 
 GraphicsInterface* GraphicsOpenGLES20::create()
 {
     auto obj = new GraphicsOpenGLES20;
-    if (obj)
+    if (obj && obj->init())
     {
         obj->autorelease();
         return obj;

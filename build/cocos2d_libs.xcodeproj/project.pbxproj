@@ -1244,8 +1244,6 @@
 		D04E02C31AB9EA2700FF08B1 /* CCGraphicsMetalVertexArray.h in Headers */ = {isa = PBXBuildFile; fileRef = D04E02C11AB9EA2700FF08B1 /* CCGraphicsMetalVertexArray.h */; };
 		D04E02C61AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D04E02C41AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.cpp */; };
 		D04E02C71AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D04E02C51AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.h */; };
-		D07525EC1AAF576600830CD1 /* CCPALManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D07525E11AAF576600830CD1 /* CCPALManager.cpp */; };
-		D07525ED1AAF576600830CD1 /* CCPALManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D07525E11AAF576600830CD1 /* CCPALManager.cpp */; };
 		D07525EE1AAF576600830CD1 /* CCPALManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E21AAF576600830CD1 /* CCPALManager.h */; };
 		D07525EF1AAF576600830CD1 /* CCPALManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E21AAF576600830CD1 /* CCPALManager.h */; };
 		D07525F01AAF576600830CD1 /* CCGraphicsMetal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D07525E51AAF576600830CD1 /* CCGraphicsMetal.cpp */; };
@@ -2009,10 +2007,9 @@
 		D04E02C11AB9EA2700FF08B1 /* CCGraphicsMetalVertexArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsMetalVertexArray.h; sourceTree = "<group>"; };
 		D04E02C41AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsMetalBuffer.cpp; sourceTree = "<group>"; };
 		D04E02C51AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsMetalBuffer.h; sourceTree = "<group>"; };
-		D07525E11AAF576600830CD1 /* CCPALManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCPALManager.cpp; sourceTree = "<group>"; };
 		D07525E21AAF576600830CD1 /* CCPALManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPALManager.h; sourceTree = "<group>"; };
 		D07525E51AAF576600830CD1 /* CCGraphicsMetal.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = CCGraphicsMetal.cpp; sourceTree = "<group>"; };
-		D07525E61AAF576600830CD1 /* CCGraphicsMetal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsMetal.h; sourceTree = "<group>"; };
+		D07525E61AAF576600830CD1 /* CCGraphicsMetal.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = CCGraphicsMetal.h; sourceTree = "<group>"; };
 		D07525E81AAF576600830CD1 /* CCGraphicsOpenGLES2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsOpenGLES2.cpp; sourceTree = "<group>"; };
 		D07525E91AAF576600830CD1 /* CCGraphicsOpenGLES2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsOpenGLES2.h; sourceTree = "<group>"; };
 		D07525EB1AAF576600830CD1 /* CCGraphicsInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsInterface.h; sourceTree = "<group>"; };
@@ -3234,7 +3231,6 @@
 				D00FBB641AAFB0C300196C41 /* CCPAL.h */,
 				D00FBB6C1AAFB2A900196C41 /* CCPALMacros.h */,
 				D00FBB6F1AAFC17700196C41 /* CCPALTypes.h */,
-				D07525E11AAF576600830CD1 /* CCPALManager.cpp */,
 				D07525E21AAF576600830CD1 /* CCPALManager.h */,
 				D00FBB7C1AB2195000196C41 /* CCPALHandles.h */,
 				D07525EA1AAF576600830CD1 /* interfaces */,
@@ -4124,7 +4120,6 @@
 				50ABBEC51925AB6F00A911A9 /* etc1.cpp in Sources */,
 				50643BDE19BFCCA400EF68ED /* LocalStorage-android.cpp in Sources */,
 				15AE1B5B19AADA9900C27E9E /* UITextAtlas.cpp in Sources */,
-				D07525EC1AAF576600830CD1 /* CCPALManager.cpp in Sources */,
 				1A570065180BC5A10088DEC7 /* CCActionCamera.cpp in Sources */,
 				50ABBEAB1925AB6F00A911A9 /* ccTypes.cpp in Sources */,
 				1A570069180BC5A10088DEC7 /* CCActionCatmullRom.cpp in Sources */,
@@ -4539,7 +4534,6 @@
 				1A5702EB180BCE750088DEC7 /* CCTileMapAtlas.cpp in Sources */,
 				1A5702EF180BCE750088DEC7 /* CCTMXLayer.cpp in Sources */,
 				15AE1BA519AADFDF00C27E9E /* UIHBox.cpp in Sources */,
-				D07525ED1AAF576600830CD1 /* CCPALManager.cpp in Sources */,
 				1A5702F3180BCE750088DEC7 /* CCTMXObjectGroup.cpp in Sources */,
 				15AE1BAF19AADFDF00C27E9E /* UILayoutManager.cpp in Sources */,
 				15AE182119AAD2F700C27E9E /* CCBundleReader.cpp in Sources */,

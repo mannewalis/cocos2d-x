@@ -47,6 +47,26 @@
 
 #define HANDLE_INVALID 0
 
+#define PAL_DECLARE_SINGLETON(T) \
+    static T* getInstance() \
+    { \
+        static T* __singleton_instance__ = nullptr; \
+        if (!__singleton_instance__) \
+            __singleton_instance__ = new (std::nothrow) T; \
+        return __singleton_instance__; \
+    }
+
+#define PAL_REGISTER_FACTORY(api, name, cls) \
+    static int __static_register_factory_##name() \
+    { \
+        auto constructor = []() -> void* { \
+            return cls::create(); \
+        }; \
+        PALManager::getInstance()->registerFactory<api>(#name, constructor); \
+        return 1; \
+    } \
+    static int __static_factory_##name_result = __static_register_factory_##name()
+
 #endif//_CC_PAL_MACROS_H_
 
 

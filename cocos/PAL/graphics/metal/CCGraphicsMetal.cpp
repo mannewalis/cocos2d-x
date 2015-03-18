@@ -27,17 +27,18 @@
 #include "CCGraphicsMetalVertexArray.h"
 #include "CCGraphicsMetalBuffer.h"
 #include "PAL/CCPALHandles.h"
+#include "PAL/CCPALManager.h"
 
 #ifdef CC_METAL_AVAILABLE
 
-#import "Metal/Metal.h"
-
 NS_PRIVATE_BEGIN
+
+PAL_REGISTER_FACTORY(GraphicsInterface, metal, GraphicsMetal);
 
 GraphicsInterface* GraphicsMetal::create()
 {
     auto obj = new GraphicsMetal;
-    if (obj)
+    if (obj && obj->init())
     {
         obj->autorelease();
         return obj;
@@ -48,12 +49,18 @@ GraphicsInterface* GraphicsMetal::create()
 
 void GraphicsMetal::shutdown()
 {
+    [_mtlCommandQueue release];
+    _mtlCommandQueue = nil;
+    
+    [_mtlDevice release];
+    _mtlDevice = nil;
 }
 
 bool GraphicsMetal::init()
 {
-    bool result = false;
-    return result;
+    _mtlDevice = MTLCreateSystemDefaultDevice();
+    _mtlCommandQueue = [_mtlDevice newCommandQueue];
+    return _mtlDevice != nil && _mtlCommandQueue != nil;
 }
 
 // MARK: windows and views

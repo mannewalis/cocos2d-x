@@ -31,8 +31,6 @@
 #include "PAL/CCPALHandles.h"
 #include "PAL/interfaces/CCGraphicsInterface.h"
 
-NS_PRIVATE_BEGIN
-
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
 #    import "TargetConditionals.h"
 #    if !TARGET_IPHONE_SIMULATOR
@@ -41,6 +39,13 @@ NS_PRIVATE_BEGIN
 #endif // CC_PLATFORM_IOS
 
 #ifdef CC_METAL_AVAILABLE
+
+#import "Metal/Metal.h"
+
+@class MTLDevice;
+@class MTLCommandQueue;
+
+NS_PRIVATE_BEGIN
 
 class GraphicsMetal
     : public GraphicsInterface
@@ -132,10 +137,12 @@ public:
 protected:
     
     Handles _handles;
+    id <MTLDevice> _mtlDevice;
+    id <MTLCommandQueue> _mtlCommandQueue;
 };
 
-#endif//CC_METAL_AVAILABLE
-
 NS_PRIVATE_END
+
+#endif//CC_METAL_AVAILABLE
 
 #endif//_CC_GRAPHICS_METAL_H_
