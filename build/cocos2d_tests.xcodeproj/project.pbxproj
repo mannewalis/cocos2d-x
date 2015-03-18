@@ -678,7 +678,7 @@
 		52B47A351A53A43A004E4C60 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52B47A331A534B2B004E4C60 /* Security.framework */; };
 		59620E8F1921E5CF002021B6 /* Bug-Child.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59620E8D1921E5CF002021B6 /* Bug-Child.cpp */; };
 		59620E901921E5CF002021B6 /* Bug-Child.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59620E8D1921E5CF002021B6 /* Bug-Child.cpp */; };
-		59E170151AB42EB10007F2BF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 826294421AAF071500CB7CF7 /* Security.framework */; };
+		59E170151AB42EB10007F2BF /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		5EBEECB01995247000429821 /* DrawNode3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5EBEECAE1995247000429821 /* DrawNode3D.cpp */; };
 		5EBEECB11995247000429821 /* DrawNode3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5EBEECAE1995247000429821 /* DrawNode3D.cpp */; };
 		A05FCACA177C124500BE600E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15C64822165F391E007D4F18 /* Cocoa.framework */; };
@@ -760,6 +760,7 @@
 		C08689C218D370C90093E810 /* background.caf in Resources */ = {isa = PBXBuildFile; fileRef = C08689C018D370C90093E810 /* background.caf */; };
 		C08689C318D370C90093E810 /* background.caf in Resources */ = {isa = PBXBuildFile; fileRef = C08689C018D370C90093E810 /* background.caf */; };
 		C08689C418D370C90093E810 /* background.caf in Resources */ = {isa = PBXBuildFile; fileRef = C08689C018D370C90093E810 /* background.caf */; };
+		D04E02CC1ABA1ED500FF08B1 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D04E02CB1ABA1ED500FF08B1 /* Metal.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D0FD03641A3B546400825BB5 /* AllocatorTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0FD03621A3B546400825BB5 /* AllocatorTest.cpp */; };
 		D0FD03651A3B546400825BB5 /* AllocatorTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0FD03621A3B546400825BB5 /* AllocatorTest.cpp */; };
 		EDCC747F17C455FD007B692C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDCC747E17C455FD007B692C /* IOKit.framework */; };
@@ -1677,6 +1678,7 @@
 		C04F93581941B05400E9FEAB /* TileMapTest2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TileMapTest2.cpp; sourceTree = "<group>"; };
 		C04F93591941B05400E9FEAB /* TileMapTest2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TileMapTest2.h; sourceTree = "<group>"; };
 		C08689C018D370C90093E810 /* background.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = background.caf; path = "../tests/cpp-tests/Resources/background.caf"; sourceTree = "<group>"; };
+		D04E02CB1ABA1ED500FF08B1 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/Metal.framework; sourceTree = DEVELOPER_DIR; };
 		D0FD03621A3B546400825BB5 /* AllocatorTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AllocatorTest.cpp; path = AllocatorTest/AllocatorTest.cpp; sourceTree = "<group>"; };
 		D0FD03631A3B546400825BB5 /* AllocatorTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AllocatorTest.h; path = AllocatorTest/AllocatorTest.h; sourceTree = "<group>"; };
 		D60AE43317F7FFE100757E4B /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreMotion.framework; sourceTree = DEVELOPER_DIR; };
@@ -1783,7 +1785,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59E170151AB42EB10007F2BF /* Security.framework in Frameworks */,
+				59E170151AB42EB10007F2BF /* (null) in Frameworks */,
 				15EFA273198B265A000C57D3 /* libluacocos2d Mac.a in Frameworks */,
 				1ABCA2C318CD92420087CE3A /* libcocos2d Mac.a in Frameworks */,
 				1ABCA36118CD9AC00087CE3A /* libz.dylib in Frameworks */,
@@ -1859,6 +1861,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D04E02CC1ABA1ED500FF08B1 /* Metal.framework in Frameworks */,
 				29AC14FA1A8C748D002DEB6D /* MediaPlayer.framework in Frameworks */,
 				29AC14F91A8C745D002DEB6D /* CoreMotion.framework in Frameworks */,
 				29AC14F81A8C7447002DEB6D /* AVFoundation.framework in Frameworks */,
@@ -3371,6 +3374,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D04E02CB1ABA1ED500FF08B1 /* Metal.framework */,
 				29AC14FF1A8C7C7D002DEB6D /* libjs_static.a */,
 				29AC14FD1A8C77B0002DEB6D /* libxxtea.a */,
 				29AC14F01A8C7404002DEB6D /* CoreFoundation.framework */,
