@@ -24,6 +24,7 @@
  ****************************************************************************/
 
 #include "CCGraphicsMetalViewController.h"
+#include "CCGraphicsMetal.h" // for CC_METAL_AVAILABLE
 
 #ifdef CC_METAL_AVAILABLE
 
@@ -33,35 +34,46 @@
 
 @implementation MetalViewController
 {
-    // layer
-    CAMetalLayer *_metalLayer;
-    id <CAMetalDrawable> _currentDrawable;
-    BOOL _layerSizeDidUpdate;
-    MTLRenderPassDescriptor *_renderPassDescriptor;
+    CAMetalLayer* _metalLayer;
     
-    // controller
-    CADisplayLink *_timer;
-    BOOL _gameLoopPaused;
-    dispatch_semaphore_t _inflight_semaphore;
-    id <MTLBuffer> _dynamicConstantBuffer;
-    uint8_t _constantDataBufferIndex;
-    
-    // renderer
     id <MTLDevice> _device;
     id <MTLCommandQueue> _commandQueue;
     id <MTLLibrary> _defaultLibrary;
-    id <MTLRenderPipelineState> _pipelineState;
-    id <MTLBuffer> _vertexBuffer;
-    id <MTLDepthStencilState> _depthState;
-    id <MTLTexture> _depthTex;
-    id <MTLTexture> _msaaTex;
-    
-    // uniforms
-    matrix_float4x4 _projectionMatrix;
-    matrix_float4x4 _viewMatrix;
-    //uniforms_t _uniform_buffer;
-    float _rotation;
 }
+
+- (void) setup
+{
+    // Find a usable device
+    _device = MTLCreateSystemDefaultDevice();
+    
+    // Create a new command queue
+    _commandQueue = [_device newCommandQueue];
+    
+    // Load all the shader files with a metal file extension in the project
+    //_defaultLibrary = [_device newDefaultLibrary];
+    
+    // Setup metal layer and add as sub layer to view
+    _metalLayer = [CAMetalLayer layer];
+    _metalLayer.device = _device;
+    _metalLayer.pixelFormat = MTLPixelFormatBGRA8Unorm;
+    
+    // Change this to NO if the compute encoder is used as the last pass on the drawable texture
+    _metalLayer.framebufferOnly = YES;
+    
+    // Add metal layer to the views layer hierarchy
+    [_metalLayer setFrame:self.view.layer.frame];
+    [self.view.layer addSublayer:_metalLayer];
+    
+    self.view.opaque = YES;
+    self.view.backgroundColor = nil;
+    self.view.contentScaleFactor = [UIScreen mainScreen].scale;
+}
+
+- (void) viewDidLayoutSubviews
+{
+    [_metalLayer setFrame:self.view.layer.frame];
+}
+
 @end
 
 #endif//CC_METAL_AVAILABLE

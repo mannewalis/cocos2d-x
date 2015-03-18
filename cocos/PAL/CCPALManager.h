@@ -57,21 +57,20 @@ public:
     template <class T>
     T* createObject(const char* impls[])
     {
-        auto range = _factories.equal_range(typeHash<T>());
-        for (auto it = range.first; it != range.second; ++it)
+        while (impls && *impls)
         {
-            auto& factory = it->second;
-            auto imp = *impls;
-            do
+            auto range = _factories.equal_range(typeHash<T>());
+            for (auto it = range.first; it != range.second; ++it)
             {
-                if (factory._impl == imp)
+                auto& factory = it->second;
+                if (factory._impl == *impls)
                 {
                     return static_cast<T*>(factory._constructor());
                 }
-                ++imp;
             }
-            while (imp);
+            ++impls;
         }
+
         return nullptr;
     }
     

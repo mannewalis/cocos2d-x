@@ -42,8 +42,7 @@
 
 #import "Metal/Metal.h"
 
-@class MTLDevice;
-@class MTLCommandQueue;
+@class MetalViewController;
 
 NS_PRIVATE_BEGIN
 
@@ -54,6 +53,7 @@ public:
     
     GraphicsMetal()
         : _handles(1000)
+        , _viewController(nullptr)
     {}
     
     static GraphicsInterface* create();
@@ -137,8 +137,7 @@ public:
 protected:
     
     Handles _handles;
-    id <MTLDevice> _mtlDevice;
-    id <MTLCommandQueue> _mtlCommandQueue;
+    MetalViewController* _viewController;
 };
 
 NS_PRIVATE_END

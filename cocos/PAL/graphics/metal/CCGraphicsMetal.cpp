@@ -26,8 +26,9 @@
 #include "CCGraphicsMetal.h"
 #include "CCGraphicsMetalVertexArray.h"
 #include "CCGraphicsMetalBuffer.h"
-#include "PAL/CCPALHandles.h"
-#include "PAL/CCPALManager.h"
+#include "CCGraphicsMetalViewController.h"
+//#include "PAL/CCPALHandles.h"
+//#include "PAL/CCPALManager.h"
 
 NS_PRIVATE_BEGIN
 void* __GraphicsMetal_factory()
@@ -58,18 +59,14 @@ GraphicsInterface* GraphicsMetal::create()
 
 void GraphicsMetal::shutdown()
 {
-    [_mtlCommandQueue release];
-    _mtlCommandQueue = nil;
-    
-    [_mtlDevice release];
-    _mtlDevice = nil;
+    [_viewController release];
 }
 
 bool GraphicsMetal::init()
 {
-    _mtlDevice = MTLCreateSystemDefaultDevice();
-    _mtlCommandQueue = [_mtlDevice newCommandQueue];
-    return _mtlDevice != nil && _mtlCommandQueue != nil;
+    _viewController = [MetalViewController new];
+    [_viewController setup];
+    return _viewController != nil;
 }
 
 // MARK: windows and views

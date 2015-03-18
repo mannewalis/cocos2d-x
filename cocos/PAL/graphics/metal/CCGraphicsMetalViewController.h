@@ -29,6 +29,7 @@
 #import "UIKit/UIViewController.h"
 
 @interface MetalViewController : UIViewController
+- (void) setup;
 @end
 
 #endif//_CC_GRAPHICS_METAL_VIEW_CONTROLLER_H_

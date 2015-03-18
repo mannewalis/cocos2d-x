@@ -1246,9 +1246,10 @@
 		D04E02C71AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D04E02C51AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.h */; };
 		D04E02C91ABA0CE400FF08B1 /* CCPALManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D04E02C81ABA0CE400FF08B1 /* CCPALManager.cpp */; };
 		D04E02CA1ABA0CE400FF08B1 /* CCPALManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D04E02C81ABA0CE400FF08B1 /* CCPALManager.cpp */; };
+		D04E02D31ABA3C8E00FF08B1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D04E02D21ABA3C8E00FF08B1 /* QuartzCore.framework */; };
+		D04E02D51ABA3CEF00FF08B1 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D04E02D41ABA3CEF00FF08B1 /* Metal.framework */; };
 		D07525EE1AAF576600830CD1 /* CCPALManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E21AAF576600830CD1 /* CCPALManager.h */; };
 		D07525EF1AAF576600830CD1 /* CCPALManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E21AAF576600830CD1 /* CCPALManager.h */; };
-		D07525F01AAF576600830CD1 /* CCGraphicsMetal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D07525E51AAF576600830CD1 /* CCGraphicsMetal.cpp */; };
 		D07525F11AAF576600830CD1 /* CCGraphicsMetal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D07525E51AAF576600830CD1 /* CCGraphicsMetal.cpp */; };
 		D07525F21AAF576600830CD1 /* CCGraphicsMetal.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E61AAF576600830CD1 /* CCGraphicsMetal.h */; };
 		D07525F31AAF576600830CD1 /* CCGraphicsMetal.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E61AAF576600830CD1 /* CCGraphicsMetal.h */; };
@@ -2010,6 +2011,8 @@
 		D04E02C41AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsMetalBuffer.cpp; sourceTree = "<group>"; };
 		D04E02C51AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsMetalBuffer.h; sourceTree = "<group>"; };
 		D04E02C81ABA0CE400FF08B1 /* CCPALManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCPALManager.cpp; sourceTree = "<group>"; };
+		D04E02D21ABA3C8E00FF08B1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
+		D04E02D41ABA3CEF00FF08B1 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/Metal.framework; sourceTree = DEVELOPER_DIR; };
 		D07525E21AAF576600830CD1 /* CCPALManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPALManager.h; sourceTree = "<group>"; };
 		D07525E51AAF576600830CD1 /* CCGraphicsMetal.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = CCGraphicsMetal.cpp; sourceTree = "<group>"; };
 		D07525E61AAF576600830CD1 /* CCGraphicsMetal.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = CCGraphicsMetal.h; sourceTree = "<group>"; };
@@ -2074,6 +2077,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D04E02D51ABA3CEF00FF08B1 /* Metal.framework in Frameworks */,
+				D04E02D31ABA3C8E00FF08B1 /* QuartzCore.framework in Frameworks */,
 				A07A4CAF1783777C0073F6A7 /* Foundation.framework in Frameworks */,
 				29AC14D81A8C5E75002DEB6D /* libchipmunk.a in Frameworks */,
 				29AC14D91A8C5E75002DEB6D /* libcjson.a in Frameworks */,
@@ -2143,6 +2148,8 @@
 		1551A341158F2AB200E66CFE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D04E02D41ABA3CEF00FF08B1 /* Metal.framework */,
+				D04E02D21ABA3C8E00FF08B1 /* QuartzCore.framework */,
 				29AC14C21A8C5E75002DEB6D /* libchipmunk.a */,
 				29AC14C31A8C5E75002DEB6D /* libcjson.a */,
 				29AC14C41A8C5E75002DEB6D /* libconvertutf.a */,
@@ -4193,7 +4200,6 @@
 				50ABBE711925AB6F00A911A9 /* CCEventListenerMouse.cpp in Sources */,
 				1A5701DE180BCB8C0088DEC7 /* CCLayer.cpp in Sources */,
 				15AE1B5919AADA9900C27E9E /* UIText.cpp in Sources */,
-				D07525F01AAF576600830CD1 /* CCGraphicsMetal.cpp in Sources */,
 				15B3707C19EE414C00ABE682 /* CCEventAssetsManagerEx.cpp in Sources */,
 				3EACC9A419F5014D00EB3C5E /* CCLight.cpp in Sources */,
 				1A5701E2180BCB8C0088DEC7 /* CCScene.cpp in Sources */,
