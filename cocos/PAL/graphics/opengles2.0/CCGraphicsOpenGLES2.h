@@ -34,6 +34,7 @@
 
 NS_CC_BEGIN
 class GLView;
+class Rect;
 NS_CC_END
 
 NS_PRIVATE_BEGIN
@@ -56,6 +57,19 @@ public:
     // @brief shuts down this interface.
     void shutdown();
     
+    //////////////////////////////////////////////////////////////////
+    // MARK: view and window                                        //
+    //////////////////////////////////////////////////////////////////
+
+    // @brief create window with a view and make current.
+    // optional size, if null then full screen window.
+    handle windowCreate(Rect* size);
+
+    
+    //////////////////////////////////////////////////////////////////
+    // MARK: vertex array                                           //
+    //////////////////////////////////////////////////////////////////
+
     // @brief creates a vertex array object.
     handle vertexArrayCreate(Primitive drawPrimitive);
     
@@ -78,6 +92,11 @@ public:
     void vertexArrayClear(handle object);
     bool vertexArrayIsDirty(handle object) const;
     void vertexArraySetDirty(handle object, bool dirty);
+
+    
+    //////////////////////////////////////////////////////////////////
+    // MARK: Vertex and Index buffers                               //
+    //////////////////////////////////////////////////////////////////
 
     handle bufferCreate(ssize_t size, ssize_t count, BufferMode mode, BufferIntent intent, BufferType type, bool zero);
     

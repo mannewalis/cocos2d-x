@@ -28,6 +28,7 @@
 
 #include "cocos2d.h"
 #include "PAL/CCPALMacros.h"
+#include "PAL/CCPALHandles.h"
 #include "PAL/interfaces/CCGraphicsInterface.h"
 
 NS_PRIVATE_BEGIN
@@ -35,43 +36,57 @@ NS_PRIVATE_BEGIN
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
 #    import "TargetConditionals.h"
 #    if !TARGET_IPHONE_SIMULATOR
-//#        define CC_METAL_AVAILABLE
+#        define CC_METAL_AVAILABLE
 #    endif // TARGET_IPHONE_SIMULATOR
 #endif // CC_PLATFORM_IOS
 
 #ifdef CC_METAL_AVAILABLE
-
-class GraphicsMetalViewController;
 
 class GraphicsMetal
     : public GraphicsInterface
 {
 public:
     
+    GraphicsMetal()
+        : _handles(1000)
+    {}
+    
     static GraphicsInterface* create();
     
     // @brief initialize the API
     bool init();
-
+    
     // @brief shuts down this interface.
     void shutdown();
     
+    //////////////////////////////////////////////////////////////////
+    // MARK: view and window                                        //
+    //////////////////////////////////////////////////////////////////
+    
+    // @brief create window with a view and make current.
+    // optional size, if null then full screen window.
+    handle windowCreate(Rect* size);
+    
+    
+    //////////////////////////////////////////////////////////////////
+    // MARK: vertex array                                           //
+    //////////////////////////////////////////////////////////////////
     
     // @brief creates a vertex array object.
     handle vertexArrayCreate(Primitive drawPrimitive);
     
-    // @brief delete a vertex array object.
-    bool vertexArrayDelete(handle object);
+    // @brief destroy a vertex array object.
+    void vertexArrayDestroy(handle object);
     
     // @brief specifies a vertex attribute.
     bool vertexArraySpecifyVertexAttribute(handle object, handle buffer, const VertexAttribute& attribute);
     
     // @brief removes a previously specified vertex attribute
-    void vertexArrayRemoveVertexAttribute(handle vao, int index);
-
+    void vertexArrayRemoveVertexAttribute(handle object, int index);
+    
     // @brief specifies an index buffer to use with a vertex array.
     bool vertexArraySpecifyIndexBuffer(handle object, handle buffer);
-
+    
     // @brief draws the vertex array.
     ssize_t vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);
     
@@ -81,10 +96,14 @@ public:
     void vertexArraySetDirty(handle object, bool dirty);
     
     
+    //////////////////////////////////////////////////////////////////
+    // MARK: Vertex and Index buffers                               //
+    //////////////////////////////////////////////////////////////////
+    
     handle bufferCreate(ssize_t size, ssize_t count, BufferMode mode, BufferIntent intent, BufferType type, bool zero);
     
     bool bufferDestroy(handle object);
-
+    
     // @brief returns the buffer element size.
     ssize_t bufferGetElementSize(handle object);
     
@@ -94,7 +113,7 @@ public:
     // @brief set all elements of a native buffer object.
     // if the buffer type has client memory and defer is true then commit happens at draw.
     void bufferSetElements(handle object, void* elements, ssize_t count, bool defer = true);
-
+    
     void* bufferGetElements(handle object);
     void bufferSetElementCount(handle object, ssize_t count);
     void bufferUpdateElements(handle object, const void* elements, ssize_t start, ssize_t count, bool defer);
@@ -106,13 +125,13 @@ public:
     void bufferAddCapacity(handle object, ssize_t count, bool zero);
     void bufferSwapElements(handle object, ssize_t source, ssize_t dest, ssize_t count);
     void bufferMoveElements(handle object, ssize_t source, ssize_t dest, ssize_t count);
-    
-    // HACK for backwards compatibility with MeshCommand
-    CC_DEPRECATED(v3) unsigned bufferGetNativeBO(handle object);
 
+    // HACK for backwards compatibility with MeshCommand
+    CC_DEPRECATED(v3) unsigned bufferGetNativeBO(handle object) {return 0;}
+    
 protected:
     
-    GraphicsMetalViewController* _controller;
+    Handles _handles;
 };
 
 #endif//CC_METAL_AVAILABLE

@@ -64,6 +64,15 @@ bool GraphicsOpenGLES20::init()
     return result;
 }
 
+// MARK: windows and views
+
+// @brief create window with a view and make current.
+// optional size, if null then full screen window.
+handle GraphicsOpenGLES20::windowCreate(Rect* size)
+{
+    return _view ? HANDLE_CREATE(_handles, _view) : HANDLE_INVALID;
+}
+
 // MARK: vertex array
 
 // @brief creates a vertex array object.

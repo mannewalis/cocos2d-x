@@ -23,43 +23,31 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _CC_GRAPHICS_OPENGLES2_VERTEX_ARRAY_
-#define _CC_GRAPHICS_OPENGLES2_VERTEX_ARRAY_
-
-#include <set>
+#ifndef _CC_GRAPHICS_METAL_VERTEX_BUFFER_H_
+#define _CC_GRAPHICS_METAL_VERTEX_BUFFER_H_
 
 #include "PAL/CCPALMacros.h"
 #include "PAL/CCPALTypes.h"
-#include "PAL/graphics/common/CCGraphicsVertexArray.h"
-#include "CCGraphicsOpenGLES2Buffer.h"
-
-// remove cocos2d-x dependencies
-#include "base/CCRef.h"
+#include "PAL/graphics/common/CCGraphicsAttributeBuffer.h"
 
 NS_PRIVATE_BEGIN
 
-class GraphicsOpenGLES2VertexArray
-    : public GraphicsVertexArray<GraphicsOpenGLES2VertexArray, GraphicsOpenGLES2Buffer>
+class GraphicsMetalBuffer
+: public GraphicsAttributeBuffer<GraphicsMetalBuffer>
 {
 public:
     
-    typedef GraphicsVertexArray<GraphicsOpenGLES2VertexArray, GraphicsOpenGLES2Buffer> super;
+    GraphicsMetalBuffer();
+    virtual ~GraphicsMetalBuffer();
     
-    GraphicsOpenGLES2VertexArray(Primitive drawPrimitive);
-    virtual ~GraphicsOpenGLES2VertexArray();
+    // MARK: traits
     
-    ssize_t draw(ssize_t start, ssize_t count);
+    void bindAndCommit(const void* elements, ssize_t start, ssize_t count);
+    void recreate() const;
     
-protected:
-        
-    unsigned _attributeDataTypeToGL(AttributeDataType type);
-    unsigned _glIndexType();
-
-protected:
-    
-    unsigned _vao;
+    unsigned getBO() const;
 };
 
 NS_PRIVATE_END
 
-#endif//_CC_GRAPHICS_OPENGLES2_VERTEX_ARRAY_
+#endif//_CC_GRAPHICS_METAL_VERTEX_BUFFER_H_

@@ -30,6 +30,10 @@
 #include "PAL/CCPALTypes.h"
 #include "base/CCRef.h"
 
+NS_CC_BEGIN
+class Rect;
+NS_CC_END
+
 NS_PRIVATE_BEGIN
 
 class GraphicsInterface
@@ -47,9 +51,17 @@ public:
     // All weak references and cached interfaces are invalidated.
     virtual void shutdown() = 0;
 
+    //////////////////////////////////////////////////////////////////
+    // MARK: view and window                                        //
+    //////////////////////////////////////////////////////////////////
+
+    // @brief create window with a view and make current.
+    // optional size, if null then full screen window.
+    virtual handle windowCreate(Rect* size) = 0;
     
     //////////////////////////////////////////////////////////////////
-    // MARK: vertex array
+    // MARK: vertex array                                           //
+    //////////////////////////////////////////////////////////////////
     
     // @brief creates a vertex array object.
     virtual handle vertexArrayCreate(Primitive drawPrimitive) = 0;
@@ -76,7 +88,8 @@ public:
     
     
     //////////////////////////////////////////////////////////////////
-    // MARK: Vertex and Index buffers
+    // MARK: Vertex and Index buffers                               //
+    //////////////////////////////////////////////////////////////////
     
     // @brief create a native buffer object for vertices/attributes/indices.
     virtual handle bufferCreate(ssize_t size, ssize_t count, BufferMode bufferMode, BufferIntent bufferIntent, BufferType bufferType, bool zero) = 0;

@@ -57,7 +57,7 @@ enum class AttributeDataType
 
 enum BufferType
 {
-    None    = 0,
+    None,
     Client  = (1<<0), // Maintains a client memory buffer to store elements.
     Native  = (1<<2), // Maintains a native buffer to store elements.
     Default = Native,

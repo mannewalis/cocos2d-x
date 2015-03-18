@@ -23,43 +23,27 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _CC_GRAPHICS_OPENGLES2_VERTEX_ARRAY_
-#define _CC_GRAPHICS_OPENGLES2_VERTEX_ARRAY_
-
-#include <set>
-
-#include "PAL/CCPALMacros.h"
-#include "PAL/CCPALTypes.h"
-#include "PAL/graphics/common/CCGraphicsVertexArray.h"
-#include "CCGraphicsOpenGLES2Buffer.h"
-
-// remove cocos2d-x dependencies
-#include "base/CCRef.h"
+#include "CCGraphicsMetalBuffer.h"
 
 NS_PRIVATE_BEGIN
 
-class GraphicsOpenGLES2VertexArray
-    : public GraphicsVertexArray<GraphicsOpenGLES2VertexArray, GraphicsOpenGLES2Buffer>
-{
-public:
-    
-    typedef GraphicsVertexArray<GraphicsOpenGLES2VertexArray, GraphicsOpenGLES2Buffer> super;
-    
-    GraphicsOpenGLES2VertexArray(Primitive drawPrimitive);
-    virtual ~GraphicsOpenGLES2VertexArray();
-    
-    ssize_t draw(ssize_t start, ssize_t count);
-    
-protected:
-        
-    unsigned _attributeDataTypeToGL(AttributeDataType type);
-    unsigned _glIndexType();
+GraphicsMetalBuffer::GraphicsMetalBuffer()
+{}
 
-protected:
+GraphicsMetalBuffer::~GraphicsMetalBuffer()
+{}
     
-    unsigned _vao;
-};
+void GraphicsMetalBuffer::bindAndCommit(const void* elements, ssize_t start, ssize_t count)
+{}
+
+void GraphicsMetalBuffer::recreate() const
+{}
+
+unsigned GraphicsMetalBuffer::getBO() const
+{
+    return 0;
+}
 
 NS_PRIVATE_END
 
-#endif//_CC_GRAPHICS_OPENGLES2_VERTEX_ARRAY_
+
