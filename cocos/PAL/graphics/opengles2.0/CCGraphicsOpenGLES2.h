@@ -39,12 +39,12 @@ NS_CC_END
 
 NS_PRIVATE_BEGIN
 
-class GraphicsOpenGLES20
+class GraphicsOpenGLES2
     : public GraphicsInterface
 {
 public:
     
-    GraphicsOpenGLES20()
+    GraphicsOpenGLES2()
         : _handles(1000)
         , _view(nullptr)
     {}

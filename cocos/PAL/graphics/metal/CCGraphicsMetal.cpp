@@ -29,6 +29,17 @@
 #include "PAL/CCPALHandles.h"
 #include "PAL/CCPALManager.h"
 
+NS_PRIVATE_BEGIN
+void* __GraphicsMetal_factory()
+{
+#ifdef CC_METAL_AVAILABLE
+    return cls::create();
+#else
+    return nullptr;
+#endif
+}
+NS_PRIVATE_END
+
 #ifdef CC_METAL_AVAILABLE
 
 NS_PRIVATE_BEGIN

@@ -1244,6 +1244,8 @@
 		D04E02C31AB9EA2700FF08B1 /* CCGraphicsMetalVertexArray.h in Headers */ = {isa = PBXBuildFile; fileRef = D04E02C11AB9EA2700FF08B1 /* CCGraphicsMetalVertexArray.h */; };
 		D04E02C61AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D04E02C41AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.cpp */; };
 		D04E02C71AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = D04E02C51AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.h */; };
+		D04E02C91ABA0CE400FF08B1 /* CCPALManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D04E02C81ABA0CE400FF08B1 /* CCPALManager.cpp */; };
+		D04E02CA1ABA0CE400FF08B1 /* CCPALManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D04E02C81ABA0CE400FF08B1 /* CCPALManager.cpp */; };
 		D07525EE1AAF576600830CD1 /* CCPALManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E21AAF576600830CD1 /* CCPALManager.h */; };
 		D07525EF1AAF576600830CD1 /* CCPALManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D07525E21AAF576600830CD1 /* CCPALManager.h */; };
 		D07525F01AAF576600830CD1 /* CCGraphicsMetal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D07525E51AAF576600830CD1 /* CCGraphicsMetal.cpp */; };
@@ -2007,6 +2009,7 @@
 		D04E02C11AB9EA2700FF08B1 /* CCGraphicsMetalVertexArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsMetalVertexArray.h; sourceTree = "<group>"; };
 		D04E02C41AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsMetalBuffer.cpp; sourceTree = "<group>"; };
 		D04E02C51AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsMetalBuffer.h; sourceTree = "<group>"; };
+		D04E02C81ABA0CE400FF08B1 /* CCPALManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCPALManager.cpp; sourceTree = "<group>"; };
 		D07525E21AAF576600830CD1 /* CCPALManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPALManager.h; sourceTree = "<group>"; };
 		D07525E51AAF576600830CD1 /* CCGraphicsMetal.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = CCGraphicsMetal.cpp; sourceTree = "<group>"; };
 		D07525E61AAF576600830CD1 /* CCGraphicsMetal.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = CCGraphicsMetal.h; sourceTree = "<group>"; };
@@ -3231,6 +3234,7 @@
 				D00FBB641AAFB0C300196C41 /* CCPAL.h */,
 				D00FBB6C1AAFB2A900196C41 /* CCPALMacros.h */,
 				D00FBB6F1AAFC17700196C41 /* CCPALTypes.h */,
+				D04E02C81ABA0CE400FF08B1 /* CCPALManager.cpp */,
 				D07525E21AAF576600830CD1 /* CCPALManager.h */,
 				D00FBB7C1AB2195000196C41 /* CCPALHandles.h */,
 				D07525EA1AAF576600830CD1 /* interfaces */,
@@ -4165,6 +4169,7 @@
 				15AE1BD419AAE01E00C27E9E /* CCControlSaturationBrightnessPicker.cpp in Sources */,
 				38B8E2E119E671D2002D7CE7 /* UILayoutComponent.cpp in Sources */,
 				1A57019D180BCB590088DEC7 /* CCFont.cpp in Sources */,
+				D04E02C91ABA0CE400FF08B1 /* CCPALManager.cpp in Sources */,
 				50CB247B19D9C5A100687767 /* AudioEngine-inl.mm in Sources */,
 				1A5701A1180BCB590088DEC7 /* CCFontAtlas.cpp in Sources */,
 				1A5701A5180BCB590088DEC7 /* CCFontAtlasCache.cpp in Sources */,
@@ -4424,6 +4429,7 @@
 				15AE1B7E19AADA9A00C27E9E /* UIText.cpp in Sources */,
 				296F18781A9EC399000C7D83 /* CCScissorCommand.cpp in Sources */,
 				50ABBD551925AB0000A911A9 /* TransformUtils.cpp in Sources */,
+				D04E02CA1ABA0CE400FF08B1 /* CCPALManager.cpp in Sources */,
 				292DB14419B4574100A80320 /* UIEditBoxImpl-android.cpp in Sources */,
 				1A57007A180BC5A10088DEC7 /* CCActionInstant.cpp in Sources */,
 				15AE1BEC19AAE01E00C27E9E /* CCControlColourPicker.cpp in Sources */,

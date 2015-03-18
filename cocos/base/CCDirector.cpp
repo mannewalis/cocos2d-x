@@ -172,9 +172,9 @@ bool Director::init(void)
     _PALManager = PALManager::create();
     _PALManager->retain();
     
-    const char* apis[] = {"opengles2.0", nullptr};
-    _graphicsInterface = _PALManager->createObject<GraphicsInterface>(apis);
-    _graphicsInterface->retain();
+    _graphicsInterface = _PALManager->createObject<GraphicsInterface>((const char*[]){"metal", "opengles2", nullptr});
+    if (_graphicsInterface)
+        _graphicsInterface->retain();
     
     //init TextureCache
     initTextureCache();

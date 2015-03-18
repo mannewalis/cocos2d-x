@@ -1,6 +1,6 @@
 
 /****************************************************************************
- Copyright (c) 2013-2015 Chukong Technologies Inc.
+ Copyright (c) 2013-2014 Chukong Technologies Inc.
  
  http://www.cocos2d-x.org
  
@@ -23,45 +23,22 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _CC_PAL_MACROS_H_
-#define _CC_PAL_MACROS_H_
+#include "CCPALManager.h"
+#include "interfaces/CCGraphicsInterface.h"
 
-#include "assert.h"
+NS_PRIVATE_BEGIN
 
-// namespace _private {}
-#ifdef __cplusplus
-    #define NS_PRIVATE_BEGIN  namespace cocos2d { namespace _private {
-    #define NS_PRIVATE_END    }}
-    #define USING_NS_PRIVATE  using namespace cocos2d::_private
-    #define NS_PRIVATE        ::cocos2d::_private
-#else
-    #define NS_PRIVATE_BEGIN
-    #define NS_PRIVATE_END
-    #define USING_NS_PRIVATE
-    #define NS_PRIVATE
-#endif
-
-#define PAL_SAFE_RELEASE_NULL(x) { if (x) { x->release(); x = nullptr; } } 
-
-#define PAL_ASSERT(cond, ...) assert(cond)
-
-#define HANDLE_INVALID 0
-
-#define PAL_DECLARE_SINGLETON(T) \
-    static T* getInstance() \
+void PALManager::registerFactories()
+{
+#define REGISTER_FACTORY(api, name, cls) \
     { \
-        static T* __singleton_instance__ = nullptr; \
-        if (!__singleton_instance__) \
-            __singleton_instance__ = new (std::nothrow) T; \
-        return __singleton_instance__; \
+        extern void* __##cls##_factory(); \
+        auto fact = tConstructor{__##cls##_factory}; \
+        registerFactory<api>(#name, fact); \
     }
+    
+    REGISTER_FACTORY(GraphicsInterface, opengles2, GraphicsOpenGLES2);
+    REGISTER_FACTORY(GraphicsInterface, metal,     GraphicsMetal);
+}
 
-#define PAL_DECLARE_FACTORY(cls) \
-    void* __##cls##_factory() \
-    { \
-        return cls::create(); \
-    }
-
-#endif//_CC_PAL_MACROS_H_
-
-
+NS_PRIVATE_END

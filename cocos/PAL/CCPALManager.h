@@ -38,8 +38,6 @@ public:
     
     PAL_DECLARE_SINGLETON(PALManager);
     
-    using tConstructor = std::function<void*()>;
-
     virtual ~PALManager() {}
     
     template <class T = PALManager>
@@ -48,18 +46,12 @@ public:
         auto result = new (std::nothrow) T;
         if (result)
         {
+            result->registerFactories();
             result->autorelease();
             return result;
         }
         delete result;
         return nullptr;
-    }
-    
-    template <class T>
-    void registerFactory(const char* impl, tConstructor constructor)
-    {
-        auto fact = tFactoryType{constructor, impl};
-        _factories.insert(tRegisteredFactories::value_type(typeHash<T>(), fact));
     }
     
     template <class T>
@@ -74,8 +66,7 @@ public:
             {
                 if (factory._impl == imp)
                 {
-                    auto instance = static_cast<T*>(factory._constructor());
-                    return instance;
+                    return static_cast<T*>(factory._constructor());
                 }
                 ++imp;
             }
@@ -86,6 +77,8 @@ public:
     
 protected:
     
+    void registerFactories();
+
     template <class T>
     const char* typeName() const
     {
@@ -97,6 +90,16 @@ protected:
     {
         auto hash = std::hash<std::string>();
         return size_t{hash(typeName<T>())};
+    }
+    
+    using tConstructor = std::function<void*()>;
+
+    template <class T>
+    void registerFactory(const char* impl, tConstructor constructor)
+    {
+        auto fact = tFactoryType{constructor, impl};
+        _factories.insert(tRegisteredFactories::value_type(typeHash<T>(), fact));
+        printf("registered factory for API key %lx -> %s\n", typeHash<T>(), impl);
     }
     
 protected:
