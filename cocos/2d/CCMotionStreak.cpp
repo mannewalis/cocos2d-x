@@ -133,10 +133,10 @@ bool MotionStreak::initWithFade(float fade, float minSeg, float stroke, const Co
     _texCoords = (Tex2F*)malloc(sizeof(Tex2F) * _maxPoints * 2);
     _colorPointer =  (uint8_t*)malloc(sizeof(uint8_t) * _maxPoints * 2 * 4);
 
-    _vd = VertexData::create(VertexData::Primitive::TriangleStrip);
-    _vbPosition = VertexBuffer::create(sizeof(Vec2),    2 * _maxPoints, VertexBuffer::ArrayType::Native, VertexBuffer::ArrayMode::Dynamic);
-    _vbColor    = VertexBuffer::create(sizeof(Color4B), 2 * _maxPoints, VertexBuffer::ArrayType::Native, VertexBuffer::ArrayMode::Dynamic);
-    _vbTexel    = VertexBuffer::create(sizeof(Tex2F),   2 * _maxPoints, VertexBuffer::ArrayType::Native, VertexBuffer::ArrayMode::Dynamic);
+    _vd = VertexData::create(Primitive::TriangleStrip);
+    _vbPosition = VertexBuffer::create(sizeof(Vec2),    2 * _maxPoints, BufferType::Native, BufferMode::Dynamic);
+    _vbColor    = VertexBuffer::create(sizeof(Color4B), 2 * _maxPoints, BufferType::Native, BufferMode::Dynamic);
+    _vbTexel    = VertexBuffer::create(sizeof(Tex2F),   2 * _maxPoints, BufferType::Native, BufferMode::Dynamic);
     _vd->addStream(_vbPosition, {0, GLProgram::VERTEX_ATTRIB_POSITION,  DataType::Float, 2});
     _vd->addStream(_vbColor,    {0, GLProgram::VERTEX_ATTRIB_COLOR,     DataType::UByte, 4, true});
     _vd->addStream(_vbTexel,    {0, GLProgram::VERTEX_ATTRIB_TEX_COORD, DataType::Float, 2});

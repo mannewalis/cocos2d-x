@@ -35,7 +35,7 @@ NS_PRIVATE_BEGIN
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
 #    import "TargetConditionals.h"
 #    if !TARGET_IPHONE_SIMULATOR
-#        define CC_METAL_AVAILABLE
+//#        define CC_METAL_AVAILABLE
 #    endif // TARGET_IPHONE_SIMULATOR
 #endif // CC_PLATFORM_IOS
 
@@ -56,6 +56,7 @@ public:
     // @brief shuts down this interface.
     void shutdown();
     
+    
     // @brief creates a vertex array object.
     handle vertexArrayCreate(Primitive drawPrimitive);
     
@@ -63,7 +64,7 @@ public:
     bool vertexArrayDelete(handle object);
     
     // @brief specifies a vertex attribute.
-    bool vertexArraySpecifyVertexAttribute(handle object, handle buffer, int index, ssize_t offset, AttributeDataType type, ssize_t count, bool normalized);
+    bool vertexArraySpecifyVertexAttribute(handle object, handle buffer, const VertexAttribute& attribute);
     
     // @brief removes a previously specified vertex attribute
     void vertexArrayRemoveVertexAttribute(handle vao, int index);
@@ -71,24 +72,40 @@ public:
     // @brief specifies an index buffer to use with a vertex array.
     bool vertexArraySpecifyIndexBuffer(handle object, handle buffer);
 
-    // @brief stage client side geometry that is to be copied to native buffers when drawn.
-    // this is better than bufferCommitElements because it doesn't have to bind the buffer twice,
-    // but the elements need to live unmodified until vertexArrayDrawElements is called.
-    // works with vertex and index buffers. Overlapping ranges will be copied multiple times.
-    void vertexArrayStageElements(handle vao, handle buffer, void* elements, ssize_t start, ssize_t count);
-
     // @brief draws the vertex array.
-    void vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);
+    ssize_t vertexArrayDrawElements(handle object, ssize_t start, ssize_t count);
     
-    handle bufferCreate(ssize_t size, ssize_t count, BufferMode bufferMode, BufferIntent bufferIntent, bool zero);
+    bool vertexArrayIsEmpty(handle object) const;
+    void vertexArrayClear(handle object);
+    bool vertexArrayIsDirty(handle object) const;
+    void vertexArraySetDirty(handle object, bool dirty);
+    
+    
+    handle bufferCreate(ssize_t size, ssize_t count, BufferMode mode, BufferIntent intent, BufferType type, bool zero);
     
     bool bufferDestroy(handle object);
-    
-    // @brief gain access to the element buffer.
-    // if none exists, then one will be allocated. if present, commit elements copies into this buffer.
-    virtual void* bufferMapElements(handle object) = 0;
 
-    bool bufferCommitElements(handle object, void*, ssize_t start, ssize_t count);
+    // @brief returns the buffer element size.
+    ssize_t bufferGetElementSize(handle object);
+    
+    // @brief returns the buffer element count.
+    ssize_t bufferGetElementCount(handle object);
+    
+    // @brief set all elements of a native buffer object.
+    // if the buffer type has client memory and defer is true then commit happens at draw.
+    void bufferSetElements(handle object, void* elements, ssize_t count, bool defer = true);
+
+    void* bufferGetElements(handle object);
+    void bufferSetElementCount(handle object, ssize_t count);
+    void bufferUpdateElements(handle object, const void* elements, ssize_t start, ssize_t count, bool defer);
+    ssize_t bufferGetCapacity(handle object);
+    void bufferSetDirty(handle object, bool dirty);
+    void bufferAppendElements(handle object, const void* elements, ssize_t count, bool defer);
+    void bufferInsertElements(handle object, const void* elements, ssize_t start, ssize_t count, bool defer);
+    void bufferRemoveElements(handle object, ssize_t start, ssize_t count, bool defer);
+    void bufferAddCapacity(handle object, ssize_t count, bool zero);
+    void bufferSwapElements(handle object, ssize_t source, ssize_t dest, ssize_t count);
+    void bufferMoveElements(handle object, ssize_t source, ssize_t dest, ssize_t count);
     
     // HACK for backwards compatibility with MeshCommand
     CC_DEPRECATED(v3) unsigned bufferGetNativeBO(handle object);

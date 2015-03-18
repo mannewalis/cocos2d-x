@@ -42,8 +42,8 @@ public:
 
     // MARK: traits
 
-    void* mapElements();
-    bool commitElements(const void* elements, ssize_t start, ssize_t count);
+    void bindAndCommit(const void* elements, ssize_t start, ssize_t count);
+    void recreate() const;
 
     unsigned getBO() const;
 

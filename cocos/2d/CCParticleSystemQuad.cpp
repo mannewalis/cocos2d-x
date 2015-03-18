@@ -264,9 +264,9 @@ void ParticleSystemQuad::setupVertices(size_t count)
     CC_SAFE_RELEASE_NULL(_vbParticles);
     CC_SAFE_RELEASE_NULL(_ibParticles);
 
-    _vdParticles = VertexData::create(VertexData::Primitive::Triangles);
-    _vbParticles = VertexBuffer::create(sizeof(V3F_C4B_T2F), 4 * count, VertexBuffer::ArrayType::All, VertexBuffer::ArrayMode::Dynamic, true);
-    _ibParticles = IndexBuffer::create(IndexBuffer::IndexType::INDEX_TYPE_SHORT_16, 6 * count, IndexBuffer::ArrayType::All, VertexBuffer::ArrayMode::LongLived, true);
+    _vdParticles = VertexData::create(Primitive::Triangles);
+    _vbParticles = VertexBuffer::create(sizeof(V3F_C4B_T2F), 4 * count, BufferType::All, BufferMode::Dynamic, true);
+    _ibParticles = IndexBuffer::create(BufferIntent::IndexData16, 6 * count, BufferType::All, BufferMode::LongLived, true);
     _vdParticles->setIndexBuffer(_ibParticles);
     
     _vdParticles->addStream(_vbParticles, VertexAttribute(offsetof(V3F_C4B_T2F, vertices),  GLProgram::VERTEX_ATTRIB_POSITION,  DataType::Float, 3));

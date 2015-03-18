@@ -96,7 +96,7 @@ V3F_C4B_T2F_Quad* TextureAtlas::getQuads()
 
 void TextureAtlas::setQuads(V3F_C4B_T2F_Quad* quads)
 {
-    _vbAtlas->updateElementsOfType<V3F_C4B_T2F_Quad>(quads, _quadCount, 0);
+    _vbAtlas->updateElementsOfType<V3F_C4B_T2F_Quad>(quads, 0, _quadCount);
 }
 
 // TextureAtlas - alloc & init
@@ -145,9 +145,9 @@ bool TextureAtlas::initWithTexture(Texture2D *texture, size_t capacity)
 {
     CCASSERT(capacity >= 0, "Capacity must be >= 0");
     
-    _vdAtlas = VertexData::create(VertexData::Primitive::Triangles);
-    _vbAtlas = VertexBuffer::create(sizeof(V3F_C4B_T2F), 4 * capacity, VertexBuffer::ArrayType::All, VertexBuffer::ArrayMode::Dynamic);
-    _ibAtlas = IndexBuffer::create(IndexBuffer::IndexType::INDEX_TYPE_SHORT_16, 6 * capacity, IndexBuffer::ArrayType::All);
+    _vdAtlas = VertexData::create(Primitive::Triangles);
+    _vbAtlas = VertexBuffer::create(sizeof(V3F_C4B_T2F), 4 * capacity, BufferType::All, BufferMode::Dynamic);
+    _ibAtlas = IndexBuffer::create(BufferIntent::IndexData16, 6 * capacity, BufferType::All, BufferMode::LongLived);
     _vdAtlas->setIndexBuffer(_ibAtlas);
 
     _vdAtlas->addStream(_vbAtlas, VertexAttribute(offsetof(V3F_C4B_T2F, vertices),  GLProgram::VERTEX_ATTRIB_POSITION,  DataType::Float, 3));
@@ -200,19 +200,19 @@ void TextureAtlas::setupIndices(size_t count, size_t begin)
 void TextureAtlas::updateQuad(V3F_C4B_T2F_Quad *quad, size_t index)
 {
     _quadCount = std::max(index + 1, _quadCount);
-    _vbAtlas->updateElementsOfType<V3F_C4B_T2F_Quad>(quad, 1, index);
+    _vbAtlas->updateElementsOfType<V3F_C4B_T2F_Quad>(quad, index, 1);
 }
 
 void TextureAtlas::insertQuad(V3F_C4B_T2F_Quad *quad, size_t index)
 {
     ++_quadCount;
-    _vbAtlas->insertElementsOfType<V3F_C4B_T2F_Quad>(quad, 1, index);
+    _vbAtlas->insertElementsOfType<V3F_C4B_T2F_Quad>(quad, index, 1);
 }
 
 void TextureAtlas::insertQuads(V3F_C4B_T2F_Quad* quads, size_t index, size_t amount)
 {
     _quadCount += amount;
-    _vbAtlas->insertElementsOfType<V3F_C4B_T2F_Quad>(quads, amount, index);
+    _vbAtlas->insertElementsOfType<V3F_C4B_T2F_Quad>(quads, index, amount);
 }
 
 void TextureAtlas::insertQuadFromIndex(size_t oldIndex, size_t newIndex)
@@ -223,13 +223,13 @@ void TextureAtlas::insertQuadFromIndex(size_t oldIndex, size_t newIndex)
 void TextureAtlas::removeQuadAtIndex(size_t index)
 {
     --_quadCount;
-    _vbAtlas->removeElementsOfType<V3F_C4B_T2F_Quad>(1, index);
+    _vbAtlas->removeElementsOfType<V3F_C4B_T2F_Quad>(index, 1);
 }
 
 void TextureAtlas::removeQuadsAtIndex(size_t index, size_t amount)
 {
     _quadCount -= amount;
-    _vbAtlas->removeElementsOfType<V3F_C4B_T2F_Quad>(amount, index);
+    _vbAtlas->removeElementsOfType<V3F_C4B_T2F_Quad>(index, amount);
 }
 
 void TextureAtlas::removeAllQuads()
@@ -275,7 +275,7 @@ void TextureAtlas::moveQuadsFromIndex(size_t index, size_t newIndex)
 
 void TextureAtlas::fillWithEmptyQuadsFromIndex(size_t index, size_t amount)
 {
-    _vbAtlas->updateElementsOfType<V3F_C4B_T2F_Quad>(nullptr, amount, index);
+    _vbAtlas->updateElementsOfType<V3F_C4B_T2F_Quad>(nullptr, index, amount);
 }
 
 // TextureAtlas - Drawing

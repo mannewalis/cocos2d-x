@@ -51,7 +51,7 @@ public:
     GraphicsOpenGLES2VertexArray(Primitive drawPrimitive);
     virtual ~GraphicsOpenGLES2VertexArray();
     
-    void drawElements(ssize_t start, ssize_t count);
+    ssize_t draw(ssize_t start, ssize_t count);
     
 protected:
         

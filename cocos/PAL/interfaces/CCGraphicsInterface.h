@@ -58,7 +58,7 @@ public:
     virtual void vertexArrayDestroy(handle vao) = 0;
         
     // @brief specifies a vertex attribute.
-    virtual bool vertexArraySpecifyVertexAttribute(handle vao, handle buffer, int index, ssize_t offset, AttributeDataType type, ssize_t count, bool normalized) = 0;
+    virtual bool vertexArraySpecifyVertexAttribute(handle vao, handle buffer, const VertexAttribute& attribute) = 0;
     
     // @brief removes a previously specified vertex attribute
     virtual void vertexArrayRemoveVertexAttribute(handle vao, int index) = 0;
@@ -66,31 +66,45 @@ public:
     // @brief specifies an index buffer to use with a vertex array.
     virtual bool vertexArraySpecifyIndexBuffer(handle vao, handle buffer) = 0;
     
-    // @brief stage client side geometry that is to be copied to native buffers when drawn.
-    // this is better than bufferCommitElements because it doesn't have to bind the buffer twice,
-    // but the elements need to live unmodified until vertexArrayDrawElements is called.
-    // works with vertex and index buffers. Overlapping ranges will be copied multiple times.
-    virtual void vertexArrayStageElements(handle vao, handle buffer, void* elements, ssize_t start, ssize_t count) = 0;
-    
     // @brief draws the vertex array.
-    virtual void vertexArrayDrawElements(handle object, ssize_t start, ssize_t count) = 0;
-
+    virtual ssize_t vertexArrayDrawElements(handle object, ssize_t start, ssize_t count) = 0;
+    
+    virtual bool vertexArrayIsEmpty(handle object) const = 0;
+    virtual void vertexArrayClear(handle object) = 0;
+    virtual bool vertexArrayIsDirty(handle object) const = 0;
+    virtual void vertexArraySetDirty(handle object, bool dirty) = 0;
+    
     
     //////////////////////////////////////////////////////////////////
     // MARK: Vertex and Index buffers
     
     // @brief create a native buffer object for vertices/attributes/indices.
-    virtual handle bufferCreate(ssize_t size, ssize_t count, BufferMode bufferMode, BufferIntent bufferIntent, bool zero) = 0;
+    virtual handle bufferCreate(ssize_t size, ssize_t count, BufferMode bufferMode, BufferIntent bufferIntent, BufferType bufferType, bool zero) = 0;
     
     // @brief destroy a native buffer object.
     virtual bool bufferDestroy(handle object) = 0;
     
-    // @brief gain access to the element buffer.
-    // if none exists, then one will be allocated. if present, commit elements copies into this buffer.
-    virtual void* bufferMapElements(handle object) = 0;
-    
-    // @brief commit elements from a client array to a native buffer object.
-    virtual bool bufferCommitElements(handle object, const void* elements, ssize_t start, ssize_t count) = 0;
+    // @brief returns the buffer element size.
+    virtual ssize_t bufferGetElementSize(handle object) = 0;
+
+    // @brief returns the buffer element count.
+    virtual ssize_t bufferGetElementCount(handle object) = 0;
+
+    // @brief set all elements of a native buffer object.
+    // if the buffer type has client memory and defer is true then commit happens at draw.
+    virtual void bufferSetElements(handle object, void* elements, ssize_t count, bool defer) = 0;
+
+    virtual void* bufferGetElements(handle object) = 0;
+    virtual void bufferSetElementCount(handle object, ssize_t count) = 0;
+    virtual void bufferUpdateElements(handle object, const void* elements, ssize_t start, ssize_t count, bool defer) = 0;
+    virtual ssize_t bufferGetCapacity(handle object) = 0;
+    virtual void bufferSetDirty(handle object, bool dirty) = 0;
+    virtual void bufferAppendElements(handle object, const void* elements, ssize_t count, bool defer) = 0;
+    virtual void bufferInsertElements(handle object, const void* elements, ssize_t start, ssize_t count, bool defer) = 0;
+    virtual void bufferRemoveElements(handle object, ssize_t start, ssize_t count, bool defer) = 0;
+    virtual void bufferAddCapacity(handle object, ssize_t count, bool zero) = 0;
+    virtual void bufferSwapElements(handle object, ssize_t source, ssize_t dest, ssize_t count) = 0;
+    virtual void bufferMoveElements(handle object, ssize_t source, ssize_t dest, ssize_t count) = 0;
     
     // HACK for backwards compatibility with MeshCommand
     CC_DEPRECATED(v3) virtual unsigned bufferGetNativeBO(handle object) = 0;

@@ -28,175 +28,87 @@
 
 #include "base/ccMacros.h"
 #include "base/CCRef.h"
+#include "base/CCDirector.h"
 #include "PAL/interfaces/CCGraphicsInterface.h"
 
 NS_CC_BEGIN
 
-class EventListenerCustom;
-class VertexData;
+using BufferIntent = NS_PRIVATE::BufferIntent;
+using BufferMode   = NS_PRIVATE::BufferMode;
+using BufferType   = NS_PRIVATE::BufferType;
 
-// @brief OpenGL buffer for vertices or indices or anything that you can get
-//        from the GL API that is in array format.
-//        - copying of the data to a client memory buffer which can be retrieved
-//          or used to rebuild the GL buffer is cases where they are transient.
-//        - optional use of vao with vbo if supported.
-//        - handles cases where client buffers are not supported, i.e. Emscripten.
-//        - copies to GL buffer from client memory on demand.
-//        - can transform into another ElementArrayBuffer on demand.
-//        - knows how to draw itself.
-class CC_DLL ElementArrayBuffer
+class BufferBase
     : public Ref
 {
 public:
-    
-    enum ArrayType
+
+    #define CALL(proc, ...) Director::getInstance()->getGraphicsInterface()->proc(__VA_ARGS__)
+
+    virtual ~BufferBase()
     {
-        Invalid = -1,
-        Client  = (1<<0), // Maintains a Client memory buffer to store elements.
-        Native  = (1<<2), // Maintains a Native buffer to store elements.
-        Default = Native,
-        All     = Client | Native
-    };
-    
-    enum class ArrayMode
-    {
-        Invalid = -1,
-        Immutable,
-        LongLived,
-        Dynamic   
-    };
-    
-    enum class ArrayIntent
-    {
-        Invalid = -1,
-        VertexData,
-        IndexData16,
-        IndexData32
-    };
-    
-    virtual ~ElementArrayBuffer();
-
-    // @brief sets all the elements of the client and native buffer.
-    //        element count is updated to reflect the new count.
-    //        if defer is true, then the native buffer will not be updated.
-    void setElements(const void* elements, ssize_t count, bool defer = true);
-
-    // @brief updates a region of the client and native buffer
-    //        if defer is true, then the native buffer will not be updated.
-    void updateElements(const void* elements, ssize_t start, ssize_t count = 0, bool defer = true);
-    
-    // @brief inserts elements into the client and native buffer.
-    //        if defer is true, then the native buffer will not be updated.
-    void insertElements(const void* elements, ssize_t start, ssize_t count, bool defer = true);
-
-    // @brief appends elements into the client and native buffer.
-    //        if defer is true, then the native buffer will not be updated.
-    void appendElements(const void* elements, ssize_t count, bool defer = true);
-
-    // @brief removes elements from the client and native buffer.
-    //        if defer is true, then the native buffer is not updated.
-    void removeElements(ssize_t start, ssize_t count, bool defer = true);
-    
-    // @brief increases the capacity of the buffer by count elements
-    //        optionally zeroes out the elements.
-    void addCapacity(ssize_t count, bool zero = false);
-    
-    // @brief swaps elements in the buffer without resizing the buffer
-    //        if defer is true, then the native buffer is not updated.
-    void swapElements(ssize_t source, ssize_t dest, ssize_t count);
-
-    // @brief moves elements in the buffer to the dest index.
-    //        if defer is true, then the native buffer is not updated.
-    void moveElements(ssize_t source, ssize_t dest, ssize_t count);
-
-    ssize_t getSize() const
-    {
-        return getElementCount() * getElementSize();
+        CALL(bufferDestroy, _bo);
     }
     
-    ssize_t getCapacityInBytes() const
+    CC_DEPRECATED(v3) unsigned getVBO() const
     {
-        return getCapacity() * getElementSize();
-    }
-    
-    CC_DEPRECATED(v3) uint32_t getVBO() const;
-    
-    NS_PRIVATE::handle getBO() const;
-    
-    // @brief access the element buffer directly.
-    void* getElements();
-    
-    void setElementCount(ssize_t count)
-    {
-        CCASSERT(count <= _capacity, "element count cannot exceed capacity");
-        if (count != _elementCount)
-        {
-            _elementCount = count;
-            setDirty(true);
-        }
-    }
-    
-    ssize_t getElementCount() const
-    {
-        return _elementCount;
+        return CALL(bufferGetNativeBO, _bo);
     }
     
     ssize_t getElementSize() const
     {
-        return _elementSize;
+        return CALL(bufferGetElementSize, _bo);
+    }
+
+    void setElementCount(ssize_t count)
+    {
+        CALL(bufferSetElementCount, _bo, count);
+    }
+    
+    ssize_t getElementCount() const
+    {
+        return CALL(bufferGetElementCount, _bo);
+    }
+    
+    void setElements(void* elements, ssize_t count, bool defer = true)
+    {
+        return CALL(bufferSetElements,_bo, elements, count, defer);
+    }
+    
+    void updateElements(const void* elements, ssize_t start, ssize_t count = 0, bool defer = true)
+    {
+        CALL(bufferUpdateElements, _bo, elements, start, count, defer);
     }
     
     ssize_t getCapacity() const
     {
-        return _capacity;
-    }
-    
-    bool hasClient() const
-    {
-        return _arrayType & ArrayType::Client ? true : false;
-    }
-    
-    bool hasNative() const
-    {
-        return _arrayType & ArrayType::Native ? true : false;
-    }
-    
-    bool isDirty() const
-    {
-        return _dirty;
+        return CALL(bufferGetCapacity, _bo);
     }
     
     void setDirty(bool dirty)
     {
-        _dirty = dirty;
+        CALL(bufferSetDirty, _bo, dirty);
     }
     
-    void clear();
-
-    virtual void recreate();
-    
-    // @brief returns the client array if present, otherwise nullptr
     template <typename T>
-    T* getElementsOfType() const
+    T* getElementsOfType()
     {
-        return hasClient() ? static_cast<T*>(_elements) : nullptr;
+        return static_cast<T*>(CALL(bufferGetElements, _bo));
     }
-
+    
     template <typename T>
     void setElementsOfType(const T* element, ssize_t count, bool defer = true)
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
-        setElements((const void*)element, mult * count, defer);
+        CALL(bufferSetElements, _bo, element, mult * count, defer);
     }
-
+    
     template <typename T>
-    ssize_t appendElementsOfType(T* source, ssize_t elements = 1, bool defer = true)
+    void appendElementsOfType(const T* element, ssize_t count = 1, bool defer = true)
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
-        appendElements((const void*)source, mult * elements, defer);
-        return getSize();
+        CALL(bufferAppendElements, _bo, element, mult * count, defer);
     }
     
     template <typename T>
@@ -204,7 +116,7 @@ public:
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
-        updateElements((const void*)element, mult * count, mult * start, defer);
+        CALL(bufferUpdateElements, _bo, element, mult * start, mult * count, defer);
     }
     
     template <typename T>
@@ -212,7 +124,7 @@ public:
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
-        insertElements((const void*)element, mult * count, mult * start, defer);
+        CALL(bufferInsertElements, _bo, element, mult * start, mult * count, defer);
     }
     
     template <typename T>
@@ -220,7 +132,7 @@ public:
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
-        removeElements(mult * count, mult * start, defer);
+        CALL(bufferRemoveElements, _bo, mult * start, mult * count, defer);
     }
     
     template <typename T>
@@ -228,7 +140,7 @@ public:
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
-        addCapacity(mult * count, zero);
+        CALL(bufferAddCapacity, _bo, mult * count, zero);
     }
     
     template <typename T>
@@ -236,60 +148,54 @@ public:
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
-        swapElements(mult * source, mult * dest, mult * count);
+        CALL(bufferSwapElements, _bo, mult * source, mult * dest, mult * count);
     }
-
+    
     template <typename T>
     void moveElementsOfType(ssize_t source, ssize_t dest, ssize_t count)
     {
         CCASSERT(0 == sizeof(T) % getElementSize(), "elements must divide evenly into elementSize");
         auto mult = sizeof(T) / getElementSize();
-        moveElements(mult * source, mult * dest, mult * count);
+        CALL(bufferMoveElements, _bo, mult * source, mult * dest, mult * count);
     }
-        
-protected:
-
-    ElementArrayBuffer();
-
-    bool init(ssize_t elementSize, ssize_t maxElements, ArrayType arrayType, ArrayMode arrayMode, ArrayIntent arrayIntent, bool zero);
-    void setCapacity(ssize_t capacity, bool zero);
     
-    // @brief if dirty, copies elements to the client buffer (if any)
-    // and optionally submits the elements to the native buffer (if any)
-    // if elements is null, then the entire client is commited to native.
-    bool commitElements(const void* elements, ssize_t start, ssize_t count);
+    template <typename T>
+    void append(const T& element)
+    {
+        CCASSERT(sizeof(T) == getElementSize(), "can only append elements of the same size as the buffer");
+        appendElementsOfType(&element);
+    }
+    
+    NS_PRIVATE::handle handle() const
+    {
+        return _bo;
+    }
+    
+    #undef CALL
 
 protected:
-
-    // native only
+    
+    bool init(ssize_t size, ssize_t maxCount, BufferMode mode, BufferIntent intent, BufferType type, bool zero)
+    {
+        _bo = Director::getInstance()->getGraphicsInterface()->bufferCreate(size, maxCount, mode, intent, type, zero);
+        return _bo != HANDLE_INVALID;
+    }
+    
+protected:
+    
     NS_PRIVATE::handle _bo;
-    
-    // client buffer only
-    ssize_t _elementCount;
-    void* _elements;
-    
-    ssize_t _elementSize;
-    ssize_t _capacity;
-
-    ArrayType _arrayType;
-    ArrayMode _arrayMode;
-    ArrayIntent _arrayIntent;
-    
-    unsigned _usage;
-    bool _dirty;
 };
 
-
 class CC_DLL VertexBuffer
-    : public ElementArrayBuffer
+    : public BufferBase
 {
 public:
     
     template <class T = VertexBuffer>
-    static T* create(ssize_t size, ssize_t count, ArrayType arrayType = ArrayType::Default, ArrayMode arrayMode = ArrayMode::LongLived, bool zero = false)
+    static T* create(ssize_t size, ssize_t count, BufferType type = BufferType::Default, BufferMode mode = NS_PRIVATE::BufferMode::LongLived, bool zero = false)
     {
         auto result = new (std::nothrow) T;
-        if (result && result->init(size, count, arrayType, arrayMode, ArrayIntent::VertexData, zero))
+        if (result && result->init(size, count, mode, BufferIntent::VertexData, type, zero))
         {
             result->autorelease();
             return result;
@@ -300,26 +206,21 @@ public:
     
     CC_DEPRECATED(v3) int getSizePerVertex() const { return (int)getElementSize(); }
     CC_DEPRECATED(v3) int getVertexNumber() const { return (int)getElementCount(); }
-    CC_DEPRECATED(v3) bool updateVertices(const void* vertices, int count, int begin) { updateElements(vertices, count, begin); return true; }
+    CC_DEPRECATED(v3) bool updateVertices(const void* vertices, int count, int begin) { updateElements(vertices, begin, count); return true; }
 };
 
 class CC_DLL IndexBuffer
-    : public ElementArrayBuffer
+    : public BufferBase
 {
 public:
     
-    enum class IndexType
-    {
-        INDEX_TYPE_NONE = -1,
-        INDEX_TYPE_SHORT_16,
-        INDEX_TYPE_UINT_32
-    };
-    
     template <class T = IndexBuffer>
-    static IndexBuffer* create(IndexType type, ssize_t count, ArrayType arrayType = ArrayType::Default, ArrayMode arrayMode = ArrayMode::LongLived, bool zero = false)
+    static IndexBuffer* create(BufferIntent intent, ssize_t count, BufferType type = BufferType::Default, BufferMode mode = BufferMode::LongLived, bool zero = false)
     {
+        PAL_ASSERT(intent == BufferIntent::IndexData16 || intent == BufferIntent::IndexData32);
+
         auto result = new (std::nothrow) T;
-        if (result && result->init(type, count, arrayType, arrayMode, zero))
+        if (result && result->init(intent == BufferIntent::IndexData16 ? 2 : 4, count, mode, intent, type, zero))
         {
             result->autorelease();
             return result;
@@ -328,36 +229,14 @@ public:
         return nullptr;
     }
     
-    IndexType getType() const
-    {
-        return _type;
-    }
-    
     CC_DEPRECATED(v3) int getSizePerIndex() const { return (int)getElementSize(); }
     CC_DEPRECATED(v3) int getIndexNumber() const { return (int)getElementCount(); }
-    CC_DEPRECATED(v3) bool updateIndices(const void* indices, int count, int begin) { updateElements(indices, count, begin); return true; }
-
-protected:
-    
-    IndexBuffer()
-        : _type(IndexType::INDEX_TYPE_NONE)
-    {}
-
-    bool init(IndexType type, ssize_t count, ArrayType arrayType, ArrayMode arrayMode, bool zero)
-    {
-        auto elementSize = IndexType::INDEX_TYPE_SHORT_16 == type ? 2 : 4;
-        auto arrayIntent = IndexType::INDEX_TYPE_SHORT_16 == type ? ArrayIntent::IndexData16 : ArrayIntent::IndexData32;
-        if (!ElementArrayBuffer::init(elementSize, count, arrayType, arrayMode, arrayIntent, zero))
-            return false;
-        _type = type;
-        return true;
-    }
+    CC_DEPRECATED(v3) bool updateIndices(const void* indices, int count, int begin) { updateElements(indices, begin, count); return true; }
 
 protected:
 
-    IndexType _type;
+    NS_PRIVATE::handle _bo;
 };
-
 
 NS_CC_END
 

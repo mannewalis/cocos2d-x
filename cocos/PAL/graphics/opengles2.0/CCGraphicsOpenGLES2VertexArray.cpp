@@ -37,13 +37,8 @@ NS_PRIVATE_BEGIN
 
 GraphicsOpenGLES2VertexArray::GraphicsOpenGLES2VertexArray(Primitive drawPrimitive)
     : super(drawPrimitive)
-{
-    if (Configuration::getInstance()->supportsShareableVAO())
-    {
-        glGenVertexArrays(1, (GLuint*)&_vao);
-        GL::bindVAO(_vao);
-    }
-}
+    , _vao(0)
+{}
 
 GraphicsOpenGLES2VertexArray::~GraphicsOpenGLES2VertexArray()
 {
@@ -55,14 +50,16 @@ GraphicsOpenGLES2VertexArray::~GraphicsOpenGLES2VertexArray()
     }
 }
 
-void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
+ssize_t GraphicsOpenGLES2VertexArray::draw(ssize_t start, ssize_t count)
 {
-    PAL_ASSERT(start >= 0, "Invalid start value");
-    PAL_ASSERT(count >= 0, "Invalid count value");
+    CCASSERT(start >= 0, "Invalid start value");
+    CCASSERT(count >= 0, "Invalid count value");
     
-    // if we are drawing indexed, then use the count of indices to draw
-    if (!count)
+    if (0 == count)
+    {
+        // if we are drawing indexed, then use the count of indices to draw
         count = _indices ? _indices->getElementCount() : this->getCount();
+    }
     
     if (_vao)
     {
@@ -70,34 +67,37 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
         CHECK_GL_ERROR_DEBUG();
     }
     
-    if (isDirty())
+    if (0 == _vao || isDirty())
     {
+        if (0 == _vao && Configuration::getInstance()->supportsShareableVAO())
+        {
+            glGenVertexArrays(1, (GLuint*)&_vao);
+            GL::bindVAO(_vao);
+        }
+        
         CHECK_GL_ERROR_DEBUG();
         
-        for (auto& element : _vertexAttributes)
+        for (auto& it : _vertexAttributes)
         {
-            const auto& b = element.second;
-            const auto& attributeBuffer = b._buffer;
-            const auto& attribute = b._attribute;
+            const auto ba   = it.second;
+            const auto attr = ba._attribute;
+            const auto vb   = ba._buffer;
             
-            for (auto& e : _stagedElements)
-            {
-                PAL_ASSERT(e._buffer == attributeBuffer);
-                attributeBuffer->commitElements(e._elements, e._start, e._count);
-            }
-            _stagedElements.clear();
+            // commit any outstanding client side geometry to the native buffers.
+            // for interleaved data this will happen only the first time through.
+            vb->bindAndCommit(vb->getElements(), 0, vb->getElementCount());
             
-            auto offset = attribute._offset;
-            auto stride = attributeBuffer->getElementSize();
+            auto offset = attr._offset;
+            auto stride = vb->getElementSize();
             
-            glEnableVertexAttribArray(GLint(attribute._index));
-            glVertexAttribPointer(GLint(attribute._index), (GLint)attribute._size, _attributeDataTypeToGL(attribute._type), attribute._normalized, (GLsizei)stride, (GLvoid*)(size_t)offset);
+            glEnableVertexAttribArray(GLint(attr._index));
+            glVertexAttribPointer(GLint(attr._index), (GLint)attr._size, _attributeDataTypeToGL(attr._type), attr._normalized, (GLsizei)stride, (GLvoid*)(size_t)offset);
             
             CHECK_GL_ERROR_DEBUG();
         }
         
         if (_indices != nullptr)
-            GL::bindVBO(GL_ELEMENT_ARRAY_BUFFER, (GLuint)_indices->getBO());
+            _indices->bindAndCommit(_indices->getElements(), 0, _indices->getElementCount());
         
         setDirty(false);
     }
@@ -116,9 +116,10 @@ void GraphicsOpenGLES2VertexArray::drawElements(ssize_t start, ssize_t count)
     
     if (_vao)
         GL::bindVAO(0);
-    
     GL::bindVBO(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    
+    return count;
 }
 
 //

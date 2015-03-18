@@ -66,14 +66,14 @@ public:
     }
     
     template <class C>
-    C* getPtr(handle h)
+    C* getPtr(handle h) const
     {
         PAL_ASSERT(h >= 0 && h < _handles.size());
         return static_cast<C*>((void*)_handles[h]);
     }
 
     template <class T>
-    const T& getVal(handle h)
+    const T& getVal(handle h) const
     {
         PAL_ASSERT(h >= 0 && h < _handles.size());
         return (T&)_handles[h];

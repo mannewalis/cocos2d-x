@@ -268,7 +268,7 @@ void TMXLayer::updateVertexBuffer()
     }
     if(_vertexBuffer)
     {
-        _vertexBuffer->updateElements((void*)&_totalQuads[0], (int)_totalQuads.size() * 4, 0);
+        _vertexBuffer->updateElements((void*)&_totalQuads[0], 0, (int)_totalQuads.size() * 4);
     }
     
 }
@@ -277,12 +277,11 @@ void TMXLayer::updateIndexBuffer()
 {
     if(nullptr == _indexBuffer)
     {
-        _indexBuffer = IndexBuffer::create(IndexBuffer::IndexType::INDEX_TYPE_SHORT_16, (int)_indices.size());
+        _indexBuffer = IndexBuffer::create(BufferIntent::IndexData16, (int)_indices.size());
         _vData->setIndexBuffer(_indexBuffer);
         CC_SAFE_RETAIN(_indexBuffer);
     }
-    _indexBuffer->updateElements(&_indices[0], (int)_indices.size(), 0);
-    
+    _indexBuffer->updateElements(&_indices[0], 0, (int)_indices.size());
 }
 
 // FastTMXLayer - setup Tiles

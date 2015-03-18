@@ -55,6 +55,15 @@ enum class AttributeDataType
     Fixed
 };
 
+enum BufferType
+{
+    None    = 0,
+    Client  = (1<<0), // Maintains a client memory buffer to store elements.
+    Native  = (1<<2), // Maintains a native buffer to store elements.
+    Default = Native,
+    All     = Client | Native
+};
+
 enum class BufferMode
 {
     Invalid = -1,
@@ -74,23 +83,23 @@ enum class BufferIntent
 struct VertexAttribute
 {
     VertexAttribute()
-        : _index(0)
-        , _offset(0)
+        : _offset(0)
+        , _index(0)
         , _type(AttributeDataType::Invalid)
         , _size(0)
         , _normalized(false)
     {}
     
-    VertexAttribute(int index, ssize_t offset, AttributeDataType type, ssize_t size, bool normalized)
-        : _index(index)
-        , _offset(offset)
+    VertexAttribute(ssize_t offset, int index, AttributeDataType type, ssize_t size, bool normalized = false)
+        : _offset(offset)
+        , _index(index)
         , _type(type)
         , _size(size)
         , _normalized(normalized)
     {}
     
-    int      _index;
     ssize_t  _offset;
+    int      _index;
     AttributeDataType _type;
     ssize_t  _size;
     bool     _normalized;

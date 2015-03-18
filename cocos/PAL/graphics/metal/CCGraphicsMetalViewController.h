@@ -26,7 +26,7 @@
 #ifndef _CC_GRAPHICS_METAL_VIEW_CONTROLLER_H_
 #define _CC_GRAPHICS_METAL_VIEW_CONTROLLER_H_
 
-#import "UIKit/UIViewController.h";
+#import "UIKit/UIViewController.h"
 
 @interface MetalViewController : UIViewController
 @end

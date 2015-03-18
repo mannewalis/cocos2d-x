@@ -58,24 +58,24 @@ bool DrawNode::init()
 {
     setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_LENGTH_TEXTURE_COLOR));
 
-    _vbTriangles = VertexBuffer::create(sizeof(V2F_C4B_T2F), 2048, VertexBuffer::ArrayType::All, VertexBuffer::ArrayMode::Dynamic);
-    _vdTriangles = VertexData::create(VertexData::Primitive::Triangles);
+    _vbTriangles = VertexBuffer::create(sizeof(V2F_C4B_T2F), 2048, BufferType::All, BufferMode::Dynamic);
+    _vdTriangles = VertexData::create(Primitive::Triangles);
     _vdTriangles->addStream(_vbTriangles, VertexAttribute(offsetof(V2F_C4B_T2F, vertices),  GLProgram::VERTEX_ATTRIB_POSITION,  DataType::Float, 2));
     _vdTriangles->addStream(_vbTriangles, VertexAttribute(offsetof(V2F_C4B_T2F, colors),    GLProgram::VERTEX_ATTRIB_COLOR,     DataType::UByte, 4, true));
     _vdTriangles->addStream(_vbTriangles, VertexAttribute(offsetof(V2F_C4B_T2F, texCoords), GLProgram::VERTEX_ATTRIB_TEX_COORD, DataType::Float, 2));
     CC_SAFE_RETAIN(_vdTriangles);
     CC_SAFE_RETAIN(_vbTriangles);
     
-    _vbLines = VertexBuffer::create(sizeof(V2F_C4B_T2F), 2048, VertexBuffer::ArrayType::All, VertexBuffer::ArrayMode::Dynamic);
-    _vdLines = VertexData::create(VertexData::Primitive::Lines);
+    _vbLines = VertexBuffer::create(sizeof(V2F_C4B_T2F), 2048, BufferType::All, BufferMode::Dynamic);
+    _vdLines = VertexData::create(Primitive::Lines);
     _vdLines->addStream(_vbLines, VertexAttribute(offsetof(V2F_C4B_T2F, vertices),  GLProgram::VERTEX_ATTRIB_POSITION,  DataType::Float, 2));
     _vdLines->addStream(_vbLines, VertexAttribute(offsetof(V2F_C4B_T2F, colors),    GLProgram::VERTEX_ATTRIB_COLOR,     DataType::UByte, 4, true));
     _vdLines->addStream(_vbLines, VertexAttribute(offsetof(V2F_C4B_T2F, texCoords), GLProgram::VERTEX_ATTRIB_TEX_COORD, DataType::Float, 2));
     CC_SAFE_RETAIN(_vdLines);
     CC_SAFE_RETAIN(_vbLines);
 
-    _vbPoints = VertexBuffer::create(sizeof(V2F_C4B_PF), 2048, VertexBuffer::ArrayType::All, VertexBuffer::ArrayMode::Dynamic);
-    _vdPoints = VertexData::create(VertexData::Primitive::Points);
+    _vbPoints = VertexBuffer::create(sizeof(V2F_C4B_PF), 2048, BufferType::All, BufferMode::Dynamic);
+    _vdPoints = VertexData::create(Primitive::Points);
     _vdPoints->addStream(_vbPoints, VertexAttribute(offsetof(V2F_C4B_PF, vertices),  GLProgram::VERTEX_ATTRIB_POSITION,  DataType::Float, 2));
     _vdPoints->addStream(_vbPoints, VertexAttribute(offsetof(V2F_C4B_PF, colors),    GLProgram::VERTEX_ATTRIB_COLOR,     DataType::UByte, 4, true));
     _vdPoints->addStream(_vbPoints, VertexAttribute(offsetof(V2F_C4B_PF, pointSize), GLProgram::VERTEX_ATTRIB_POINTSIZE, DataType::Float, 1));
@@ -130,13 +130,13 @@ CC_DEPRECATED(v3) void DrawNode::drawImmediate(Renderer* renderer, const Mat4& t
 
 void DrawNode::drawPoint(const Vec2& position, float pointSize, const Color4F& color)
 {
-    _vdPoints->append<V2F_C4B_PF>({position, Color4B(color), pointSize});
+    _vbPoints->append<V2F_C4B_PF>({position, Color4B(color), pointSize});
 }
 
 void DrawNode::drawPoints(const Vec2* position, unsigned int numberOfPoints, const Color4F &color, float pointSize)
 {
     for (auto i = 0; i < numberOfPoints; ++i)
-        _vdPoints->append<V2F_C4B_PF>({position[i], Color4B(color), pointSize});
+        _vbPoints->append<V2F_C4B_PF>({position[i], Color4B(color), pointSize});
 }
 
 CC_DEPRECATED(v3) void DrawNode::drawPoints(const Vec2* position, unsigned int numberOfPoints, double pointSize, const Color4F& color)
@@ -146,8 +146,8 @@ CC_DEPRECATED(v3) void DrawNode::drawPoints(const Vec2* position, unsigned int n
 
 void DrawNode::drawLine(const Vec2& origin, const Vec2& destination, const Color4F& color)
 {
-    _vdLines->append<V2F_C4B_T2F>({origin,      Color4B(color), Tex2F()});
-    _vdLines->append<V2F_C4B_T2F>({destination, Color4B(color), Tex2F()});
+    _vbLines->append<V2F_C4B_T2F>({origin,      Color4B(color), Tex2F()});
+    _vbLines->append<V2F_C4B_T2F>({destination, Color4B(color), Tex2F()});
 }
 
 void DrawNode::drawRect(const Vec2& origin, const Vec2& destination, const Color4F &color)
@@ -163,14 +163,14 @@ void DrawNode::drawPoly(const Vec2* poli, unsigned int numberOfPoints, bool clos
     int i = 0;
     for(; i < numberOfPoints - 1; ++i)
     {
-        _vdLines->append<V2F_C4B_T2F>({poli[i],   Color4B(color), Tex2F()});
-        _vdLines->append<V2F_C4B_T2F>({poli[i+1], Color4B(color), Tex2F()});
+        _vbLines->append<V2F_C4B_T2F>({poli[i],   Color4B(color), Tex2F()});
+        _vbLines->append<V2F_C4B_T2F>({poli[i+1], Color4B(color), Tex2F()});
     }
 
     if (closePolygon)
     {
-        _vdLines->append<V2F_C4B_T2F>({poli[i], Color4B(color), Tex2F()});
-        _vdLines->append<V2F_C4B_T2F>({poli[0], Color4B(color), Tex2F()});
+        _vbLines->append<V2F_C4B_T2F>({poli[i], Color4B(color), Tex2F()});
+        _vbLines->append<V2F_C4B_T2F>({poli[0], Color4B(color), Tex2F()});
     }
 }
 
@@ -284,12 +284,12 @@ void DrawNode::drawDot(const Vec2 &pos, float radius, const Color4F &color)
     V2F_C4B_T2F b = {Vec2(pos.x - radius, pos.y + radius), Color4B(color), Tex2F(-1.0,  1.0) };
     V2F_C4B_T2F c = {Vec2(pos.x + radius, pos.y + radius), Color4B(color), Tex2F( 1.0,  1.0) };
     V2F_C4B_T2F d = {Vec2(pos.x + radius, pos.y - radius), Color4B(color), Tex2F( 1.0, -1.0) };
-    _vdTriangles->append<V2F_C4B_T2F>(a);
-    _vdTriangles->append<V2F_C4B_T2F>(b);
-    _vdTriangles->append<V2F_C4B_T2F>(c);
-    _vdTriangles->append<V2F_C4B_T2F>(a);
-    _vdTriangles->append<V2F_C4B_T2F>(c);
-    _vdTriangles->append<V2F_C4B_T2F>(d);
+    _vbTriangles->append<V2F_C4B_T2F>(a);
+    _vbTriangles->append<V2F_C4B_T2F>(b);
+    _vbTriangles->append<V2F_C4B_T2F>(c);
+    _vbTriangles->append<V2F_C4B_T2F>(a);
+    _vbTriangles->append<V2F_C4B_T2F>(c);
+    _vbTriangles->append<V2F_C4B_T2F>(d);
 }
 
 void DrawNode::drawRect(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3, const Vec2& p4, const Color4F &color)
@@ -323,24 +323,24 @@ void DrawNode::drawSegment(const Vec2& from, const Vec2& to, float radius, const
     
     Color4B c(color);
 
-    _vdTriangles->append<V2F_C4B_T2F>({v0, c, -(n + t)});
-    _vdTriangles->append<V2F_C4B_T2F>({v1, c, n - t});
-    _vdTriangles->append<V2F_C4B_T2F>({v2, c, -n});
-    _vdTriangles->append<V2F_C4B_T2F>({v3, c, n});
-    _vdTriangles->append<V2F_C4B_T2F>({v1, c, n - t});
-    _vdTriangles->append<V2F_C4B_T2F>({v2, c, -n});
-    _vdTriangles->append<V2F_C4B_T2F>({v3, c, n});
-    _vdTriangles->append<V2F_C4B_T2F>({v4, c, -n});
-    _vdTriangles->append<V2F_C4B_T2F>({v2, c, -n});
-    _vdTriangles->append<V2F_C4B_T2F>({v3, c, n});
-    _vdTriangles->append<V2F_C4B_T2F>({v4, c, -n});
-    _vdTriangles->append<V2F_C4B_T2F>({v5, c, n});
-    _vdTriangles->append<V2F_C4B_T2F>({v6, c, t - n});
-    _vdTriangles->append<V2F_C4B_T2F>({v4, c, -n});
-    _vdTriangles->append<V2F_C4B_T2F>({v5, c, n});
-    _vdTriangles->append<V2F_C4B_T2F>({v6, c, t - n});
-    _vdTriangles->append<V2F_C4B_T2F>({v7, c, n + t});
-    _vdTriangles->append<V2F_C4B_T2F>({v5, c, n});
+    _vbTriangles->append<V2F_C4B_T2F>({v0, c, -(n + t)});
+    _vbTriangles->append<V2F_C4B_T2F>({v1, c, n - t});
+    _vbTriangles->append<V2F_C4B_T2F>({v2, c, -n});
+    _vbTriangles->append<V2F_C4B_T2F>({v3, c, n});
+    _vbTriangles->append<V2F_C4B_T2F>({v1, c, n - t});
+    _vbTriangles->append<V2F_C4B_T2F>({v2, c, -n});
+    _vbTriangles->append<V2F_C4B_T2F>({v3, c, n});
+    _vbTriangles->append<V2F_C4B_T2F>({v4, c, -n});
+    _vbTriangles->append<V2F_C4B_T2F>({v2, c, -n});
+    _vbTriangles->append<V2F_C4B_T2F>({v3, c, n});
+    _vbTriangles->append<V2F_C4B_T2F>({v4, c, -n});
+    _vbTriangles->append<V2F_C4B_T2F>({v5, c, n});
+    _vbTriangles->append<V2F_C4B_T2F>({v6, c, t - n});
+    _vbTriangles->append<V2F_C4B_T2F>({v4, c, -n});
+    _vbTriangles->append<V2F_C4B_T2F>({v5, c, n});
+    _vbTriangles->append<V2F_C4B_T2F>({v6, c, t - n});
+    _vbTriangles->append<V2F_C4B_T2F>({v7, c, n + t});
+    _vbTriangles->append<V2F_C4B_T2F>({v5, c, n});
 }
 
 void DrawNode::drawPolygon(const Vec2* verts, int count, const Color4F& fillColor, float borderWidth, const Color4F& borderColor)
@@ -354,9 +354,9 @@ void DrawNode::drawPolygon(const Vec2* verts, int count, const Color4F& fillColo
     
     for (int i = 0; i < count-2; ++i)
     {
-        _vdTriangles->append<V2F_C4B_T2F>({verts[0],   fc, Tex2F()});
-        _vdTriangles->append<V2F_C4B_T2F>({verts[i+1], fc, Tex2F()});
-        _vdTriangles->append<V2F_C4B_T2F>({verts[i+2], fc, Tex2F()});
+        _vbTriangles->append<V2F_C4B_T2F>({verts[0],   fc, Tex2F()});
+        _vbTriangles->append<V2F_C4B_T2F>({verts[i+1], fc, Tex2F()});
+        _vbTriangles->append<V2F_C4B_T2F>({verts[i+2], fc, Tex2F()});
     }
     
     if (outline)
@@ -394,13 +394,13 @@ void DrawNode::drawPolygon(const Vec2* verts, int count, const Color4F& fillColo
             Vec2 outer0 = v0 + offset0 * borderWidth;
             Vec2 outer1 = v1 + offset1 * borderWidth;
             
-            _vdTriangles->append<V2F_C4B_T2F>({inner0, bc, -n0});
-            _vdTriangles->append<V2F_C4B_T2F>({inner1, bc, -n0});
-            _vdTriangles->append<V2F_C4B_T2F>({outer1, bc,  n0});
+            _vbTriangles->append<V2F_C4B_T2F>({inner0, bc, -n0});
+            _vbTriangles->append<V2F_C4B_T2F>({inner1, bc, -n0});
+            _vbTriangles->append<V2F_C4B_T2F>({outer1, bc,  n0});
             
-            _vdTriangles->append<V2F_C4B_T2F>({inner0, bc, -n0});
-            _vdTriangles->append<V2F_C4B_T2F>({outer0, bc,  n0});
-            _vdTriangles->append<V2F_C4B_T2F>({outer1, bc,  n0});
+            _vbTriangles->append<V2F_C4B_T2F>({inner0, bc, -n0});
+            _vbTriangles->append<V2F_C4B_T2F>({outer0, bc,  n0});
+            _vbTriangles->append<V2F_C4B_T2F>({outer1, bc,  n0});
         }
     }
 }
@@ -451,9 +451,9 @@ void DrawNode::drawSolidCircle( const Vec2& center, float radius, float angle, u
 void DrawNode::drawTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Color4F& color)
 {
     Color4B col(color);
-    _vdTriangles->append<V2F_C4B_T2F>({Vec2(p1.x, p1.y), col, Tex2F(0.f, 0.f)});
-    _vdTriangles->append<V2F_C4B_T2F>({Vec2(p2.x, p2.y), col, Tex2F(0.f, 0.f)});
-    _vdTriangles->append<V2F_C4B_T2F>({Vec2(p3.x, p3.y), col, Tex2F(0.f, 0.f)});
+    _vbTriangles->append<V2F_C4B_T2F>({Vec2(p1.x, p1.y), col, Tex2F(0.f, 0.f)});
+    _vbTriangles->append<V2F_C4B_T2F>({Vec2(p2.x, p2.y), col, Tex2F(0.f, 0.f)});
+    _vbTriangles->append<V2F_C4B_T2F>({Vec2(p3.x, p3.y), col, Tex2F(0.f, 0.f)});
 }
 
 void DrawNode::drawQuadraticBezier(const Vec2& from, const Vec2& control, const Vec2& to, unsigned int segments, const Color4F &color)

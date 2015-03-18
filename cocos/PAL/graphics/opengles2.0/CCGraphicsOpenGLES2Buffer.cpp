@@ -34,11 +34,9 @@
 NS_PRIVATE_BEGIN
 
 GraphicsOpenGLES2Buffer::GraphicsOpenGLES2Buffer()
-    : _glbo(-1)
+    : _glbo(0)
     , _glboSize(0)
-{
-    glGenBuffers(1, &_glbo);
-}
+{}
 
 GraphicsOpenGLES2Buffer::~GraphicsOpenGLES2Buffer()
 {
@@ -49,35 +47,80 @@ GraphicsOpenGLES2Buffer::~GraphicsOpenGLES2Buffer()
     }    
 }
 
-bool GraphicsOpenGLES2Buffer::commitElements(const void* elements, ssize_t start, ssize_t count)
+void GraphicsOpenGLES2Buffer::bindAndCommit(const void* elements, ssize_t start, ssize_t count)
 {
-    PAL_ASSERT(_glbo, "native buffer object not initialized");
-    PAL_ASSERT(elements != nullptr, "invalid elements array");
-    PAL_ASSERT(count > 0, "invalid element count");
+    CCASSERT(true == hasNative(), "bindAndCommit : array has no native buffer");
     
-    GL::bindVBO(_bufferIntentToGLTarget(_bufferIntent), _glbo);
+    if (_glbo)
+        GL::bindVBO(_bufferIntentToGLTarget(_bufferIntent), _glbo);
     
-    if (!isDirty())
-        return false;
+    if (false == isDirty())
+        return;
     
-    const auto size = getCapacityInBytes();
-    CCASSERT(size, "size should not be 0");
-    if (size >= _glboSize)
+    // default to all elements
+    if (nullptr == elements)
+        elements = _buffer;
+    
+    // default to all elements
+    if (0 == count)
+        count = _elementCount;
+    
+    const auto target = _bufferIntentToGLTarget(_bufferIntent);
+    const auto usage  = _bufferModeToGLUsage(_bufferMode);
+    
+    if (0 == _glbo)
     {
-        _glboSize = size;
-        glBufferData(_bufferIntentToGLTarget(_bufferIntent), size, elements, _bufferModeToGLUsage(_bufferMode));
+        glGenBuffers(1, &_glbo);
+        _glboSize = getCapacityInBytes();
+        CCASSERT(_glboSize, "_vboSize should not be 0");
+        GL::bindVBO(target, _glbo);
+        glBufferData(target, _glboSize, nullptr, usage);
+        glBufferData(target, count * getElementSize(), elements, usage);
         CHECK_GL_ERROR_DEBUG();
     }
     else
     {
-        intptr_t p = (intptr_t)elements + start * _elementSize;
-        glBufferSubData(_bufferIntentToGLTarget(_bufferIntent), start * _elementSize, count * _elementSize, (void*)p);
-        CHECK_GL_ERROR_DEBUG();
+        GL::bindVBO(target, _glbo);
+        const auto size = getCapacityInBytes();
+        CCASSERT(size, "size should not be 0");
+        if (size >= _glboSize)
+        {
+            _glboSize = size;
+            glBufferData(target, size, elements, usage);
+            CHECK_GL_ERROR_DEBUG();
+        }
+        else
+        {
+            intptr_t p = (intptr_t)elements + start * _elementSize;
+            glBufferSubData(target, start * _elementSize, count * _elementSize, (void*)p);
+            CHECK_GL_ERROR_DEBUG();
+        }
     }
-
-    setDirty(false);
     
-    return glGetError() == 0;
+    setDirty(false);
+}
+
+void GraphicsOpenGLES2Buffer::recreate() const
+{
+    const auto target = _bufferIntentToGLTarget(_bufferIntent);
+
+    if (glIsBuffer(_glbo))
+    {
+        glDeleteBuffers(1, &_glbo);
+        GL::bindVBO(target, 0);
+    }
+    glGenBuffers(1, (GLuint*)&_glbo);
+    GL::bindVBO(target, _glbo);
+    if (_buffer)
+    {
+        const auto usage  = _bufferModeToGLUsage(_bufferMode);
+        glBufferData(target, _elementSize * _elementCount, _buffer, usage);
+        GL::bindVBO(target, _glbo);
+        if(!glIsBuffer(_glbo))
+        {
+            CCLOGERROR("Renderer::recreate() : recreate VertexBuffer Error");
+        }
+    }
 }
 
 unsigned GraphicsOpenGLES2Buffer::getBO() const
@@ -101,6 +144,7 @@ unsigned GraphicsOpenGLES2Buffer::_bufferIntentToGLTarget(BufferIntent intent) c
         default:
             PAL_ASSERT(false, "Invalid array intent");
     }
+    return -1;
 }
 
 unsigned GraphicsOpenGLES2Buffer::_bufferModeToGLUsage(BufferMode mode) const
@@ -116,6 +160,7 @@ unsigned GraphicsOpenGLES2Buffer::_bufferModeToGLUsage(BufferMode mode) const
         default:
             PAL_ASSERT(false, "invalid BufferMode");
     }
+    return -1;
 }
 
 NS_PRIVATE_END

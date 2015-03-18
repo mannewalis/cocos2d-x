@@ -83,12 +83,12 @@ void GraphicsOpenGLES20::vertexArrayDestroy(handle object)
 }
 
 // @brief specifies a vertex attribute.
-bool GraphicsOpenGLES20::vertexArraySpecifyVertexAttribute(handle object, handle buffer, int index, ssize_t offset, AttributeDataType type, ssize_t count, bool normalized)
+bool GraphicsOpenGLES20::vertexArraySpecifyVertexAttribute(handle object, handle buffer, const VertexAttribute& attribute)
 {
     auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
     auto vbo = HANDLE_TOPTR(_handles, buffer, GraphicsOpenGLES2Buffer);
     PAL_ASSERT(vao && vbo, "invalid handle");
-    return vao->specifyVertexAttribute(vbo, {index, offset, type, count, normalized});
+    return vao->specifyVertexAttribute(vbo, attribute);
 }
 
 // @brief removes a previously specified vertex attribute
@@ -109,26 +109,43 @@ bool GraphicsOpenGLES20::vertexArraySpecifyIndexBuffer(handle object, handle buf
     return true;
 }
 
-void GraphicsOpenGLES20::vertexArrayStageElements(handle object, handle buffer, void* elements, ssize_t start, ssize_t count)
-{
-    auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
-    auto bo  = HANDLE_TOPTR(_handles, buffer, GraphicsOpenGLES2Buffer);
-    PAL_ASSERT(vao && bo, "invalid handle");
-    vao->stageElements(bo, elements, start, count);
-}
-
 // @brief draws the vertex array.
-void GraphicsOpenGLES20::vertexArrayDrawElements(handle object, ssize_t start, ssize_t count)
+ssize_t GraphicsOpenGLES20::vertexArrayDrawElements(handle object, ssize_t start, ssize_t count)
 {
     auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
     PAL_ASSERT(vao, "invalid handle");
-    vao->drawElements(start, count);
+    return vao->draw(start, count);
 }
 
-handle GraphicsOpenGLES20::bufferCreate(ssize_t size, ssize_t count, BufferMode bufferMode, BufferIntent bufferIntent, bool zero)
+bool GraphicsOpenGLES20::vertexArrayIsEmpty(handle object) const
+{
+    auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
+    return vao->empty();
+}
+
+void GraphicsOpenGLES20::vertexArrayClear(handle object)
+{
+    auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
+    vao->clear();
+}
+
+bool GraphicsOpenGLES20::vertexArrayIsDirty(handle object) const
+{
+    auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
+    return vao->isDirty();
+}
+
+void GraphicsOpenGLES20::vertexArraySetDirty(handle object, bool dirty)
+{
+    auto vao = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2VertexArray);
+    vao->setDirty(dirty);
+}
+
+
+handle GraphicsOpenGLES20::bufferCreate(ssize_t size, ssize_t count, BufferMode mode, BufferIntent intent, BufferType type, bool zero)
 {
     auto vbo = new (std::nothrow) GraphicsOpenGLES2Buffer;
-    if (vbo && vbo->init(size, count, bufferMode, bufferIntent, zero))
+    if (vbo && vbo->init(size, count, mode, intent, type, zero))
     {
         return HANDLE_CREATE(_handles, vbo);
     }
@@ -143,16 +160,92 @@ bool GraphicsOpenGLES20::bufferDestroy(handle object)
     return true;
 }
 
-void* GraphicsOpenGLES20::bufferMapElements(handle object)
+// @brief returns the buffer element size.
+ssize_t GraphicsOpenGLES20::bufferGetElementSize(handle object)
 {
     auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
-    return bo->mapElements();
+    return bo->getElementSize();
 }
 
-bool GraphicsOpenGLES20::bufferCommitElements(handle object, const void* elements, ssize_t start, ssize_t count)
+// @brief returns the buffer element count.
+ssize_t GraphicsOpenGLES20::bufferGetElementCount(handle object)
 {
     auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
-    return bo->commitElements(elements, start, count);
+    return bo->getElementCount();
+}
+
+// @brief set all elements of a native buffer object.
+// if the buffer type has client memory and defer is true then commit happens at draw.
+void GraphicsOpenGLES20::bufferSetElements(handle object, void* elements, ssize_t count, bool defer)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    bo->setElements(elements, count, defer);
+}
+
+void* GraphicsOpenGLES20::bufferGetElements(handle object)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    return bo->getElements();
+}
+
+void GraphicsOpenGLES20::bufferSetElementCount(handle object, ssize_t count)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    bo->setElementCount(count);
+}
+
+void GraphicsOpenGLES20::bufferUpdateElements(handle object, const void* elements, ssize_t start, ssize_t count, bool defer)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    bo->updateElements(elements, start, count, defer);
+}
+
+ssize_t GraphicsOpenGLES20::bufferGetCapacity(handle object)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    return bo->getCapacity();
+}
+
+void GraphicsOpenGLES20::GraphicsOpenGLES20::bufferSetDirty(handle object, bool dirty)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    bo->setDirty(dirty);
+}
+
+void GraphicsOpenGLES20::bufferAppendElements(handle object, const void* elements, ssize_t count, bool defer)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    bo->appendElements(elements, count, defer);
+}
+
+void GraphicsOpenGLES20::bufferInsertElements(handle object, const void* elements, ssize_t start, ssize_t count, bool defer)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    bo->insertElements(elements, start, count, defer);
+}
+
+void GraphicsOpenGLES20::bufferRemoveElements(handle object, ssize_t start, ssize_t count, bool defer)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    bo->removeElements(start, count, defer);
+}
+
+void GraphicsOpenGLES20::bufferAddCapacity(handle object, ssize_t count, bool zero)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    bo->addCapacity(count, zero);
+}
+
+void GraphicsOpenGLES20::bufferSwapElements(handle object, ssize_t source, ssize_t dest, ssize_t count)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    bo->swapElements(source, dest, count);
+}
+
+void GraphicsOpenGLES20::bufferMoveElements(handle object, ssize_t source, ssize_t dest, ssize_t count)
+{
+    auto bo = HANDLE_TOPTR(_handles, object, GraphicsOpenGLES2Buffer);
+    bo->moveElements(source, dest, count);
 }
 
 // HACK for backwards compatibility with MeshCommand

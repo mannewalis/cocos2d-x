@@ -72,7 +72,7 @@ bool GraphicsMetal::vertexArraySpecifyVertexAttribute(handle object, int index, 
 }
 
 // @brief draws the vertex array.
-void GraphicsMetal::vertexArrayDrawElements(handle object, ssize_t start, ssize_t count)
+ssize_t GraphicsMetal::vertexArrayDrawElements(handle object, ssize_t start, ssize_t count)
 {
 }
 

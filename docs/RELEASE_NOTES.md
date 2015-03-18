@@ -132,7 +132,7 @@ Taking TextureAtlas as example, VertexData could be used as this:
 * create a VertexBuffer and an optional IndexBuffer:
 	
 	```
-	_vbAtlas = VertexBuffer::create(sizeof(V3F_C4B_T2F), 4 * capacity, VertexBuffer::ArrayType::All, VertexBuffer::ArrayMode::Dynamic);
+	_vbAtlas = VertexBuffer::create(sizeof(V3F_C4B_T2F), 4 * capacity, BufferType::All, BufferMode::Dynamic);
 	_ibAtlas = IndexBuffer::create(IndexBuffer::IndexType::INDEX_TYPE_SHORT_16, 6 * capacity, IndexBuffer::ArrayType::All);
 	```
 * create a VertexData, specify vertexStreams and set indexBuffer

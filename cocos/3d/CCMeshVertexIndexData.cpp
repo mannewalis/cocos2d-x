@@ -100,15 +100,15 @@ MeshVertexData* MeshVertexData::create(const MeshData& meshdata)
     
     if(vertexdata->_vertexBuffer)
     {
-        vertexdata->_vertexBuffer->updateElements((void*)&meshdata.vertex[0], (int)meshdata.vertex.size() * 4 / vertexdata->_vertexBuffer->getElementSize(), 0);
+        vertexdata->_vertexBuffer->updateElements((void*)&meshdata.vertex[0], 0, (int)meshdata.vertex.size() * 4 / vertexdata->_vertexBuffer->getElementSize());
     }
     
     bool needCalcAABB = (meshdata.subMeshAABB.size() != meshdata.subMeshIndices.size());
     for (size_t i = 0; i < meshdata.subMeshIndices.size(); i++) {
 
         auto& index = meshdata.subMeshIndices[i];
-        auto indexBuffer = IndexBuffer::create(IndexBuffer::IndexType::INDEX_TYPE_SHORT_16, (int)(index.size()));
-        indexBuffer->updateElements(&index[0], (int)index.size(), 0);
+        auto indexBuffer = IndexBuffer::create(BufferIntent::IndexData16, (int)(index.size()));
+        indexBuffer->updateElements(&index[0], 0, (int)index.size());
         std::string id = (i < meshdata.subMeshIds.size() ? meshdata.subMeshIds[i] : "");
         MeshIndexData* indexdata = nullptr;
         if (needCalcAABB)

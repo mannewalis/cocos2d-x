@@ -35,6 +35,14 @@
 // remove cocos2d-x dependencies
 #include "base/CCRef.h"
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
+#include "base/CCEventType.h"
+#include "base/CCEventListenerCustom.h"
+#include "base/CCEventDispatcher.h"
+#include "base/CCDirector.h"
+#define SUPPORT_EVENT_RENDERER_RECREATED
+#endif
+
 NS_PRIVATE_BEGIN
 
 // @brief GraphicsVertexArray
@@ -47,29 +55,33 @@ class GraphicsVertexArray
 {
 public:
     
-    typedef APITraits traits_type;
     typedef BufferType buffer_type;
     
     GraphicsVertexArray(Primitive drawPrimitive)
         : _indices(nullptr)
+        , _interleaved(false)
         , _dirty(true)
-        , _vao(0)
         , _drawingPrimitive(drawPrimitive)
-    {}
-    
-    virtual ~GraphicsVertexArray()
-    {}
-    
-    // @brief Return the number of vertex streams
-    ssize_t getVertexStreamCount() const
     {
-        return _vertexAttributes.size();
+#ifdef SUPPORT_EVENT_RENDERER_RECREATED
+        _recreateEventListener = Director::getInstance()->getEventDispatcher()->addCustomEventListener(EVENT_RENDERER_RECREATED, [this](EventCustom* event){this->recreate();});
+#endif
     }
     
-    // @brief add a vertex attribute
+    ~GraphicsVertexArray()
+    {
+        for (auto& element : _vertexAttributes)
+            element.second._buffer->release();
+        _vertexAttributes.clear();
+        CC_SAFE_RELEASE(_indices);
+#ifdef SUPPORT_EVENT_RENDERER_RECREATED
+        Director::getInstance()->getEventDispatcher()->removeEventListener(_recreateEventListener);
+#endif
+    }
+    
     bool specifyVertexAttribute(buffer_type* buffer, const VertexAttribute& attribute)
     {
-        PAL_ASSERT(buffer, "invalid vertex attribute buffer");
+        PAL_ASSERT(buffer, "invalid buffer");
         
         setDirty(true);
         
@@ -84,10 +96,12 @@ public:
         
         _buffers.insert(buffer);
         
+        // flag whether or not this vertex data is interleaved or not.
+        _interleaved = determineInterleave();
+        
         return true;
     }
     
-    // @brief remove a vertex attribute
     void removeVertexAttribute(int index)
     {
         auto iter = _vertexAttributes.find(index);
@@ -102,25 +116,27 @@ public:
             _vertexAttributes.erase(iter);
         }
         
+        _interleaved = determineInterleave();
+        
         setDirty(true);
     }
     
-    // @brief specify indexed drawing for vertex data
+    // @brief specify indexed drawing for vertex data with optional precision
     void specifyIndexBuffer(buffer_type* indices)
     {
+        if (indices != _indices)
+            setDirty(true);
         CC_SAFE_RELEASE(_indices);
         _indices = indices;
         CC_SAFE_RETAIN(_indices);
     }
     
-    // @brief stage elements for copying on draw.
-    void stageElements(buffer_type* buffer, void* elements, ssize_t start, ssize_t count)
+    void removeIndexBuffer()
     {
-        setDirty(true);
-        _stagedElements.emplace_back(StagedElements{buffer, elements, start, count});
+        CC_SAFE_RELEASE(_indices);
+        _indices = nullptr;
     }
-    
-    // @brief true/false if all vertex buffers are empty
+        
     bool empty() const
     {
         for (auto b : _buffers)
@@ -131,7 +147,6 @@ public:
         return true;
     }
     
-    // @brief clears the vertex buffers associated with this vertex data
     void clear()
     {
         _dirty = true;
@@ -139,7 +154,23 @@ public:
             b->clear();
     }
     
-    // @brief returns the count of vertices added
+    bool isDirty() const
+    {
+        if (_dirty || (_indices && _indices->isDirty()))
+            return true;
+        for (auto b : _buffers)
+            if (b->isDirty())
+                return true;
+        return false;
+    }
+    
+    void setDirty(bool dirty)
+    {
+        _dirty = dirty;
+        for (auto b : _buffers)
+            b->setDirty(dirty);
+    }
+    
     ssize_t getCount() const
     {
         ssize_t count = 0;
@@ -152,7 +183,6 @@ public:
         return count;
     }
     
-    // @brief returns the capacity of the buffer in bytes
     ssize_t getCapacity() const
     {
         ssize_t capacity = 0;
@@ -165,28 +195,20 @@ public:
         return capacity;
     }
     
-    // @brief returns the dirty status of the data or vertex streams
-    bool isDirty() const
+    void append(buffer_type* buffer, void* source, ssize_t count)
     {
-        if (_dirty)
-            return true;
-        for (auto b : _buffers)
-            if (b->isDirty())
-                return true;
-        return false;
+        _dirty = true;
+        buffer->appendElements(source, count);
     }
     
-    // @brief sets the dirty state of all vertex data
-    void setDirty(bool dirty, bool cascade = false)
-    {
-        _dirty = dirty;
-        if (cascade)
-        {
-            for (auto b : _buffers)
-                b->setDirty(dirty);
-        }
-    }
+protected:
     
+    // @brief If all streams use the same buffer, then the data is interleaved.
+    bool determineInterleave() const
+    {
+        return _buffers.size() == 1;
+    }
+
 protected:
     
     struct Attributes
@@ -196,22 +218,13 @@ protected:
     };
     std::map<int, Attributes> _vertexAttributes;
     
-    struct StagedElements
-    {
-        buffer_type* _buffer;
-        void* _elements;
-        ssize_t _start;
-        ssize_t _count;
-    };
-    std::vector<StagedElements> _stagedElements;
-    
     typedef std::set<buffer_type*> tBufferSet;
     tBufferSet _buffers;
     
     buffer_type* _indices;
     
+    bool _interleaved;
     bool _dirty;
-    unsigned _vao;
     Primitive _drawingPrimitive;
 };
 
