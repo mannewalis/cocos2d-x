@@ -23,8 +23,8 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _CC_GRAPHICS_OPEN_GL_ES_20_H_
-#define _CC_GRAPHICS_OPEN_GL_ES_20_H_
+#ifndef _CC_GRAPHICS_OPEN_GL_ES_2_H_
+#define _CC_GRAPHICS_OPEN_GL_ES_2_H_
 
 #include "base/CCRef.h"
 #include "PAL/CCPALMacros.h"
@@ -66,7 +66,7 @@ public:
     bool vertexArraySpecifyVertexAttribute(handle object, handle buffer, const VertexAttribute& attribute);
     
     // @brief removes a previously specified vertex attribute
-    void vertexArrayRemoveVertexAttribute(handle vao, int index);
+    void vertexArrayRemoveVertexAttribute(handle object, int index);
 
     // @brief specifies an index buffer to use with a vertex array.
     bool vertexArraySpecifyIndexBuffer(handle object, handle buffer);
@@ -79,7 +79,6 @@ public:
     bool vertexArrayIsDirty(handle object) const;
     void vertexArraySetDirty(handle object, bool dirty);
 
-    
     handle bufferCreate(ssize_t size, ssize_t count, BufferMode mode, BufferIntent intent, BufferType type, bool zero);
     
     bool bufferDestroy(handle object);
@@ -117,4 +116,4 @@ protected:
 
 NS_PRIVATE_END
 
-#endif // _CC_GRAPHICS_OPEN_GL_ES_20_H_
+#endif // _CC_GRAPHICS_OPEN_GL_ES_2_H_
