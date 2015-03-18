@@ -31,15 +31,22 @@
 
 NS_PRIVATE_BEGIN
 
+// define this to use naked pointers instead of a handle.
+// pointers will be one less indirection which is faster.
+//#define DISABLE_HANDLE_INDIRECTION
+
 class Handles
 {
 public:
     
     explicit Handles(size_t initialHandleCount)
     {
+#ifndef DISABLE_HANDLE_INDIRECTION
         grow(initialHandleCount);
+#endif
     }
     
+#ifndef DISABLE_HANDLE_INDIRECTION
     handle allocate(const intptr_t& reference)
     {
         if (_free.empty())
@@ -100,12 +107,18 @@ protected:
     
     std::vector<intptr_t> _handles;
     std::vector<ssize_t> _free;
+#endif//DISABLE_HANDLE_INDIRECTION
 };
 
-#define HANDLE_CREATE(_h, ptr) (_h).allocate((intptr_t)ptr)
-#define HANDLE_TOVAL(_h, h, c) (_h).getVal<c>(h)
-#define HANDLE_TOPTR(_h, h, c) (_h).getPtr<c>(h)
-#define HANDLE_DESTROY(_h, h)  (_h).free(h)
+#ifdef DISABLE_HANDLE_INDIRECTION
+    #define HANDLE_CREATE(_h, ptr) ((intptr_t)ptr)
+    #define HANDLE_TOPTR(_h, h, c) static_cast<c*>((void*)h)
+    #define HANDLE_DESTROY(_h, h)
+#else
+    #define HANDLE_CREATE(_h, ptr) (_h).allocate((intptr_t)ptr)
+    #define HANDLE_TOPTR(_h, h, c) (_h).getPtr<c>(h)
+    #define HANDLE_DESTROY(_h, h)  (_h).free(h)
+#endif
 
 NS_PRIVATE_END
 
