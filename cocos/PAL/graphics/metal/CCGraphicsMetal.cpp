@@ -69,13 +69,28 @@ bool GraphicsMetal::init()
     return _viewController != nil;
 }
 
+const char* GraphicsMetal::name() const
+{
+    return GraphicsMetal::api_name;
+}
+
 // MARK: windows and views
 
 // @brief create window with a view and make current.
 // optional size, if null then full screen window.
-handle GraphicsMetal::windowCreate(Rect* size)
+handle GraphicsMetal::windowCreate()
 {
     return HANDLE_INVALID;
+}
+
+void GraphicsMetal::frameBegin()
+{
+    
+}
+
+void GraphicsMetal::frameEnd()
+{
+    
 }
 
 // MARK: vertex array

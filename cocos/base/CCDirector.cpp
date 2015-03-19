@@ -172,7 +172,8 @@ bool Director::init(void)
     _PALManager = PALManager::create();
     _PALManager->retain();
     
-    selectGraphicsAPI((const char*[]){"metal", "opengles2", nullptr}, "");
+    if (!_graphicsInterface)
+        selectGraphicsAPI((const char*[]){"metal", "opengles2", nullptr}, "");
     
     //init TextureCache
     initTextureCache();
@@ -269,6 +270,9 @@ void Director::setGLDefaultValues()
 // Draw the Scene
 void Director::drawScene()
 {
+    if (_graphicsInterface)
+        _graphicsInterface->frameBegin();
+    
     // calculate "global" dt
     calculateDeltaTime();
     
@@ -332,12 +336,9 @@ void Director::drawScene()
 
     _totalFrames++;
 
-    // swap buffers
-    if (_openGLView)
-    {
-        _openGLView->swapBuffers();
-    }
-
+    if (_graphicsInterface)
+        _graphicsInterface->frameEnd();
+    
     if (_displayStats)
     {
         calculateMPF();

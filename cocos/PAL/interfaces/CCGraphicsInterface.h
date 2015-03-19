@@ -51,13 +51,23 @@ public:
     // All weak references and cached interfaces are invalidated.
     virtual void shutdown() = 0;
 
+    // @brief returns the name of the api implementation
+    virtual const char* name() const = 0;
+    
     //////////////////////////////////////////////////////////////////
     // MARK: view and window                                        //
     //////////////////////////////////////////////////////////////////
 
     // @brief create window with a view and make current.
     // optional size, if null then full screen window.
-    virtual handle windowCreate(Rect* size) = 0;
+    virtual handle windowCreate() = 0;
+    
+    // @brief setup the gpu for drawing a frame
+    virtual void frameBegin() = 0;
+    
+    // @brief finish the frame and present
+    virtual void frameEnd() = 0;
+
     
     //////////////////////////////////////////////////////////////////
     // MARK: vertex array                                           //

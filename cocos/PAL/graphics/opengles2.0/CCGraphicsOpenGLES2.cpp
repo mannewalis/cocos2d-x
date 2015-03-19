@@ -31,6 +31,11 @@
 #include "CCGraphicsOpenGLES2Buffer.h"
 
 #include "cocos2d.h"
+#import <OpenGLES/EAGL.h>
+
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+#include "platform/ios/CCEAGLView-ios.h"
+#endif
 
 USING_NS_CC;
 NS_PRIVATE_BEGIN
@@ -68,13 +73,30 @@ bool GraphicsOpenGLES2::init()
     return result;
 }
 
+const char* GraphicsOpenGLES2::name() const
+{
+    return GraphicsOpenGLES2::api_name;
+}
+
 // MARK: windows and views
 
 // @brief create window with a view and make current.
 // optional size, if null then full screen window.
-handle GraphicsOpenGLES2::windowCreate(Rect* size)
+handle GraphicsOpenGLES2::windowCreate()
 {
-    return _view ? HANDLE_CREATE(_handles, _view) : HANDLE_INVALID;
+    return HANDLE_INVALID;
+}
+
+void GraphicsOpenGLES2::frameBegin()
+{
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+    [EAGLContext setCurrentContext: [(CCEAGLView*)Director::getInstance()->getOpenGLView()->getEAGLView() context]];
+#endif
+}
+
+void GraphicsOpenGLES2::frameEnd()
+{
+    Director::getInstance()->getOpenGLView()->swapBuffers();
 }
 
 // MARK: vertex array

@@ -34,11 +34,11 @@ void PALManager::registerFactories()
     { \
         extern void* __##cls##_factory(); \
         auto fact = tConstructor{__##cls##_factory}; \
-        registerFactory<api>(#name, fact); \
+        registerFactory<api>(name, fact); \
     }
     
-    REGISTER_FACTORY(GraphicsInterface, opengles2, GraphicsOpenGLES2);
-    REGISTER_FACTORY(GraphicsInterface, metal,     GraphicsMetal);
+    REGISTER_FACTORY(GraphicsInterface, "opengles2", GraphicsOpenGLES2);
+    REGISTER_FACTORY(GraphicsInterface, "metal",     GraphicsMetal);
 }
 
 NS_PRIVATE_END

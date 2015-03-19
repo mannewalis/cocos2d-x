@@ -65,7 +65,12 @@ public:
                 auto& factory = it->second;
                 if (factory._impl == *impls)
                 {
-                    return static_cast<T*>(factory._constructor());
+                    auto obj = static_cast<T*>(factory._constructor());
+                    if (obj)
+                    {
+                        PAL_ASSERT(0 == strcmp(obj->name(), *impls), "api names do not match");
+                        return obj;
+                    }
                 }
             }
             ++impls;

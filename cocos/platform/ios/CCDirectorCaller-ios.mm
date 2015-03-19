@@ -26,6 +26,8 @@
 #include "platform/CCPlatformConfig.h"
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
 
+#include "PAL/interfaces/CCGraphicsInterface.h"
+
 #import "CCDirectorCaller-ios.h"
 
 #import <Foundation/Foundation.h>
@@ -105,9 +107,7 @@ static id s_sharedDirectorCaller;
                       
 -(void) doCaller: (id) sender
 {
-    cocos2d::Director* director = cocos2d::Director::getInstance();
-    [EAGLContext setCurrentContext: [(CCEAGLView*)director->getOpenGLView()->getEAGLView() context]];
-    director->mainLoop();
+    cocos2d::Director::getInstance()->mainLoop();
 }
 
 @end

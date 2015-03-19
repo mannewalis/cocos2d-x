@@ -51,6 +51,8 @@ class GraphicsMetal
 {
 public:
     
+    static constexpr const char* api_name = "metal";
+    
     GraphicsMetal()
         : _handles(1000)
         , _viewController(nullptr)
@@ -64,15 +66,20 @@ public:
     // @brief shuts down this interface.
     void shutdown();
     
+    // @brief returns the name of the api implementation
+    const char* name() const;
+
     //////////////////////////////////////////////////////////////////
     // MARK: view and window                                        //
     //////////////////////////////////////////////////////////////////
     
     // @brief create window with a view and make current.
     // optional size, if null then full screen window.
-    handle windowCreate(Rect* size);
+    handle windowCreate();
     
-    
+    void frameBegin();
+    void frameEnd();
+
     //////////////////////////////////////////////////////////////////
     // MARK: vertex array                                           //
     //////////////////////////////////////////////////////////////////

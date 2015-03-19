@@ -2016,7 +2016,7 @@
 		D07525E21AAF576600830CD1 /* CCPALManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPALManager.h; sourceTree = "<group>"; };
 		D07525E51AAF576600830CD1 /* CCGraphicsMetal.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = CCGraphicsMetal.cpp; sourceTree = "<group>"; };
 		D07525E61AAF576600830CD1 /* CCGraphicsMetal.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = CCGraphicsMetal.h; sourceTree = "<group>"; };
-		D07525E81AAF576600830CD1 /* CCGraphicsOpenGLES2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsOpenGLES2.cpp; sourceTree = "<group>"; };
+		D07525E81AAF576600830CD1 /* CCGraphicsOpenGLES2.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = CCGraphicsOpenGLES2.cpp; sourceTree = "<group>"; };
 		D07525E91AAF576600830CD1 /* CCGraphicsOpenGLES2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsOpenGLES2.h; sourceTree = "<group>"; };
 		D07525EB1AAF576600830CD1 /* CCGraphicsInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsInterface.h; sourceTree = "<group>"; };
 		D0FD033B1A3B51AA00825BB5 /* CCAllocatorBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAllocatorBase.h; sourceTree = "<group>"; };
