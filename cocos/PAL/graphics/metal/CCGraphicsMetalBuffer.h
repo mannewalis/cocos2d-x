@@ -54,6 +54,7 @@ public:
 protected:
     
     void* _bo;
+    ssize_t _boSize;
 };
 
 NS_PRIVATE_END

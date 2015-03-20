@@ -30,11 +30,14 @@
 #include "CCGraphicsMetal.h"
 #include "CCGraphicsMetalViewController.h"
 
+#import "Metal/MTLBuffer.h"
+
 NS_PRIVATE_BEGIN
 
 GraphicsMetalBuffer::GraphicsMetalBuffer()
-{
-}
+    : _bo(nullptr)
+    , _boSize(0)
+{}
 
 GraphicsMetalBuffer::~GraphicsMetalBuffer()
 {
@@ -43,11 +46,22 @@ GraphicsMetalBuffer::~GraphicsMetalBuffer()
     
 void GraphicsMetalBuffer::commit(const void* elements, ssize_t start, ssize_t count)
 {
-    if (!_bo)
+    const auto size = getCapacityInBytes();
+    CCASSERT(size, "size should not be 0");
+
+    if (!_bo || size > _boSize)
     {
+        [(id)_bo release];
         auto const device = GraphicsMetal::getInstance()->viewController().device;
-        _bo = [device newBufferWithLength:getCapacityInBytes() options:MTLResourceOptionCPUCacheModeDefault];
+        auto bo = [device newBufferWithLength:size options:MTLResourceOptionCPUCacheModeDefault];
+        PAL_ASSERT(bo, "invalid buffer object");
+        _buffer = bo.contents;
+        _bo = (void*)bo;
+        _boSize = size;
     }
+    
+    void* p = (void*)((uintptr_t)_buffer + (start * getElementSize()));
+    memcpy(p, elements, count * getElementSize());
 }
 
 void GraphicsMetalBuffer::recreate() const
