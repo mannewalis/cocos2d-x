@@ -26,17 +26,11 @@
 #ifndef _CC_GRAPHICS_METAL_H_
 #define _CC_GRAPHICS_METAL_H_
 
-#include "cocos2d.h"
+//#include "cocos2d.h"
 #include "PAL/CCPALMacros.h"
 #include "PAL/CCPALHandles.h"
 #include "PAL/interfaces/CCGraphicsInterface.h"
-
-#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
-#    import "TargetConditionals.h"
-#    if !TARGET_IPHONE_SIMULATOR
-#        define CC_METAL_AVAILABLE
-#    endif // TARGET_IPHONE_SIMULATOR
-#endif // CC_PLATFORM_IOS
+#include "CCGraphicsMetalSupport.h"
 
 #ifdef CC_METAL_AVAILABLE
 
@@ -53,18 +47,25 @@ public:
     
     static constexpr const char* api_name = "metal";
     
+    // unlike opengl which is a c api accessible from anywhere,
+    // Metal is OO which means that objects like the device need
+    // to be available to all class that use the Metal API.
+    PAL_DECLARE_SINGLETON(GraphicsMetal);
+    
     GraphicsMetal()
         : _handles(1000)
         , _viewController(nullptr)
     {}
-    
+
     static GraphicsInterface* create();
-    
+
     // @brief initialize the API
     bool init();
     
     // @brief shuts down this interface.
     void shutdown();
+
+public: // Interface Methods
     
     // @brief returns the name of the api implementation
     const char* name() const;
@@ -140,6 +141,10 @@ public:
 
     // HACK for backwards compatibility with MeshCommand
     CC_DEPRECATED(v3) unsigned bufferGetNativeBO(handle object) {return 0;}
+    
+public: // Non Interface Methods
+    
+    MetalViewController* viewController();
     
 protected:
     

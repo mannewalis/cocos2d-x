@@ -26,22 +26,18 @@
 #ifndef _CC_GRAPHICS_METAL_VERTEX_ARRAY_
 #define _CC_GRAPHICS_METAL_VERTEX_ARRAY_
 
-#include <set>
+#include "CCGraphicsMetalSupport.h"
+
+#ifdef CC_METAL_AVAILABLE
 
 #include "PAL/CCPALMacros.h"
-#include "PAL/CCPALTypes.h"
 #include "PAL/graphics/common/CCGraphicsVertexArray.h"
 #include "CCGraphicsMetalBuffer.h"
 
-// remove cocos2d-x dependencies
-#include "base/CCRef.h"
-
 NS_PRIVATE_BEGIN
 
-class GraphicsMetalBuffer;
-
 class GraphicsMetalVertexArray
-: public GraphicsVertexArray<GraphicsMetalVertexArray, GraphicsMetalBuffer>
+    : public GraphicsVertexArray<GraphicsMetalVertexArray, GraphicsMetalBuffer>
 {
 public:
     
@@ -54,5 +50,7 @@ public:
 };
 
 NS_PRIVATE_END
+
+#endif//CC_METAL_AVAILABLE
 
 #endif//_CC_GRAPHICS_METAL_VERTEX_ARRAY_

@@ -29,7 +29,6 @@
 #include "PAL/CCPALMacros.h"
 #include "PAL/CCPALTypes.h"
 
-// remove cocos2d-x dependencies
 #include "base/ccMacros.h"
 #include "base/CCRef.h"
 #include "base/allocator/CCAllocatorMacros.h"
@@ -115,7 +114,7 @@ public:
             _elementCount = start + count > _elementCount ? start + count : _elementCount;
         
         if (false == defer && elements && hasNative())
-            static_cast<APITraits*>(this)->bindAndCommit(elements, start, count);
+            static_cast<APITraits*>(this)->commit(elements, start, count);
     }
     
     void insertElements(const void* elements, ssize_t start, ssize_t count, bool defer)

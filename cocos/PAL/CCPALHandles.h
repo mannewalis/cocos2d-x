@@ -28,6 +28,7 @@
 
 #include <vector>
 #include "CCPALMacros.h"
+#include "CCPALTypes.h"
 
 NS_PRIVATE_BEGIN
 

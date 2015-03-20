@@ -25,6 +25,8 @@
 
 #include "CCGraphicsMetalVertexArray.h"
 
+#ifdef CC_METAL_AVAILABLE
+
 NS_PRIVATE_BEGIN
 
 GraphicsMetalVertexArray::GraphicsMetalVertexArray(Primitive drawPrimitive)
@@ -41,3 +43,4 @@ ssize_t GraphicsMetalVertexArray::draw(ssize_t start, ssize_t count)
 
 NS_PRIVATE_END
 
+#endif//CC_METAL_AVAILABLE

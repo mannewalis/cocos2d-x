@@ -27,8 +27,6 @@
 #include "CCGraphicsMetalVertexArray.h"
 #include "CCGraphicsMetalBuffer.h"
 #include "CCGraphicsMetalViewController.h"
-//#include "PAL/CCPALHandles.h"
-//#include "PAL/CCPALManager.h"
 
 NS_PRIVATE_BEGIN
 void* __GraphicsMetal_factory()
@@ -275,6 +273,15 @@ void GraphicsMetal::bufferMoveElements(handle object, ssize_t source, ssize_t de
 {
     auto bo = HANDLE_TOPTR(_handles, object, GraphicsMetalBuffer);
     bo->moveElements(source, dest, count);
+}
+
+//
+// Non Interface Methods
+//
+
+MetalViewController* GraphicsMetal::viewController()
+{
+    return _viewController;
 }
 
 NS_PRIVATE_END

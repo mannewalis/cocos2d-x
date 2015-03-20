@@ -27,7 +27,6 @@
 #include "CCGraphicsOpenGLES2VertexArray.h"
 #include "CCGraphicsOpenGLES2Buffer.h"
 
-// remove cocos2d-x dependencies
 #include "platform/CCGL.h"
 #include "renderer/ccGLStateCache.h"
 #include "base/ccMacros.h"
@@ -85,7 +84,7 @@ ssize_t GraphicsOpenGLES2VertexArray::draw(ssize_t start, ssize_t count)
             
             // commit any outstanding client side geometry to the native buffers.
             // for interleaved data this will happen only the first time through.
-            vb->bindAndCommit(vb->getElements(), 0, vb->getElementCount());
+            vb->commit(vb->getElements(), 0, vb->getElementCount());
             
             auto offset = attr._offset;
             auto stride = vb->getElementSize();
@@ -97,7 +96,7 @@ ssize_t GraphicsOpenGLES2VertexArray::draw(ssize_t start, ssize_t count)
         }
         
         if (_indices != nullptr)
-            _indices->bindAndCommit(_indices->getElements(), 0, _indices->getElementCount());
+            _indices->commit(_indices->getElements(), 0, _indices->getElementCount());
         
         setDirty(false);
     }

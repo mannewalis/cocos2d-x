@@ -26,10 +26,32 @@
 #ifndef _CC_GRAPHICS_METAL_VIEW_CONTROLLER_H_
 #define _CC_GRAPHICS_METAL_VIEW_CONTROLLER_H_
 
+#include "CCGraphicsMetalSupport.h"
+
+#ifdef CC_METAL_AVAILABLE
+
 #import "UIKit/UIViewController.h"
 
+@class CAMetalLayer;
+@protocol MTLDevice;
+@protocol MTLCommandQueue;
+@protocol MTLLibrary;
+
 @interface MetalViewController : UIViewController
+{
+    CAMetalLayer* _metalLayer;
+    
+    id <MTLDevice> _device;
+    id <MTLCommandQueue> _commandQueue;
+    id <MTLLibrary> _defaultLibrary;
+}
+
+@property (readonly) id<MTLDevice> device;
+
 - (void) setup;
+
 @end
+
+#endif//CC_METAL_AVAILABLE
 
 #endif//_CC_GRAPHICS_METAL_VIEW_CONTROLLER_H_

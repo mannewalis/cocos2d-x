@@ -42,7 +42,7 @@ public:
 
     // MARK: traits
 
-    void bindAndCommit(const void* elements, ssize_t start, ssize_t count);
+    void commit(const void* elements, ssize_t start, ssize_t count);
     void recreate() const;
 
     unsigned getBO() const;

@@ -28,11 +28,12 @@
 
 #include <vector>
 #include <map>
+#include <set>
+
 #include "PAL/CCPALMacros.h"
 #include "CCGraphicsTypes.h"
 #include "CCGraphicsAttributeBuffer.h"
 
-// remove cocos2d-x dependencies
 #include "base/CCRef.h"
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)

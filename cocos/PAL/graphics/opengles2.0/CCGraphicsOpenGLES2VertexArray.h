@@ -26,15 +26,9 @@
 #ifndef _CC_GRAPHICS_OPENGLES2_VERTEX_ARRAY_
 #define _CC_GRAPHICS_OPENGLES2_VERTEX_ARRAY_
 
-#include <set>
-
 #include "PAL/CCPALMacros.h"
-#include "PAL/CCPALTypes.h"
 #include "PAL/graphics/common/CCGraphicsVertexArray.h"
 #include "CCGraphicsOpenGLES2Buffer.h"
-
-// remove cocos2d-x dependencies
-#include "base/CCRef.h"
 
 NS_PRIVATE_BEGIN
 

@@ -26,6 +26,10 @@
 #ifndef _CC_GRAPHICS_METAL_VERTEX_BUFFER_H_
 #define _CC_GRAPHICS_METAL_VERTEX_BUFFER_H_
 
+#include "CCGraphicsMetalSupport.h"
+
+#ifdef CC_METAL_AVAILABLE
+
 #include "PAL/CCPALMacros.h"
 #include "PAL/CCPALTypes.h"
 #include "PAL/graphics/common/CCGraphicsAttributeBuffer.h"
@@ -42,12 +46,18 @@ public:
     
     // MARK: traits
     
-    void bindAndCommit(const void* elements, ssize_t start, ssize_t count);
+    void commit(const void* elements, ssize_t start, ssize_t count);
     void recreate() const;
     
-    unsigned getBO() const;
+    void* getBO() const;
+    
+protected:
+    
+    void* _bo;
 };
 
 NS_PRIVATE_END
+
+#endif//CC_METAL_AVAILABLE
 
 #endif//_CC_GRAPHICS_METAL_VERTEX_BUFFER_H_

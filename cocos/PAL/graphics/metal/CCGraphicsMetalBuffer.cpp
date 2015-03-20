@@ -25,25 +25,41 @@
 
 #include "CCGraphicsMetalBuffer.h"
 
+#ifdef CC_METAL_AVAILABLE
+
+#include "CCGraphicsMetal.h"
+#include "CCGraphicsMetalViewController.h"
+
 NS_PRIVATE_BEGIN
 
 GraphicsMetalBuffer::GraphicsMetalBuffer()
-{}
+{
+}
 
 GraphicsMetalBuffer::~GraphicsMetalBuffer()
-{}
+{
+    [(id)_bo release];
+}
     
-void GraphicsMetalBuffer::bindAndCommit(const void* elements, ssize_t start, ssize_t count)
-{}
+void GraphicsMetalBuffer::commit(const void* elements, ssize_t start, ssize_t count)
+{
+    if (!_bo)
+    {
+        auto const device = GraphicsMetal::getInstance()->viewController().device;
+        _bo = [device newBufferWithLength:getCapacityInBytes() options:MTLResourceOptionCPUCacheModeDefault];
+    }
+}
 
 void GraphicsMetalBuffer::recreate() const
-{}
-
-unsigned GraphicsMetalBuffer::getBO() const
 {
-    return 0;
+    // unknown if Metal buffers need recreation
+}
+
+void* GraphicsMetalBuffer::getBO() const
+{
+    return _bo;
 }
 
 NS_PRIVATE_END
 
-
+#endif//CC_METAL_AVAILABLE

@@ -2006,11 +2006,12 @@
 		D00FBB861AB2360B00196C41 /* CCGraphicsOpenGLES2Buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsOpenGLES2Buffer.h; sourceTree = "<group>"; };
 		D04E02C01AB9EA2700FF08B1 /* CCGraphicsMetalVertexArray.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsMetalVertexArray.cpp; sourceTree = "<group>"; };
 		D04E02C11AB9EA2700FF08B1 /* CCGraphicsMetalVertexArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsMetalVertexArray.h; sourceTree = "<group>"; };
-		D04E02C41AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCGraphicsMetalBuffer.cpp; sourceTree = "<group>"; };
+		D04E02C41AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = CCGraphicsMetalBuffer.cpp; sourceTree = "<group>"; };
 		D04E02C51AB9EB2300FF08B1 /* CCGraphicsMetalBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphicsMetalBuffer.h; sourceTree = "<group>"; };
 		D04E02C81ABA0CE400FF08B1 /* CCPALManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCPALManager.cpp; sourceTree = "<group>"; };
 		D04E02D21ABA3C8E00FF08B1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
 		D04E02D41ABA3CEF00FF08B1 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/Metal.framework; sourceTree = DEVELOPER_DIR; };
+		D05A176A1ABB94A7006C4122 /* CCGraphicsMetalSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCGraphicsMetalSupport.h; sourceTree = "<group>"; };
 		D07525E21AAF576600830CD1 /* CCPALManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPALManager.h; sourceTree = "<group>"; };
 		D07525E51AAF576600830CD1 /* CCGraphicsMetal.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = CCGraphicsMetal.cpp; sourceTree = "<group>"; };
 		D07525E61AAF576600830CD1 /* CCGraphicsMetal.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = CCGraphicsMetal.h; sourceTree = "<group>"; };
@@ -3260,6 +3261,7 @@
 		D07525E41AAF576600830CD1 /* metal */ = {
 			isa = PBXGroup;
 			children = (
+				D05A176A1ABB94A7006C4122 /* CCGraphicsMetalSupport.h */,
 				D07525E51AAF576600830CD1 /* CCGraphicsMetal.cpp */,
 				D07525E61AAF576600830CD1 /* CCGraphicsMetal.h */,
 				D04E02C01AB9EA2700FF08B1 /* CCGraphicsMetalVertexArray.cpp */,

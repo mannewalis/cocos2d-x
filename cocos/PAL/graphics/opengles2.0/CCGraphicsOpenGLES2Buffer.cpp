@@ -25,7 +25,6 @@
 
 #include "CCGraphicsOpenGLES2Buffer.h"
 
-// remove cocos2d-x dependencies
 #include "platform/CCGL.h"
 #include "renderer/ccGLStateCache.h"
 #include "base/ccMacros.h"
@@ -47,9 +46,9 @@ GraphicsOpenGLES2Buffer::~GraphicsOpenGLES2Buffer()
     }    
 }
 
-void GraphicsOpenGLES2Buffer::bindAndCommit(const void* elements, ssize_t start, ssize_t count)
+void GraphicsOpenGLES2Buffer::commit(const void* elements, ssize_t start, ssize_t count)
 {
-    CCASSERT(true == hasNative(), "bindAndCommit : array has no native buffer");
+    CCASSERT(true == hasNative(), "commit : array has no native buffer");
     
     if (_glbo)
         GL::bindVBO(_bufferIntentToGLTarget(_bufferIntent), _glbo);

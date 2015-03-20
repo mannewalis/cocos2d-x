@@ -23,49 +23,19 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "CCGraphicsMetalViewController.h"
+#ifndef _CC_GRAPHICS_METAL_SUPPORT_H_
+#define _CC_GRAPHICS_METAL_SUPPORT_H_
 
-#ifdef CC_METAL_AVAILABLE
+#include "platform/CCPlatformMacros.h"
 
-#import "Metal/Metal.h"
-#import "simd/simd.h"
-#import "QuartzCore/CAMetalLayer.h"
+// @brief determine whether or not Metal is supported
+// define CC_METAL_AVAILABLE if support is available.
 
-@implementation MetalViewController
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+#    import "TargetConditionals.h"
+#    if !TARGET_IPHONE_SIMULATOR
+#        define CC_METAL_AVAILABLE
+#    endif//TARGET_IPHONE_SIMULATOR
+#endif//CC_PLATFORM_IOS
 
-- (void) setup
-{
-    // Find a usable device
-    _device = MTLCreateSystemDefaultDevice();
-    
-    // Create a new command queue
-    _commandQueue = [_device newCommandQueue];
-    
-    // Load all the shader files with a metal file extension in the project
-    //_defaultLibrary = [_device newDefaultLibrary];
-    
-    // Setup metal layer and add as sub layer to view
-    _metalLayer = [CAMetalLayer layer];
-    _metalLayer.device = _device;
-    _metalLayer.pixelFormat = MTLPixelFormatBGRA8Unorm;
-    
-    // Change this to NO if the compute encoder is used as the last pass on the drawable texture
-    _metalLayer.framebufferOnly = YES;
-    
-    // Add metal layer to the views layer hierarchy
-    [_metalLayer setFrame:self.view.layer.frame];
-    [self.view.layer addSublayer:_metalLayer];
-    
-    self.view.opaque = YES;
-    self.view.backgroundColor = nil;
-    self.view.contentScaleFactor = [UIScreen mainScreen].scale;
-}
-
-- (void) viewDidLayoutSubviews
-{
-    [_metalLayer setFrame:self.view.layer.frame];
-}
-
-@end
-
-#endif//CC_METAL_AVAILABLE
+#endif//CC_GRAPHICS_METAL_SUPPORT_H_
