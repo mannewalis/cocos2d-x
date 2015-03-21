@@ -54,6 +54,10 @@ public:
     // @brief returns the name of the api implementation
     virtual const char* name() const = 0;
     
+    // @brief destroy object
+    // any handle returned from this interface can be destroyed here.
+    virtual void destroy(handle object) = 0;
+    
     //////////////////////////////////////////////////////////////////
     // MARK: view and window                                        //
     //////////////////////////////////////////////////////////////////
@@ -61,6 +65,14 @@ public:
     // @brief create window with a view and make current.
     // optional size, if null then full screen window.
     virtual handle windowCreate() = 0;
+
+    
+    //////////////////////////////////////////////////////////////////
+    // MARK: render context                                         //
+    //////////////////////////////////////////////////////////////////
+
+    // @brief create a new render context.
+    virtual handle renderContextCreate() = 0;
     
     // @brief setup the gpu for drawing a frame
     virtual void frameBegin() = 0;
@@ -91,9 +103,16 @@ public:
     // @brief draws the vertex array.
     virtual ssize_t vertexArrayDrawElements(handle object, ssize_t start, ssize_t count) = 0;
     
+    // @brief returns true if all of the managed buffers are empty.
     virtual bool vertexArrayIsEmpty(handle object) const = 0;
+    
+    // @brief clears all buffers by setting element count to 0.
     virtual void vertexArrayClear(handle object) = 0;
+    
+    // @brief returns true if any managed buffer is dirty.
     virtual bool vertexArrayIsDirty(handle object) const = 0;
+    
+    // @brief sets all dirty flags to 'dirty'
     virtual void vertexArraySetDirty(handle object, bool dirty) = 0;
     
     
