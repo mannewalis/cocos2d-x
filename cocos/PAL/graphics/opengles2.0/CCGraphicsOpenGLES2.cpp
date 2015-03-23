@@ -78,6 +78,16 @@ const char* GraphicsOpenGLES2::name() const
     return GraphicsOpenGLES2::api_name;
 }
 
+bool GraphicsOpenGLES2::destroy(handle object)
+{
+    auto o = HANDLE_TOPTR(_handles, object, Ref);
+    if (!o)
+        return false;
+    HANDLE_DESTROY(_handles, object);
+    o->release();
+    return true;
+}
+
 // MARK: windows and views
 
 // @brief create window with a view and make current.

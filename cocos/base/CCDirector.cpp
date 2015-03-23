@@ -201,11 +201,8 @@ Director::~Director(void)
     delete _eventAfterDraw;
     delete _eventAfterVisit;
     delete _eventProjectionChanged;
-
     delete _renderer;
-
     delete _console;
-
 
     CC_SAFE_RELEASE(_eventDispatcher);
     CC_SAFE_RELEASE(_PALManager);
@@ -270,8 +267,17 @@ void Director::setGLDefaultValues()
 // Draw the Scene
 void Director::drawScene()
 {
-    if (_graphicsInterface)
-        _graphicsInterface->frameBegin();
+    CCASSERT(_graphicsInterface, "no graphics api has been selected");
+
+//    // create a render pass
+//    if (!_renderPass)
+//    {
+//        _renderPass = _graphicsInterface->renderPassCreate();
+//    }
+//
+//    CCASSERT(_renderPass, "invalid render pass");
+//    
+//    _renderPass->begin();
     
     // calculate "global" dt
     calculateDeltaTime();
@@ -336,8 +342,7 @@ void Director::drawScene()
 
     _totalFrames++;
 
-    if (_graphicsInterface)
-        _graphicsInterface->frameEnd();
+    //_renderPass->end();
     
     if (_displayStats)
     {

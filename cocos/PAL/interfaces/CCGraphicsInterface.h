@@ -56,7 +56,7 @@ public:
     
     // @brief destroy object
     // any handle returned from this interface can be destroyed here.
-    virtual void destroy(handle object) = 0;
+    virtual bool destroy(handle object) = 0;
     
     //////////////////////////////////////////////////////////////////
     // MARK: view and window                                        //
@@ -71,14 +71,23 @@ public:
     // MARK: render context                                         //
     //////////////////////////////////////////////////////////////////
 
-    // @brief create a new render context.
-    virtual handle renderContextCreate() = 0;
-    
-    // @brief setup the gpu for drawing a frame
-    virtual void frameBegin() = 0;
-    
-    // @brief finish the frame and present
-    virtual void frameEnd() = 0;
+//    // @brief create a new render context.
+//    virtual handle renderContextCreate() = 0;
+//    
+//    // @brief setup a render context for drawing.
+//    virtual void renderContextFrameBegin(handle context) = 0;
+//    
+//    // @brief renders the submitted geometry.
+//    virtual void renderContextFrameEnd(handle context) = 0;
+//    
+//    // @brief copy region from one render context to another.
+//    virtual void renderContextBlit(handle dest, handle source) = 0;
+//    
+//    // @brief create a render surface.
+//    virtual handle renderContextSurfaceCreate(SurfaceIntent intent) = 0;
+//    
+//    // @brief add a surface to the render context.
+//    virtual void renderContextAddSurface(handle context, handle surface) = 0;
 
     
     //////////////////////////////////////////////////////////////////

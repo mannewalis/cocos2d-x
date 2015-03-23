@@ -67,6 +67,16 @@ bool GraphicsMetal::init()
     return _viewController != nil;
 }
 
+bool GraphicsMetal::destroy(handle object)
+{
+    auto o = HANDLE_TOPTR(_handles, object, Ref);
+    if (!o)
+        return false;
+    HANDLE_DESTROY(_handles, object);
+    o->release();
+    return true;
+}
+
 const char* GraphicsMetal::name() const
 {
     return GraphicsMetal::api_name;

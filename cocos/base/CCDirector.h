@@ -38,6 +38,7 @@ THE SOFTWARE.
 #include "platform/CCGL.h"
 #include "platform/CCGLView.h"
 #include "PAL/CCPALMacros.h"
+#include "PAL/CCPALTypes.h"
 
 NS_PRIVATE_BEGIN
 class PALManager;
@@ -452,16 +453,6 @@ protected:
     EventDispatcher* _eventDispatcher;
     EventCustom *_eventProjectionChanged, *_eventAfterDraw, *_eventAfterVisit, *_eventAfterUpdate;
     
-    /** Graphics API Manager
-     @since v4.0
-     */
-    NS_PRIVATE::PALManager* _PALManager;
-    
-    /** Selected Graphics Interface
-     @since v4.0
-     */
-    NS_PRIVATE::GraphicsInterface* _graphicsInterface;
-    
     /* delta time since last tick to main loop */
 	float _deltaTime;
     
@@ -533,6 +524,20 @@ protected:
 
     // GLView will recreate stats labels to fit visible rect
     friend class GLView;
+    
+    //
+    // V4 Renderer
+    //
+    
+    /** Graphics API Manager
+     @since v4.0
+     */
+    NS_PRIVATE::PALManager* _PALManager;
+    
+    /** Selected Graphics Interface
+     @since v4.0
+     */
+    NS_PRIVATE::GraphicsInterface* _graphicsInterface;
 };
 
 /** 

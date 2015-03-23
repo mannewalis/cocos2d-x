@@ -70,6 +70,10 @@ public: // Interface Methods
     // @brief returns the name of the api implementation
     const char* name() const;
 
+    // @brief destroy object
+    // any handle returned from this interface can be destroyed here.
+    bool destroy(handle object);
+
     //////////////////////////////////////////////////////////////////
     // MARK: view and window                                        //
     //////////////////////////////////////////////////////////////////

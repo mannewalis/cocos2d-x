@@ -105,6 +105,11 @@ struct VertexAttribute
     bool     _normalized;
 };
 
+enum class SurfaceIntent
+{
+    
+};
+
 NS_PRIVATE_END
 
 #endif//_CC_GRAPHICS_TYPES_H_
